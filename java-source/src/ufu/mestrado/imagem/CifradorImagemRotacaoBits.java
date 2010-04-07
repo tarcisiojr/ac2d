@@ -3,7 +3,6 @@ package ufu.mestrado.imagem;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.util.BitSet;
 
 import javax.imageio.ImageIO;
 
