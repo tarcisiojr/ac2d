@@ -112,7 +112,7 @@ public class CifradorImagemRotacaoBits implements AutomatoCelularHandler {
 
 	@Override
 	public void aposSetBitReticulado(Reticulado reticulado, int linha, int coluna, boolean preImagem) {
-		boolean valor = reticulado.get(linha, coluna);
+		//boolean valor = reticulado.get(linha, coluna);
 		
 		linha = reticulado.getIndiceLinha(linha);
 		coluna = reticulado.getIndiceColuna(coluna); 
@@ -123,21 +123,21 @@ public class CifradorImagemRotacaoBits implements AutomatoCelularHandler {
 		
 		if (preImagem) {
 			contador++;
-			rgb = BitsUtil.rotacionar(rgb, 24, 5, BitsUtil.DIREITA);
-			rgb = rgb | 1;
 			
-			if (!valor) {
-				rgb--;
-			}
+			int rgbOriginal = rgb;
+			rgb = rgb >> 1; 
+			
+			rgb = BitsUtil.rotacionar(rgb, 23, 1, BitsUtil.DIREITA);
+			
+			rgb = (rgb << 1) | (rgbOriginal & 1);
 		} else {
 			contador--;
 
-			rgb = BitsUtil.rotacionar(rgb, 24, 5, BitsUtil.ESQUERDA);
+			int rgbOriginal = rgb;
+			rgb = rgb >> 1; 
+			rgb = BitsUtil.rotacionar(rgb, 23, 1, BitsUtil.ESQUERDA);
 			
-			rgb = rgb | 1;
-			if (!valor) {
-				rgb--;
-			}
+			rgb = (rgb << 1) | (rgbOriginal & 1);
 		}
 		
 		buffer.setRGB(

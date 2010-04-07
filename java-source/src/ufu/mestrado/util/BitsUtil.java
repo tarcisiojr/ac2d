@@ -8,7 +8,7 @@ public abstract class BitsUtil {
 	/**
 	 * Rotaciona os bits do valor fornecido de acordo com o tamanho da máscara fornecida.
 	 * @param valor Valor a ser rotacionado.
-	 * @param tamMascara Tamanho da máscara utilizada na rotação.
+	 * @param tamMascara Quantidade bits da máscara utilizada na rotação.
 	 * @param deslocamento Quantidade de casas que os bits serão rotacionados.
 	 * @param direcao Direção da rotação.,
 	 * @return Valor rotacionado de acordo com os valores forencidos.
