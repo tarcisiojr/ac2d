@@ -52,42 +52,111 @@ public class AutomatoCelular implements AutomatoCelularHandler {
 		return preImagem;
 	}
 	
+	/** Linha que será iniciado o cálculo da pré-imagem. */
 	private int linhaInicial;
+	
+	/** Coluna incial que será iniciado o cálculo da pré-imagem. */
 	private int colunaInicial;
+	
+	/** Linha atual do calculo da pré-imagem. */
 	private int linha;
+	
+	/** Coluna atual do calculo da pré-imagem. */
 	private int coluna;
 	
-	private boolean continuarCalculoPI(Regra regraPrincipal)  {
+	/**
+	 * Verifica se o cálculo da pré-imagem foi finalizado.
+	 * @param regraPrincipal Regra principal utilizada no cálculo da pré-imagem.
+	 * @param preImagem Reticulado da pré-imagem (Borda já calculada).
+	 * @return True se calculo da pré-image ainda não foi finalizado, do contrário retorna-se false.
+	 */
+	private boolean continuarCalculoPI(Reticulado preImagem, Regra regraPrincipal)  {
 		if (regraPrincipal.getDirecaoCalculo() == DirecaoCalculo.NORTE) {
 			return linha >= regraPrincipal.getRaio();
+			
+		} else if (regraPrincipal.getDirecaoCalculo() == DirecaoCalculo.SUL) {
+			return linha < (preImagem.getLinhas() - regraPrincipal.getRaio());
+			
+		} else if (regraPrincipal.getDirecaoCalculo() == DirecaoCalculo.ESQUERDA) {
+			return coluna >= regraPrincipal.getRaio();
+			
+		} else if (regraPrincipal.getDirecaoCalculo() == DirecaoCalculo.DIREITA) {
+			return coluna < (preImagem.getColunas() - regraPrincipal.getRaio());
 		}
 		
-		return true;
+		throw new RuntimeException("O tipo de direção da regra fornecida não é suportado!");
 	}
 	
-	private void iterarCalculoPI(Regra regraPrincipal) {
+	/**
+	 * Itera o cálculo da pré-imagem, ou seja, atualiza os ponteiros para
+	 * a próxima celular a ser calculada.
+	 * @param preImagem Reticulado da pré-imagem (Borda já calculada).
+	 * @param regraPrincipal Regra principal utilizada no cálculo da pré-imagem.
+	 */
+	private void iterarCalculoPI(Reticulado preImagem, Regra regraPrincipal) {
 		int raio = regraPrincipal.getRaio();
 		
 		if (regraPrincipal.getDirecaoCalculo() == DirecaoCalculo.NORTE) {
-			if (coluna >= raio) {
-				coluna--;
-			} else {
+			coluna--;
+			// direita para esquerda, de baixo para cimaa
+			if (coluna < raio) {
 				linha--;
 				coluna = colunaInicial;
 			}
+		} else if (regraPrincipal.getDirecaoCalculo() == DirecaoCalculo.SUL) {
+			// direita para esquerda, de cima para baixo
+			coluna--;
+			
+			if (coluna < raio) {
+				linha++;
+				coluna = colunaInicial;
+			}
+		} else if (regraPrincipal.getDirecaoCalculo() == DirecaoCalculo.ESQUERDA) {
+			// de cima para baixo, direita para esquerda
+			linha++;
+			
+			if (linha >= preImagem.getLinhas() - raio) {
+				coluna--;
+				linha = linhaInicial;
+			}
+		} else if (regraPrincipal.getDirecaoCalculo() == DirecaoCalculo.DIREITA) {
+			// de cima para baixo, esquerda para direita
+			linha++;
+			
+			if (linha >= preImagem.getLinhas() - raio) {
+				coluna++;
+				linha = linhaInicial;
+			}
 		}
-		
 	}
 	
+	/**
+	 * Inicia os ponteiros para o cálculo da pré-imagem.
+	 * @param preImagem Reticulado da pré-imagem (Borda já calculada).
+	 * @param regraPrincipal Regra principal utilizada no cálculo da pré-imagem.
+	 */
 	private void iniciarCalculoPI(Reticulado preImagem, Regra regraPrincipal) {
 		int raio = regraPrincipal.getRaio();
 		
 		if (regraPrincipal.getDirecaoCalculo() == DirecaoCalculo.NORTE) {
 			linhaInicial = preImagem.getLinhas() - raio - 1;
 			colunaInicial = preImagem.getColunas() - raio - 1;
-			linha = linhaInicial;
-			coluna = colunaInicial;
+			
+		} else if (regraPrincipal.getDirecaoCalculo() == DirecaoCalculo.SUL) {
+			linhaInicial = raio;
+			colunaInicial = preImagem.getColunas() - raio - 1;
+			
+		} else if (regraPrincipal.getDirecaoCalculo() == DirecaoCalculo.ESQUERDA) {
+			linhaInicial = raio;
+			colunaInicial = preImagem.getColunas() - raio - 1;
+			
+		} else if (regraPrincipal.getDirecaoCalculo() == DirecaoCalculo.DIREITA) {
+			linhaInicial = raio;
+			colunaInicial = raio;
 		}
+		
+		linha = linhaInicial;
+		coluna = colunaInicial;
 	}
 	
 	/**
@@ -95,6 +164,62 @@ public class AutomatoCelular implements AutomatoCelularHandler {
 	 * @return O reticulado da pré-imagem calculada.
 	 */
 	public Reticulado calcularPreImagem() {
+		handler.antesCalcularPreImagem();
+		
+		// Cria o reticulado da préimagem, e já calcula os bits da borda.
+		Reticulado preImagem = criarReticuladoPreImagem(reticulado);
+		
+		handler.aposCriarReticuladoPreImagem(preImagem);
+		
+		int raio = regraPrincipal.getRaio();
+		 
+		// Calculando os bits do interior do reticulado
+		// Calculo = 0
+		iniciarCalculoPI(preImagem, regraPrincipal);
+		
+		while (continuarCalculoPI(preImagem, regraPrincipal)) {
+			int indices[] = Transicao.getIndices(preImagem, linha, coluna, raio, regraPrincipal.getDirecaoCalculo());
+
+			handler.aposBuscaTransicoes(indices);
+			
+			int indice = 0;
+			
+			Transicao transicao = regraPrincipal.getTransicao(indices[indice]);
+			
+			boolean bit = transicao.getPrimeiroBit(raio);
+			
+			int linhaReticulado = linha + raio;
+			
+			if (transicao.getValor() != reticulado.get(linhaReticulado, coluna)) {
+				bit = !bit;
+				indice = 1;
+			}
+			
+			handler.aposTransicaoEscolhida(indices[indice]);
+			handler.aposGetBitReticulado(reticulado, linhaReticulado, coluna);
+			
+			preImagem.set(linha, coluna, bit);
+			
+			handler.aposSetBitReticulado(preImagem, linha, coluna, true);
+			
+			//calculo++
+			iterarCalculoPI(preImagem, regraPrincipal);
+		}
+		
+		// Remove o deslocamento da pré-imagem.
+		preImagem.removerDeslocamento();
+		
+		handler.aposCalcularPreImagem(preImagem);
+		
+		reticulado = preImagem;
+		
+		return preImagem;
+	}
+	
+	/**
+	 * Realiza o cálculo da pré-imagem.
+	 * @return O reticulado da pré-imagem calculada.
+	public Reticulado calcularPreImagem2() {
 		handler.antesCalcularPreImagem();
 		
 		// Cria o reticulado da préimagem, e já calcula os bits da borda.
@@ -143,6 +268,7 @@ public class AutomatoCelular implements AutomatoCelularHandler {
 		
 		return preImagem;
 	}
+	 */
 	
 	public Reticulado evoluir(int numeroEvolucoes) {
 		Reticulado ret = reticulado;
