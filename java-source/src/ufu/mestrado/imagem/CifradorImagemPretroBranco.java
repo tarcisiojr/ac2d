@@ -3,6 +3,7 @@ package ufu.mestrado.imagem;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.Arrays;
 
 import javax.imageio.ImageIO;
 
@@ -12,6 +13,8 @@ import ufu.mestrado.Regra;
 import ufu.mestrado.Reticulado;
 
 public class CifradorImagemPretroBranco implements AutomatoCelularHandler {
+	private static final boolean DEBUG = false;
+	
 	/** Valor RGB da cor preta */
 	final int PRETO = Color.BLACK.getRGB();
 	
@@ -32,10 +35,10 @@ public class CifradorImagemPretroBranco implements AutomatoCelularHandler {
 	 * @param caminhoImage
 	 * @param nucleoRegra
 	 */
-	public CifradorImagemPretroBranco(String caminhoImage, String nucleoRegra) {
+	public CifradorImagemPretroBranco(String caminhoImage, String nucleoRegra, DirecaoCalculo direcao) {
 		try {
 			reticuladoInicial = criarReticuladoInicial(caminhoImage);
-			regra = Regra.criarAPatirNucleo(nucleoRegra, DirecaoCalculo.NORTE);
+			regra = Regra.criarAPatirNucleo(nucleoRegra, direcao);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -93,6 +96,7 @@ public class CifradorImagemPretroBranco implements AutomatoCelularHandler {
 
 	@Override
 	public void aposBuscaTransicoes(int[] indices) {
+		if (DEBUG) System.out.print("Indices apos busca de transicoes: " + Arrays.toString(indices));
 	}
 
 	@Override
@@ -101,6 +105,7 @@ public class CifradorImagemPretroBranco implements AutomatoCelularHandler {
 
 	@Override
 	public void aposCriarReticuladoPreImagem(Reticulado preImagem) {
+		if (DEBUG) System.out.println("\n" + preImagem + "\n");
 	}
 
 	@Override
@@ -109,6 +114,8 @@ public class CifradorImagemPretroBranco implements AutomatoCelularHandler {
 
 	@Override
 	public void aposSetBitReticulado(Reticulado reticulado, int linha, int coluna, boolean preImagem) {
+		if (preImagem) if (DEBUG) System.out.println(" [linha, coluna]=[" + linha + ", " + coluna + "]");
+		
 		boolean valor = reticulado.get(linha, coluna);
 		
 		buffer.setRGB(
@@ -119,6 +126,7 @@ public class CifradorImagemPretroBranco implements AutomatoCelularHandler {
 
 	@Override
 	public void aposTransicaoEscolhida(int indice) {
+		
 	}
 
 	@Override

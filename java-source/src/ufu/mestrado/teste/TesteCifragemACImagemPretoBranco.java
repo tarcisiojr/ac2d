@@ -2,6 +2,7 @@ package ufu.mestrado.teste;
 
 import ufu.mestrado.AutomatoCelular;
 import ufu.mestrado.Cronometro;
+import ufu.mestrado.DirecaoCalculo;
 import ufu.mestrado.imagem.CifradorImagemPretroBranco;
 
 public class TesteCifragemACImagemPretoBranco {
@@ -9,7 +10,8 @@ public class TesteCifragemACImagemPretoBranco {
 	public static void main(String[] args) throws Exception {
 		CifradorImagemPretroBranco cifrador = new CifradorImagemPretroBranco(
 				"E:/junior/Desktop/mestrado/imagem.bmp", 
-				"0111101110110001");
+				"0111101110110001",
+				DirecaoCalculo.DIREITA);
 		
 		AutomatoCelular ac = new AutomatoCelular(cifrador);
 		
