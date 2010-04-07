@@ -82,36 +82,199 @@ public class Transicao {
 	 * @param direcaoCalculo Direção do cálculo
 	 */
 	public static int getIndice(Reticulado reticulado, int linha, int coluna, int raio, DirecaoCalculo direcaoCalculo) {
+		if (direcaoCalculo == DirecaoCalculo.NORTE) {
+			return getIndiceNorte(reticulado, linha, coluna, raio);
+			
+		} else if (direcaoCalculo == DirecaoCalculo.SUL) {
+			return getIndiceSul(reticulado, linha, coluna, raio);
+			
+		} else if (direcaoCalculo == DirecaoCalculo.ESQUERDA) {
+			return getIndiceEsquerda(reticulado, linha, coluna, raio);
+			
+		} else if (direcaoCalculo == DirecaoCalculo.DIREITA) {
+			return getIndiceDireita(reticulado, linha, coluna, raio);
+		}
+		
+		return -1;
+	}
+	
+	/**
+	 * Obtém o índice do reticulado a partir do bit mais acima.
+	 * @param reticulado Reticulado a ser obtido o bit mais acima.
+	 * @param linha Linha inicial.
+	 * @param coluna Coluna inicial.
+	 * @param raio Raio da regra.
+	 * @return o índica a partir do reticulado fornecido.
+	 */
+	public static int getIndiceNorte(Reticulado reticulado, int linha, int coluna, int raio) {
 		int indice = 0;
 		
-		if (direcaoCalculo == DirecaoCalculo.CIMA) {
-			// Indice é montado a partir do bit mais acima da esquerda para direita
+		// Indice é montado a partir do bit mais acima da esquerda para direita
+		
+		// Cima
+		for (int i = 0; i < raio; i++, linha++) {
+			boolean bit = reticulado.get(linha, coluna);
 			
-			// Cima
-			for (int i = 0; i < raio; i++, linha++) {
-				boolean bit = reticulado.get(linha, coluna);
-				
-				indice = indice << 1;
-				indice |= Util.toInt(bit);
-			}
+			indice = indice << 1;
+			indice |= Util.toInt(bit);
+		}
 
-			// Linha central
-			coluna = coluna - raio;
-			for (int i = 0; i < raio * 2 + 1; i++, coluna++) {
-				boolean bit = reticulado.get(linha, coluna);
-				
-				indice = indice << 1;
-				indice |= Util.toInt(bit);
-			}
-			linha++;
-			coluna = coluna - raio - 1;
-			// Baixo
-			for (int i = 0; i < raio; i++, linha++) {
-				boolean bit = reticulado.get(linha, coluna);
-				
-				indice = indice << 1;
-				indice |= Util.toInt(bit);
-			}
+		// Linha central
+		coluna = coluna - raio;
+		for (int i = 0; i < raio * 2 + 1; i++, coluna++) {
+			boolean bit = reticulado.get(linha, coluna);
+			
+			indice = indice << 1;
+			indice |= Util.toInt(bit);
+		}
+		linha++;
+		coluna = coluna - raio - 1;
+		// Baixo
+		for (int i = 0; i < raio; i++, linha++) {
+			boolean bit = reticulado.get(linha, coluna);
+			
+			indice = indice << 1;
+			indice |= Util.toInt(bit);
+		}
+		
+		return indice;
+	}
+	
+	/**
+	 * Obtém o índice do reticulado a partir do bit mais baixo.
+	 * @param reticulado Reticulado a ser obtido o bit mais abaixo.
+	 * @param linha Linha inicial.
+	 * @param coluna Coluna inicial.
+	 * @param raio Raio da regra.
+	 * @return o índica a partir do reticulado fornecido.
+	 */
+	public static int getIndiceSul(Reticulado reticulado, int linha, int coluna, int raio) {
+		int indice = 0;
+		
+		//Ordem de montagem 1 até 5
+		// X 5 X
+		// 4 3 2
+		// X 1 X
+		
+		// Indice é montado a partir do bit mais abaixo da direita para esquerda
+		
+		// Baixo
+		for (int i = 0; i < raio; i++, linha--) {
+			boolean bit = reticulado.get(linha, coluna);
+			
+			indice = indice << 1;
+			indice |= Util.toInt(bit);
+		}
+
+		// Linha central
+		coluna = coluna + raio;
+		for (int i = 0; i < raio * 2 + 1; i++, coluna--) {
+			boolean bit = reticulado.get(linha, coluna);
+			
+			indice = indice << 1;
+			indice |= Util.toInt(bit);
+		}
+		
+		linha--; // linha central
+		coluna = coluna + raio + 1;
+		// cima
+		for (int i = 0; i < raio; i++, linha++) {
+			boolean bit = reticulado.get(linha, coluna);
+			
+			indice = indice << 1;
+			indice |= Util.toInt(bit);
+		}
+		
+		return indice;
+	}
+	
+	/**
+	 * Obtém o índice do reticulado a partir do bit da esquerda.
+	 * @param reticulado Reticulado a ser obtido o bit da esquerda.
+	 * @param linha Linha inicial.
+	 * @param coluna Coluna inicial.
+	 * @param raio Raio da regra.
+	 * @return o índica a partir do reticulado fornecido.
+	 */
+	public static int getIndiceEsquerda(Reticulado reticulado, int linha, int coluna, int raio) {
+		int indice = 0;
+		
+		//Ordem de montagem 1 até 5
+		// X 4 X
+		// 1 3 5
+		// X 2 X
+		
+		// Esquerda
+		for (int i = 0; i < raio; i++, coluna++) {
+			boolean bit = reticulado.get(linha, coluna);
+			
+			indice = indice << 1;
+			indice |= Util.toInt(bit);
+		}
+
+		// coluna central
+		linha = linha + raio;
+		for (int i = 0; i < raio * 2 + 1; i++, linha--) {
+			boolean bit = reticulado.get(linha, coluna);
+			
+			indice = indice << 1;
+			indice |= Util.toInt(bit);
+		}
+		
+		coluna++; // linha da direita
+		linha = linha + raio + 1;
+		// cima
+		for (int i = 0; i < raio; i++, coluna++) {
+			boolean bit = reticulado.get(linha, coluna);
+			
+			indice = indice << 1;
+			indice |= Util.toInt(bit);
+		}
+		
+		return indice;
+	}
+	
+	/**
+	 * Obtém o índice do reticulado a partir do bit da direita.
+	 * @param reticulado Reticulado a ser obtido o bit da direita.
+	 * @param linha Linha inicial.
+	 * @param coluna Coluna inicial.
+	 * @param raio Raio da regra.
+	 * @return o índica a partir do reticulado fornecido.
+	 */
+	public static int getIndiceDireita(Reticulado reticulado, int linha, int coluna, int raio) {
+		int indice = 0;
+		
+		//Ordem de montagem 1 até 5
+		// X 2 X
+		// 5 3 1
+		// X 4 X
+		
+		// Direita
+		for (int i = 0; i < raio; i++, coluna--) {
+			boolean bit = reticulado.get(linha, coluna);
+			
+			indice = indice << 1;
+			indice |= Util.toInt(bit);
+		}
+
+		// coluna central
+		linha = linha - raio;
+		for (int i = 0; i < raio * 2 + 1; i++, linha++) {
+			boolean bit = reticulado.get(linha, coluna);
+			
+			indice = indice << 1;
+			indice |= Util.toInt(bit);
+		}
+		
+		coluna--; // linha da direita
+		linha = linha - raio - 1;
+		// cima
+		for (int i = 0; i < raio; i++, coluna--) {
+			boolean bit = reticulado.get(linha, coluna);
+			
+			indice = indice << 1;
+			indice |= Util.toInt(bit);
 		}
 		
 		return indice;

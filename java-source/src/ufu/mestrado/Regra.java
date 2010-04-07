@@ -165,7 +165,7 @@ public class Regra {
 			}
 			
 			if (!linha.startsWith("#")) {
-				Regra regra = Regra.criarAPatirNucleo(linha, DirecaoCalculo.CIMA);
+				Regra regra = Regra.criarAPatirNucleo(linha, DirecaoCalculo.NORTE);
 				regras.add(regra);
 			}
 		}

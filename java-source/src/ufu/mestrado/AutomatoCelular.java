@@ -2,12 +2,13 @@ package ufu.mestrado;
 
 import ufu.mestrado.exception.AutomatoCelularException;
 
-public class AutomatoCelular implements AutomatoCelularListener {
-
+public class AutomatoCelular implements AutomatoCelularHandler {
+	
+	private Reticulado reticuladoInicial;
 	private Reticulado reticulado;
 	private Regra regraPrincipal;
 	private Regra regraContorno;
-	private AutomatoCelularListener listener;
+	private AutomatoCelularHandler handler;
 	
 	private boolean debug = false;
 	
@@ -18,10 +19,22 @@ public class AutomatoCelular implements AutomatoCelularListener {
 	 * @throws AutomatoCelularException
 	 */
 	public AutomatoCelular(Reticulado reticuladoInicial, Regra regra) throws AutomatoCelularException {
+		this.reticuladoInicial = reticuladoInicial;
 		this.reticulado = reticuladoInicial;
 		this.regraPrincipal = regra;
 		this.regraContorno = Regra.criarRegraContorno(regra);
-		this.listener = this;
+		this.handler = this;
+	}
+	
+	/**
+	 * Constrói uma nova instância do automato a partir do Handler fornecido.
+	 * @param handler Handler de automato celular.
+	 */
+	public AutomatoCelular(AutomatoCelularHandler handler) {
+		this.handler = handler;
+		this.reticulado = handler.getReticuladoInicial();
+		this.regraPrincipal = handler.getRegraPrincipal();
+		this.regraContorno = Regra.criarRegraContorno(this.regraPrincipal);
 	}
 	
 	/**
@@ -39,17 +52,55 @@ public class AutomatoCelular implements AutomatoCelularListener {
 		return preImagem;
 	}
 	
+	private int linhaInicial;
+	private int colunaInicial;
+	private int linha;
+	private int coluna;
+	
+	private boolean continuarCalculoPI(Regra regraPrincipal)  {
+		if (regraPrincipal.getDirecaoCalculo() == DirecaoCalculo.NORTE) {
+			return linha >= regraPrincipal.getRaio();
+		}
+		
+		return true;
+	}
+	
+	private void iterarCalculoPI(Regra regraPrincipal) {
+		int raio = regraPrincipal.getRaio();
+		
+		if (regraPrincipal.getDirecaoCalculo() == DirecaoCalculo.NORTE) {
+			if (coluna >= raio) {
+				coluna--;
+			} else {
+				linha--;
+				coluna = colunaInicial;
+			}
+		}
+		
+	}
+	
+	private void iniciarCalculoPI(Reticulado preImagem, Regra regraPrincipal) {
+		int raio = regraPrincipal.getRaio();
+		
+		if (regraPrincipal.getDirecaoCalculo() == DirecaoCalculo.NORTE) {
+			linhaInicial = preImagem.getLinhas() - raio - 1;
+			colunaInicial = preImagem.getColunas() - raio - 1;
+			linha = linhaInicial;
+			coluna = colunaInicial;
+		}
+	}
+	
 	/**
 	 * Realiza o cálculo da pré-imagem.
 	 * @return O reticulado da pré-imagem calculada.
 	 */
 	public Reticulado calcularPreImagem() {
-		listener.antesCalcularPreImagem();
+		handler.antesCalcularPreImagem();
 		
 		// Cria o reticulado da préimagem, e já calcula os bits da borda.
 		Reticulado preImagem = criarReticuladoPreImagem(reticulado);
 		
-		listener.aposCriarReticuladoPreImagem(preImagem);
+		handler.aposCriarReticuladoPreImagem(preImagem);
 		
 		int raio = regraPrincipal.getRaio();
 		
@@ -58,7 +109,7 @@ public class AutomatoCelular implements AutomatoCelularListener {
 			for (int coluna = preImagem.getColunas() - raio - 1; coluna >= raio; coluna--) {
 				int indices[] = Transicao.getIndices(preImagem, linha, coluna, raio, regraPrincipal.getDirecaoCalculo());
 
-				listener.aposBuscaTransicoes(indices);
+				handler.aposBuscaTransicoes(indices);
 				
 				int indice = 0;
 				
@@ -73,19 +124,20 @@ public class AutomatoCelular implements AutomatoCelularListener {
 					indice = 1;
 				}
 				
-				listener.aposTransicaoEscolhida(indices[indice]);
-				listener.aposGetBitReticulado(reticulado, linhaReticulado, coluna);
+				handler.aposTransicaoEscolhida(indices[indice]);
+				handler.aposGetBitReticulado(reticulado, linhaReticulado, coluna);
 				
 				preImagem.set(linha, coluna, bit);
 				
-				listener.aposSetBitPreImagem(preImagem, linha, coluna);
+				handler.aposSetBitReticulado(preImagem, linha, coluna, true);
+				//handler.aposSetBitPreImagem(preImagem, linha, coluna);
 			}
 		}
 		
 		// Remove o deslocamento da pré-imagem.
 		preImagem.removerDeslocamento();
 		
-		listener.aposCalcularPreImagem(preImagem);
+		handler.aposCalcularPreImagem(preImagem);
 		
 		reticulado = preImagem;
 		
@@ -125,6 +177,7 @@ public class AutomatoCelular implements AutomatoCelularListener {
 				Transicao transicao = regra.getTransicao(indice);
 				
 				reticulado.set(linha + raio, coluna, transicao.getValor());
+				handler.aposSetBitReticulado(reticulado, linha + raio, coluna, false);
 			}
 		}
 		
@@ -148,7 +201,7 @@ public class AutomatoCelular implements AutomatoCelularListener {
 		Reticulado preImagem = aplicarDeslocamento(new Reticulado(linhas, colunas)); 
 			//new Reticulado(new boolean[linhas][colunas]);
 		
-		listener.antesCriarReticuladoPreImagem(preImagem);
+		handler.antesCriarReticuladoPreImagem(preImagem);
 		
 		int deslocamento = raio * 4; 
 		
@@ -161,7 +214,7 @@ public class AutomatoCelular implements AutomatoCelularListener {
 					
 					boolean bit = reticulado.get(linha, coluna);
 					
-					listener.aposGetBitReticulado(reticulado, linha, coluna);
+					handler.aposGetBitReticulado(reticulado, linha, coluna);
 					
 					int indice = Util.toInt(bit) << deslocamento;
 					
@@ -169,7 +222,8 @@ public class AutomatoCelular implements AutomatoCelularListener {
 					
 					preImagem.set(linha - raio, coluna, transicao.getValor());
 					
-					listener.aposSetBitPreImagem(preImagem, linha, coluna);
+					handler.aposSetBitReticulado(preImagem, linha, coluna, true);
+					//handler.aposSetBitPreImagem(preImagem, linha, coluna);
 				}
 			}
 		}
@@ -209,12 +263,12 @@ public class AutomatoCelular implements AutomatoCelularListener {
 		//return 1;
 	}
 	
-	public AutomatoCelularListener getListener() {
-		return listener;
+	public AutomatoCelularHandler getHandler() {
+		return handler;
 	}
 
-	public void setListener(AutomatoCelularListener listener) {
-		this.listener = listener;
+	public void setHandler(AutomatoCelularHandler listener) {
+		this.handler = listener;
 	}
 	
 	public Reticulado getReticulado() {
@@ -261,12 +315,12 @@ public class AutomatoCelular implements AutomatoCelularListener {
 	}
 
 	@Override
-	public void aposSetBitReticulado(int linha, int coluna, boolean valor) {
+	public void aposSetBitReticulado(Reticulado reticulado, int linha, int coluna, boolean preImagem) {
 	}
 
-	@Override
+	/*@Override
 	public void aposSetBitPreImagem(Reticulado preImagem, int linha, int coluna) {
-	}
+	}*/
 
 	@Override
 	public void antesCriarReticuladoPreImagem(Reticulado preImagem) {
@@ -292,7 +346,7 @@ public class AutomatoCelular implements AutomatoCelularListener {
 		
 		Reticulado reticulado = new Reticulado(ret);
 		
-		Regra regra = Regra.criar("01101000111101001001011100001011", DirecaoCalculo.CIMA);
+		Regra regra = Regra.criar("01101000111101001001011100001011", DirecaoCalculo.NORTE);
 		
 		AutomatoCelular ac = new AutomatoCelular(reticulado, regra);
 		
@@ -305,5 +359,15 @@ public class AutomatoCelular implements AutomatoCelularListener {
 		ac.evolouir();
 		ac.evolouir();
 		System.out.println(ac.evolouir());
+	}
+
+	@Override
+	public Regra getRegraPrincipal() {
+		return regraPrincipal;
+	}
+
+	@Override
+	public Reticulado getReticuladoInicial() {
+		return reticuladoInicial;
 	}
 }

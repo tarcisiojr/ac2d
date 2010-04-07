@@ -1,8 +1,8 @@
 package ufu.mestrado;
 
 public enum DirecaoCalculo {
-	CIMA,
-	BAIXO,
+	NORTE,
+	SUL,
 	ESQUERDA,
 	DIREITA
 }

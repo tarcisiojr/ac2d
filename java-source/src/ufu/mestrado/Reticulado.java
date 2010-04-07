@@ -16,6 +16,7 @@ import java.util.Random;
  *
  */
 public class Reticulado implements Cloneable {
+	private Reticulavel reticulavel;
 	private boolean[][] reticulado;
 	private int linhas; 
 	private int colunas;
@@ -84,6 +85,23 @@ public class Reticulado implements Cloneable {
 		this.colunas = colunas;
 		this.numeroZeros = linhas * colunas;
 	}
+	
+	public Reticulado(Reticulavel reticulavel) {
+		this.reticulavel = reticulavel;
+		this.linhas = reticulavel.getLinhas();
+		this.colunas = reticulavel.getColunas();
+		
+		this.numeroZeros = 0;
+		this.reticulado = new boolean[linhas][colunas];
+		
+		for (int i = 0; i < linhas; i++) {
+			for (int j = 0; j < colunas; j++) {
+				boolean valor = reticulavel.get(i, j);
+				this.reticulado[i][j] = valor;
+				this.numeroZeros += valor ? 0 : 1;
+			}
+		}
+	}
 
 	/**
 	 * Conta a quantidade de zeros do reticulado.
@@ -127,7 +145,14 @@ public class Reticulado implements Cloneable {
 		linha = getIndiceLinha(linha);
 		coluna = getIndiceColuna(coluna);
 		
-		return reticulado[linha][coluna];
+		boolean valor = reticulado[linha][coluna]; 
+		
+		if (reticulavel != null && reticulavel.get(linha, coluna) != valor) {
+			throw new RuntimeException("O valor do reticulado está diferente do valor do reticulavel: reticulado[" 
+					+ linha + ", " + coluna + "] = " + valor);
+		}
+		
+		return valor;
 	}
 	
 	/**
@@ -147,6 +172,10 @@ public class Reticulado implements Cloneable {
 		}
 		
 		reticulado[linha][coluna] = valor;
+		
+		if (reticulavel != null) {
+			reticulavel.set(linha, coluna, valor);
+		}
 	}
 	
 	public int getIndiceLinha(int linha) {
@@ -205,7 +234,7 @@ public class Reticulado implements Cloneable {
 	}
 	
 	@Override
-	protected Reticulado clone() {
+	public Reticulado clone() {
 		try {
 			Reticulado clone = (Reticulado) super.clone();
 			

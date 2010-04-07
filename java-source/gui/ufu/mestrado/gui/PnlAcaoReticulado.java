@@ -13,7 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.filechooser.FileFilter;
 
 import ufu.mestrado.AutomatoCelular;
-import ufu.mestrado.AutomatoCelularListener;
+import ufu.mestrado.AutomatoCelularHandler;
 import ufu.mestrado.DirecaoCalculo;
 import ufu.mestrado.Regra;
 import ufu.mestrado.Reticulado;
@@ -26,11 +26,11 @@ import ufu.mestrado.gui.util.Configuracoes;
 import ufu.mestrado.gui.util.Logger;
 import ufu.mestrado.gui.util.Mensagem;
 
-public class PnlAcaoReticulado extends PnlAcaoReticuladoUI implements AutomatoCelularListener {
+public class PnlAcaoReticulado extends PnlAcaoReticuladoUI implements AutomatoCelularHandler {
 	private static final long serialVersionUID = 1L;
 	private static final Logger logger = Logger.getClass(PnlAcaoReticulado.class);
 	
-	private static final DirecaoCalculo DIRECAO_CALCULO = DirecaoCalculo.CIMA;
+	private static final DirecaoCalculo DIRECAO_CALCULO = DirecaoCalculo.NORTE;
 
 	private Configuracoes configuracoes;
 	
@@ -221,7 +221,7 @@ public class PnlAcaoReticulado extends PnlAcaoReticuladoUI implements AutomatoCe
 			}
 			
 			automatoCelular = new AutomatoCelular(reticulado, regra);
-			automatoCelular.setListener(this);
+			automatoCelular.setHandler(this);
 		} catch (AutomatoCelularException e) {
 			Mensagem.error("Erro ao criar o automato celular: " + e.getMessage());
 			logger.error("Erro ao criar o automato celular!", e);
@@ -288,12 +288,12 @@ public class PnlAcaoReticulado extends PnlAcaoReticuladoUI implements AutomatoCe
 		corAtual = Color.LIGHT_GRAY;
 	}
 
-	@Override
-	public void aposSetBitReticulado(int linha, int coluna, boolean valor) {
-	}
+/*	@Override
+	public void aposSetBitReticulado(Reticulado reticulado, int linha, int coluna) {
+	}*/
 
 	@Override
-	public void aposSetBitPreImagem(Reticulado preImagem, int linha, int coluna) {
+	public void aposSetBitReticulado(Reticulado preImagem, int linha, int coluna, boolean isPreImagem) {
 		boolean valor = preImagem.get(linha, coluna);
 		
 		LblBitUI lblBit = getPnlPreImagem().getLblBit(preImagem.getIndiceLinha(linha), preImagem.getIndiceColuna(coluna));
@@ -332,5 +332,15 @@ public class PnlAcaoReticulado extends PnlAcaoReticuladoUI implements AutomatoCe
 		
 		panel.add(new PnlTransicaoUI(transicao, regraContorno.getTransicao(indice)));
 		panel.updateUI();
+	}
+
+	@Override
+	public Regra getRegraPrincipal() {
+		return null;
+	}
+
+	@Override
+	public Reticulado getReticuladoInicial() {
+		return null;
 	} 
 }

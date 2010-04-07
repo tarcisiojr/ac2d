@@ -1,7 +1,13 @@
 package ufu.mestrado;
 
-public interface AutomatoCelularListener {
+public interface AutomatoCelularHandler {
 
+	public Reticulado getReticuladoInicial();
+	
+	public Regra getRegraPrincipal();
+	
+	//public Regra getRegraContorno();
+	
 	public void antesCalcularPreImagem();
 	
 	public void aposCalcularPreImagem(Reticulado preImagem);
@@ -14,9 +20,9 @@ public interface AutomatoCelularListener {
 	
 	public void antesCriarReticuladoPreImagem(Reticulado preImagem);
 	
-	public void aposSetBitReticulado(int linha, int coluna, boolean valor);
+	public void aposSetBitReticulado(Reticulado reticulado, int linha, int coluna, boolean preImagem);
 	
 	public void aposGetBitReticulado(Reticulado reticulado, int linha, int coluna);
 	
-	public void aposSetBitPreImagem(Reticulado preImagem, int linha, int coluna);
+	//public void aposSetBitPreImagem(Reticulado preImagem, int linha, int coluna);
 }

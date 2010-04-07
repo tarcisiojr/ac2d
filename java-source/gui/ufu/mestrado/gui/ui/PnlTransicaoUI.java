@@ -33,7 +33,7 @@ public class PnlTransicaoUI extends JPanel {
 		this.transicaoContorno = transicaoContorno;
 		
 		if (transicao == null)
-			transicao = new Transicao(1, 2, DirecaoCalculo.CIMA, false);
+			transicao = new Transicao(1, 2, DirecaoCalculo.NORTE, false);
 		
 		this.transicao = transicao;
 		
