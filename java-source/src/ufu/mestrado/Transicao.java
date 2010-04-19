@@ -72,6 +72,17 @@ public class Transicao {
 		return new int[] {indice - (1 << deslocamento), indice};
 	}
 	
+	public static int getIndice0(Reticulado reticulado, int linha, int coluna, int raio, DirecaoCalculo direcaoCalculo) {
+		
+		int indice = getIndice(reticulado, linha, coluna, raio, direcaoCalculo);
+		
+		int deslocamento = (raio * 4);
+		
+		indice = indice | (1 << deslocamento);
+		
+		return indice - (1 << deslocamento);
+	}
+	
 	/**
 	 * Obtém o índice parcial a partir do reticulado. A linha e coluna fornecidos 
 	 * é referente ao bit que está sendo calculado.

@@ -11,40 +11,18 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import javax.imageio.ImageIO;
 
+import ufu.mestrado.Cronometro;
+
 public class TesteCifragemAES {
 	/**
-	 * Turns array of bytes into string
-	 * @param buf Array of bytes to convert to hex string
-	 * @return Generated hex string
-	 *//*
-	public static String asHex(byte buf[]) {
-		StringBuffer strbuf = new StringBuffer(buf.length * 2);
-		int i;
-
-		for (i = 0; i < buf.length; i++) {
-			if (((int) buf[i] & 0xff) < 0x10)
-				strbuf.append("0");
-
-			strbuf.append(Long.toString((int) buf[i] & 0xff, 16));
-		}
-
-		return strbuf.toString();
-	}*/
-
-	public static void main(String[] args) throws Exception {
-		BufferedImage buffer =  ImageIO.read(new File("E:/junior/Desktop/mestrado/imagem.bmp"));
+	 * Cifra a imagem fornecida e gera uma imagem cifrada de saída.
+	 * @param imagem Imagem a ser cifrada.
+	 * @param operacao Operação de cifragem.
+	 * @param pastaSaida Pasta onde será salvo o arquivo cifrado.
+	 */
+	private static void cifrar(int altura, int largura, byte imagem[], String operacao, String pastaSaida, String nomeArquivo) throws Exception {
+		Cronometro.iniciar();
 		
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		
-		int height = buffer.getHeight();
-		int width = buffer.getWidth();
-		
-		for (int i = 0; i < buffer.getHeight(); i++) {
-			for (int j = 0; j < buffer.getWidth(); j++) {
-				baos.write(buffer.getRGB(j, i));
-			}
-		}
-
 		KeyGenerator kgen = KeyGenerator.getInstance("AES");
 		kgen.init(128);
 
@@ -55,32 +33,87 @@ public class TesteCifragemAES {
 		SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
 
 		// Instantiate the cipher
-		Cipher cipher = Cipher.getInstance("AES");
-
+		Cipher cipher = Cipher.getInstance(operacao);
+		
 		cipher.init(Cipher.ENCRYPT_MODE, skeySpec);
 
-		byte[] encrypted = cipher.doFinal(baos.toByteArray());
+		byte[] encrypted = cipher.doFinal(imagem);
+		
+		Cronometro.parar("Cifragem '" + nomeArquivo + "' " + operacao);
+		
+		gerarImagem(largura, altura, encrypted, pastaSaida + operacao.replaceAll("/", "_") + "_" + nomeArquivo);
+		
+	}
 
-		buffer = new BufferedImage(
-				width, 
-				height, 
+	/**
+	 * Gera a imagem (BMP) fornecida em um arquivo físico.
+	 * @param imagem Imagem a ser gerada.
+	 * @param nomeArquivoSaida Nome do arquivo de saída.
+	 * @throws Exception
+	 */
+	private static void gerarImagem(int largura, int altura, byte imagem[], String nomeArquivoSaida) throws Exception {
+		BufferedImage buffer = new BufferedImage(
+				largura, 
+				altura, 
 				BufferedImage.TYPE_INT_RGB);
 		
-		ByteArrayInputStream bais = new ByteArrayInputStream(encrypted);
+		ByteArrayInputStream bais = new ByteArrayInputStream(imagem);
 		
-		for (int i = 0; i < height; i++) {
-			for (int j = 0; j < width; j++) {
+		for (int i = 0; i < altura; i++) {
+			for (int j = 0; j < largura; j++) {
 				buffer.setRGB(j, i, bais.read());
 			}
 		}
 		
-		ImageIO.write(buffer, "BMP", new File("E:/junior/Desktop/mestrado/imagem_cifrada_aes.bmp"));
+		ImageIO.write(buffer, "BMP", new File(nomeArquivoSaida));
+	}
+
+
+	public static void main(String[] args) throws Exception {
+		final String pastaSaida = "E:/junior/Desktop/mestrado/testes_aes/";
 		
-		/*
-		cipher.init(Cipher.DECRYPT_MODE, skeySpec);
-		byte[] original = cipher.doFinal(encrypted);
-		String originalString = new String(original);
-		System.out.println("Original string: " + originalString + " " + asHex(original));
-		*/
+		final String imagens[] = {"mulher.bmp", "tux.bmp", "quadrado.bmp", "circulo.bmp", "triangulo.bmp"};
+		
+		
+		for (String arquivoImagem : imagens) {
+			
+			BufferedImage buffer =  ImageIO.read(new File(pastaSaida + arquivoImagem));
+			
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			
+			final int height = buffer.getHeight();
+			final int width = buffer.getWidth();
+			
+			for (int i = 0; i < buffer.getHeight(); i++) {
+				for (int j = 0; j < buffer.getWidth(); j++) {
+					baos.write(buffer.getRGB(j, i));
+				}
+			}
+			
+			final byte[] imagem = baos.toByteArray();
+		
+			//Default
+			cifrar(height, width, imagem, "AES", pastaSaida, arquivoImagem);
+			
+			//ECB
+			cifrar(height, width, imagem, "AES/ECB/NoPadding", pastaSaida, arquivoImagem);
+			cifrar(height, width, imagem, "AES/ECB/PKCS5Padding", pastaSaida, arquivoImagem);
+		
+			//CBC
+			cifrar(height, width, imagem, "AES/CBC/NoPadding", pastaSaida, arquivoImagem);
+			cifrar(height, width, imagem, "AES/CBC/PKCS5Padding", pastaSaida, arquivoImagem);
+			
+			//CFB
+			cifrar(height, width, imagem, "AES/CFB/NoPadding", pastaSaida, arquivoImagem);
+			cifrar(height, width, imagem, "AES/CFB/PKCS5Padding", pastaSaida, arquivoImagem);
+		
+			//OFB
+			cifrar(height, width, imagem, "AES/OFB/NoPadding", pastaSaida, arquivoImagem);
+			cifrar(height, width, imagem, "AES/OFB/PKCS5Padding", pastaSaida, arquivoImagem);
+			
+			//PCBC
+			cifrar(height, width, imagem, "AES/PCBC/NoPadding", pastaSaida, arquivoImagem);
+			cifrar(height, width, imagem, "AES/PCBC/PKCS5Padding", pastaSaida, arquivoImagem);
+		}
 	}
 }

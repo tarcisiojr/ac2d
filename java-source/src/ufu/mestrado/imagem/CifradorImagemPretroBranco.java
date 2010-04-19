@@ -7,6 +7,7 @@ import java.util.Arrays;
 
 import javax.imageio.ImageIO;
 
+import ufu.mestrado.AutomatoCelular;
 import ufu.mestrado.AutomatoCelularHandler;
 import ufu.mestrado.DirecaoCalculo;
 import ufu.mestrado.Regra;
@@ -29,6 +30,11 @@ public class CifradorImagemPretroBranco implements AutomatoCelularHandler {
 	
 	/** Regra utilizada na cifragem. */
 	private Regra regra;
+	
+	/**
+	 * AC a qual o cifrador pertence.
+	 */
+	private AutomatoCelular automatoCelular;
 	
 	/**
 	 * Cria uma nova instância de um cifrador de imagens em preto em branco.
@@ -54,17 +60,7 @@ public class CifradorImagemPretroBranco implements AutomatoCelularHandler {
 		buffer =  ImageIO.read(new File(caminhoImagem));
 		reticuladoInicial = new Reticulado(buffer.getHeight(), buffer.getWidth());
 		
-		final int PRETO = Color.BLACK.getRGB();
-
-		for (int i = 0; i < buffer.getHeight(); i++) {
-			
-			for (int j = 0; j < buffer.getWidth(); j++) {
-				
-				int rgb = buffer.getRGB(j, i);
-				reticuladoInicial.set(i, j, rgb == PRETO);
-			}
-		}
-		
+		carregarImagem(false, reticuladoInicial);
 		
 		return reticuladoInicial;
 	}
@@ -76,6 +72,8 @@ public class CifradorImagemPretroBranco implements AutomatoCelularHandler {
 	 * @throws Exception
 	 */
 	public void criarImagem(String caminho) throws Exception {
+		carregarImagem(true, automatoCelular.getReticulado());
+		
 		String tipo = "BMP";
 		int i = caminho.lastIndexOf('.');
 		if (i != -1 && (i + 1) == caminho.length()) {
@@ -83,6 +81,27 @@ public class CifradorImagemPretroBranco implements AutomatoCelularHandler {
 		}
 		
 		ImageIO.write(buffer, tipo.toUpperCase(), new File(caminho));
+	}
+	
+	/**
+	 * Carrega o reticulado na imagem.
+	 */
+	private void carregarImagem(boolean set, Reticulado reticulado) {
+		
+		final int PRETO = Color.BLACK.getRGB();
+
+		for (int i = 0; i < buffer.getHeight(); i++) {
+			
+			for (int j = 0; j < buffer.getWidth(); j++) {
+				
+				if (set) {
+					buffer.setRGB(j, i, reticulado.get(i, j) ? PRETO : BRANCO);
+				} else {
+					int rgb = buffer.getRGB(j, i);
+					reticulado.set(i, j, rgb == PRETO);
+				}
+			}
+		}
 	}
 	
 	
@@ -114,14 +133,14 @@ public class CifradorImagemPretroBranco implements AutomatoCelularHandler {
 
 	@Override
 	public void aposSetBitReticulado(Reticulado reticulado, int linha, int coluna, boolean preImagem) {
-		if (preImagem) if (DEBUG) System.out.println(" [linha, coluna]=[" + linha + ", " + coluna + "]");
+		/*if (preImagem) if (DEBUG) System.out.println(" [linha, coluna]=[" + linha + ", " + coluna + "]");
 		
 		boolean valor = reticulado.get(linha, coluna);
 		
 		buffer.setRGB(
 				reticulado.getIndiceColuna(coluna),
 				reticulado.getIndiceLinha(linha),
-				valor ? PRETO : BRANCO);
+				valor ? PRETO : BRANCO);*/
 	}
 
 	@Override
@@ -137,6 +156,11 @@ public class CifradorImagemPretroBranco implements AutomatoCelularHandler {
 	@Override
 	public Reticulado getReticuladoInicial() {
 		return reticuladoInicial;
+	}
+
+	@Override
+	public void setAutomatoCelular(AutomatoCelular ac) {
+		automatoCelular = ac;
 	}
 
 }

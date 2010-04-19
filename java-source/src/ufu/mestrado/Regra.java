@@ -3,21 +3,19 @@ package ufu.mestrado;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 public class Regra {
 
-	private Map<Integer, Transicao> transicoes;
+	//private Map<Integer, Transicao> transicoes;
+	private Transicao transicoes[];
 	
 	private int raio;
 	private DirecaoCalculo direcaoCalculo;
 	private String nucleo;
 
 	public Regra(int raio, DirecaoCalculo direcaoCalculo) {
-		this.transicoes = new HashMap<Integer, Transicao>();
+		this.transicoes = new Transicao[(int) Math.pow(2, raio * 4 + 1)];//new HashMap<Integer, Transicao>();
 		this.raio = raio;
 		this.direcaoCalculo = direcaoCalculo;
 	}
@@ -35,19 +33,22 @@ public class Regra {
 	 * @return Número de transições adicionadas.
 	 */
 	public int getTotalTransicoes() {
-		return transicoes.size();
+//		return transicoes.size();
+		return transicoes.length;
 	}
 	
 	public Transicao getTransicao(int indice) {
-		return transicoes.get(indice);
+//		return transicoes.get(indice);
+		return transicoes[indice];
 	}
 	
-	public Map<Integer, Transicao> getTransicoes() {
+	/*public Map<Integer, Transicao> getTransicoes() {
 		return transicoes;
-	}
+	}*/
 	
 	public void adicionarTransicao(Transicao transicao) {
-		transicoes.put(transicao.getIndice(), transicao);
+		//transicoes.put(transicao.getIndice(), transicao);
+		transicoes[transicao.getIndice()] = transicao;
 	}
 	
 	/**
@@ -109,7 +110,19 @@ public class Regra {
 		boolean valor = priTransicao.getValor();
 		int raio = regraPrincipal.getRaio();
 		
-		for (Entry<Integer, Transicao> entry : regraPrincipal.getTransicoes().entrySet()) {
+		for (Transicao t : regraPrincipal.transicoes) {
+			boolean novoValor = valor;
+			
+			if (!t.getPrimeiroBit(raio)) {
+				novoValor = !valor;
+			}
+			
+			Transicao transicao = new Transicao(t.getIndice(), raio, regraPrincipal.getDirecaoCalculo(), novoValor);
+			
+			regraContorno.adicionarTransicao(transicao);
+		}
+		
+		/*for (Entry<Integer, Transicao> entry : regraPrincipal.getTransicoes().entrySet()) {
 			
 			boolean novoValor = valor;
 			
@@ -120,7 +133,7 @@ public class Regra {
 			Transicao transicao = new Transicao(entry.getKey(), raio, regraPrincipal.getDirecaoCalculo(), novoValor);
 			
 			regraContorno.adicionarTransicao(transicao);
-		}
+		}*/
 		
 		return regraContorno;
 	}

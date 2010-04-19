@@ -6,6 +6,7 @@ import java.io.File;
 
 import javax.imageio.ImageIO;
 
+import ufu.mestrado.AutomatoCelular;
 import ufu.mestrado.AutomatoCelularHandler;
 import ufu.mestrado.DirecaoCalculo;
 import ufu.mestrado.Regra;
@@ -145,5 +146,9 @@ public class CifradorImagemComplementoBits implements AutomatoCelularHandler {
 		System.out.println(i + "--------------" + Integer.toHexString(i).toUpperCase());
 		i = i ^ RGB_MEIO;
 		System.out.println(i);
+	}
+
+	@Override
+	public void setAutomatoCelular(AutomatoCelular ac) {
 	}
 }

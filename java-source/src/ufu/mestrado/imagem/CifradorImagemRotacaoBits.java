@@ -6,6 +6,7 @@ import java.io.File;
 
 import javax.imageio.ImageIO;
 
+import ufu.mestrado.AutomatoCelular;
 import ufu.mestrado.AutomatoCelularHandler;
 import ufu.mestrado.DirecaoCalculo;
 import ufu.mestrado.Regra;
@@ -176,5 +177,9 @@ public class CifradorImagemRotacaoBits implements AutomatoCelularHandler {
 			valor = BitsUtil.rotacionar(valor, 24, 5, BitsUtil.DIREITA);
 		}
 		System.out.println(valor);
+	}
+
+	@Override
+	public void setAutomatoCelular(AutomatoCelular ac) {
 	}
 }

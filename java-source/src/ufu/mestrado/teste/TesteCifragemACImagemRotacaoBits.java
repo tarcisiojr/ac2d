@@ -16,7 +16,7 @@ public class TesteCifragemACImagemRotacaoBits {
 		
 		
 		Cronometro.iniciar();
-		ac.calcularPreImage(10);
+		ac.calcularPreImage(20);
 		Cronometro.parar("Cifragem..");
 		
 		cifrador.criarImagem("E:/junior/Desktop/mestrado/imagem_cifrada2.bmp");
@@ -31,7 +31,7 @@ public class TesteCifragemACImagemRotacaoBits {
 		ac = new AutomatoCelular(cifrador);
 		
 		Cronometro.iniciar();
-		ac.evoluir(10);
+		ac.evoluir(20);
 		Cronometro.parar("Decifragem");
 		
 		cifrador.criarImagem("E:/junior/Desktop/mestrado/imagem_decifrada2.bmp");

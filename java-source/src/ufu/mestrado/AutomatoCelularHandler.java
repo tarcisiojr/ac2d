@@ -25,4 +25,6 @@ public interface AutomatoCelularHandler {
 	public void aposGetBitReticulado(Reticulado reticulado, int linha, int coluna);
 	
 	//public void aposSetBitPreImagem(Reticulado preImagem, int linha, int coluna);
+	
+	public void setAutomatoCelular(AutomatoCelular ac);
 }
