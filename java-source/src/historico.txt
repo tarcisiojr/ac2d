@@ -1,6 +1,0 @@
-07-dez-09
-Alterado o método de gerar os núcloes das regras aleatórimente.
-Alteração do cálculo de entropia da regra, o valor retornado agora é normalizado.
-
-05-dez-09
-Adicionado novo método de linearizar a regras.
