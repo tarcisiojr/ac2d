@@ -336,43 +336,6 @@ public class AutomatoCelular implements AutomatoCelularHandler {
 		
 		int deslocamento = raio * 4; 
 		
-		/*
-		int linhaInicio = 0;
-		int linhaFim = linhas - 1;
-		
-		for (int coluna = 0; coluna < colunas; coluna++) {
-			int linha = linhaInicio;
-			boolean bit = reticulado.get(linha, coluna);
-			int indice = Util.toInt(bit) << deslocamento;
-			Transicao transicao = regraContorno.getTransicao(indice);
-			preImagem.set(linha - raio, coluna, transicao.getValor());
-			
-			linha = linhaFim;
-			bit = reticulado.get(linha, coluna);
-			indice = Util.toInt(bit) << deslocamento;
-			transicao = regraContorno.getTransicao(indice);
-			preImagem.set(linha - raio, coluna, transicao.getValor());
-		}
-		
-		int colunaInicio = 0;
-		int colunaFim = colunas - 1;
-		
-		for (int linha = 0; linha < linhas; linha++) {
-			int coluna = colunaInicio;
-			boolean bit = reticulado.get(linha, coluna);
-			int indice = Util.toInt(bit) << deslocamento;
-			Transicao transicao = regraContorno.getTransicao(indice);
-			preImagem.set(linha - raio, coluna, transicao.getValor());
-			
-			
-			coluna = colunaFim;
-			bit = reticulado.get(linha, coluna);
-			indice = Util.toInt(bit) << deslocamento;
-			transicao = regraContorno.getTransicao(indice);
-			preImagem.set(linha - raio, coluna, transicao.getValor());
-
-		}
-		*/
 		for (int coluna = 0; coluna < colunas; coluna++) {
 			for (int linha = 0; linha < linhas; linha++) {
 				// Calcula os bits de contorno da primeira e da ultima coluna

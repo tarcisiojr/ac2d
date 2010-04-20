@@ -17,7 +17,7 @@ public class TesteCifragemACImagemPretoBranco {
 	 * @param decifrar Indica se é para realizar o processo de decifragem.
 	 * @throws Exception
 	 */
-	private static void cifrar(int qtdPI, String chave, DirecaoCalculo direcao, String pastaSaida, String nomeArquivo, boolean decifrar) throws Exception {
+	public static AutomatoCelular cifrar(int qtdPI, String chave, DirecaoCalculo direcao, String pastaSaida, String nomeArquivo, boolean decifrar) throws Exception {
 		CifradorImagemPretroBranco cifrador = new CifradorImagemPretroBranco(
 				pastaSaida + nomeArquivo, chave, direcao);
 		
@@ -36,6 +36,8 @@ public class TesteCifragemACImagemPretoBranco {
 			
 			cifrador.criarImagem(pastaSaida + "decifrada_pi" + qtdPI + "_" + direcao + "_" + nomeArquivo);
 		}
+		
+		return ac;
 	}
 
 	public static void main(String[] args) throws Exception {
@@ -43,27 +45,5 @@ public class TesteCifragemACImagemPretoBranco {
 		cifrar(10, "0111101110110001", DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/", "mulher.bmp", true);
 		//cifrar(10, "0111101110110001", DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/", "quadrado.bmp", true);
 		//cifrar(10, "0111101110110001", DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/", "triangulo.bmp", true);
-		
-		/*
-		CifradorImagemPretroBranco cifrador = new CifradorImagemPretroBranco(
-				"E:/junior/Desktop/mestrado/imagem.bmp", 
-				"0111101110110001",
-				DirecaoCalculo.NORTE);
-		
-		AutomatoCelular ac = new AutomatoCelular(cifrador);
-		
-		
-		Cronometro.iniciar();
-		ac.calcularPreImage(10);
-		Cronometro.parar("Cifragem..");
-		
-		cifrador.criarImagem("E:/junior/Desktop/mestrado/imagem_cifrada.bmp");
-		
-		Cronometro.iniciar();
-		ac.evoluir(10);
-		Cronometro.parar("Decifragem");
-		
-		cifrador.criarImagem("E:/junior/Desktop/mestrado/imagem_decifrada.bmp");
-		*/
 	}
 }
