@@ -8,10 +8,9 @@ import java.util.List;
 public class Regra {
 
 	//private Map<Integer, Transicao> transicoes;
-	private Transicao transicoes[];
-	
-	private int raio;
-	private int direcaoCalculo;
+	public Transicao transicoes[];
+	public int raio;
+	public int direcaoCalculo;
 	private String nucleo;
 
 	public Regra(int raio, int direcaoCalculo) {
@@ -24,9 +23,9 @@ public class Regra {
 	 * Retorna o raio da regra.
 	 * @return O raio da regra.
 	 */
-	public int getRaio() {
+	/*public int getRaio() {
 		return raio;
-	}
+	}*/
 
 	/**
 	 * O total de transições adicionadas à regra.
@@ -37,10 +36,10 @@ public class Regra {
 		return transicoes.length;
 	}
 	
-	public Transicao getTransicao(int indice) {
+	/*public Transicao getTransicao(int indice) {
 //		return transicoes.get(indice);
 		return transicoes[indice];
-	}
+	}*/
 	
 	/*public Map<Integer, Transicao> getTransicoes() {
 		return transicoes;
@@ -48,7 +47,7 @@ public class Regra {
 	
 	public void adicionarTransicao(Transicao transicao) {
 		//transicoes.put(transicao.getIndice(), transicao);
-		transicoes[transicao.getIndice()] = transicao;
+		transicoes[transicao.indice] = transicao;
 	}
 	
 	/**
@@ -90,7 +89,7 @@ public class Regra {
 		Regra regra = new Regra(raio, direcaoCalculo);
 		
 		for (int i = 0; i < valores.length; i++) {
-			Transicao t = new Transicao(i, regra.getRaio(), direcaoCalculo, valores[i]);
+			Transicao t = new Transicao(i, regra.raio, direcaoCalculo, valores[i]);
 			regra.adicionarTransicao(t);
 		}
 		
@@ -103,12 +102,12 @@ public class Regra {
 	 * @return Regra de contorno.
 	 */
 	public static Regra criarRegraContorno(Regra regraPrincipal) {
-		Regra regraContorno = new Regra(regraPrincipal.getRaio(), regraPrincipal.getDirecaoCalculo());
+		Regra regraContorno = new Regra(regraPrincipal.raio, regraPrincipal.direcaoCalculo);
 		
-		Transicao priTransicao = regraPrincipal.getTransicao(0);
+		Transicao priTransicao = regraPrincipal.transicoes[0];
 		
-		boolean valor = priTransicao.getValor();
-		int raio = regraPrincipal.getRaio();
+		boolean valor = priTransicao.valor;
+		int raio = regraPrincipal.raio;
 		
 		for (Transicao t : regraPrincipal.transicoes) {
 			boolean novoValor = valor;
@@ -117,7 +116,7 @@ public class Regra {
 				novoValor = !valor;
 			}
 			
-			Transicao transicao = new Transicao(t.getIndice(), raio, regraPrincipal.getDirecaoCalculo(), novoValor);
+			Transicao transicao = new Transicao(t.indice, raio, regraPrincipal.direcaoCalculo, novoValor);
 			
 			regraContorno.adicionarTransicao(transicao);
 		}
@@ -153,9 +152,9 @@ public class Regra {
 	 * Retorna a direção do cálculo da regra.
 	 * @return Direção do cálculo.
 	 */
-	public int getDirecaoCalculo() {
+	/*public int getDirecaoCalculo() {
 		return direcaoCalculo;
-	}
+	}*/
 	
 	
 	/**

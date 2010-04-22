@@ -101,15 +101,15 @@ public class TesteImagem {
 	 */
 	public static void criarImagem(Reticulado reticulado, String caminho) throws Exception {
 		BufferedImage buffer = new BufferedImage(
-				reticulado.getColunas() / (8 * 3), 
-				reticulado.getLinhas(), 
+				reticulado.colunas / (8 * 3), 
+				reticulado.linhas, 
 				BufferedImage.TYPE_INT_RGB);
 		
 		//final int PRETO = Color.BLACK.getRGB();
 		//final int BRANCO = Color.WHITE.getRGB();
 		
-		for (int i = 0; i < reticulado.getLinhas(); i++) {
-			for (int j = 0; j < reticulado.getColunas(); j += (8 * 3)) {
+		for (int i = 0; i < reticulado.linhas; i++) {
+			for (int j = 0; j < reticulado.colunas; j += (8 * 3)) {
 				int rgb = 0;
 				for (int b = 0; b < (8 * 3); b++) {
 					rgb |= (reticulado.get(i, j + b) ? 1 : 0) << b;

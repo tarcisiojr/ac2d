@@ -1,10 +1,7 @@
 package ufu.mestrado.teste;
 
-import java.util.Random;
-
 import ufu.mestrado.Cronometro;
 import ufu.mestrado.Reticulado;
-import ufu.mestrado.Transicao;
 import ufu.mestrado.Util;
 
 public class TestePerformance {
@@ -89,7 +86,7 @@ public class TestePerformance {
 	
 	
 	public static void main(String[] args) {
-		int max = 1000000;
+		//int max = 1000000;
 		
 		/*
 		boolean bool[] = {true, false};

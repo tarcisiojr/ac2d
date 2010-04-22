@@ -51,8 +51,8 @@ public class TesteEntropiaImagemPretoBranco {
 		System.out.println("% ZEROS.....: " + xor.getPercentualZeros());
 		System.out.println("Entropia XOR: " + entropia);
 		
-		final int linhas = xor.getLinhas();
-		final int colunas = xor.getColunas();
+		final int linhas = xor.linhas;
+		final int colunas = xor.colunas;
 		
 		BufferedImage buffer = new BufferedImage(colunas, linhas, BufferedImage.TYPE_INT_RGB);
 		

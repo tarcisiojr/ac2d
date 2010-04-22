@@ -18,8 +18,8 @@ import java.util.Random;
 public class Reticulado implements Cloneable {
 //	private Reticulavel reticulavel;
 	private boolean[][] reticulado;
-	private int linhas; 
-	private int colunas;
+	public int linhas; 
+	public int colunas;
 	
 	private int deslocamentoLinha = 0;
 	private int deslocamentoColuna = 0;
@@ -142,8 +142,10 @@ public class Reticulado implements Cloneable {
 	 * @return Obtém o valor do reticulado a partir da linha e coluna fornecidos.
 	 */
 	public boolean get(int linha, int coluna) {
-		linha = getIndiceLinha(linha);
-		coluna = getIndiceColuna(coluna);
+//		linha = getIndiceLinha(linha);
+//		coluna = getIndiceColuna(coluna);
+		linha = getIndice(linhas, linha);
+		coluna = getIndice(colunas, coluna);
 		
 		boolean valor = reticulado[linha][coluna]; 
 		
@@ -162,8 +164,10 @@ public class Reticulado implements Cloneable {
 	 * @param valor Valor a ser configurado no reticulado.
 	 */
 	public void set(int linha, int coluna, boolean valor) {
-		linha = getIndiceLinha(linha);
-		coluna = getIndiceColuna(coluna);
+		//linha = getIndiceLinha(linha);
+		//coluna = getIndiceColuna(coluna);
+		linha = getIndice(linhas, linha);
+		coluna = getIndice(colunas, coluna);
 		
 		/*boolean valorAntigo = get(linha, coluna);
 		
@@ -206,17 +210,17 @@ public class Reticulado implements Cloneable {
 	 * Retorna quatidade de linhas do reticulado.
 	 * @return Qtd de linhas.
 	 */
-	public int getLinhas() {
+	/*public int getLinhas() {
 		return linhas;
-	}
+	}*/
 	
 	/**
 	 * Retorna a quantidade colunas do reticulado.
 	 * @return Qtd colunas.
 	 */
-	public int getColunas() {
+	/*public int getColunas() {
 		return colunas;
-	}
+	}*/
 
 	@Override
 	public String toString() {
@@ -411,7 +415,7 @@ public class Reticulado implements Cloneable {
 		return entropia;
 	}
 	
-	public void setDeslocamentoLinha(int deslocamentoLinha) {
+	/*public void setDeslocamentoLinha(int deslocamentoLinha) {
 		this.deslocamentoLinha = deslocamentoLinha;
 	}
 
@@ -426,7 +430,7 @@ public class Reticulado implements Cloneable {
 	public Integer getDeslocamentoColuna() {
 		return this.deslocamentoColuna;
 	}
-	
+*/	
 	public void inverterDeslocamentos() {
 		deslocamentoColuna = -deslocamentoColuna;
 		deslocamentoLinha = -deslocamentoLinha;

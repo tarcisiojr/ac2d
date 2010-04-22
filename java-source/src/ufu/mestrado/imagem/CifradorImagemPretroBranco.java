@@ -9,7 +9,6 @@ import javax.imageio.ImageIO;
 
 import ufu.mestrado.AutomatoCelular;
 import ufu.mestrado.AutomatoCelularHandler;
-import ufu.mestrado.DirecaoCalculo;
 import ufu.mestrado.Regra;
 import ufu.mestrado.Reticulado;
 

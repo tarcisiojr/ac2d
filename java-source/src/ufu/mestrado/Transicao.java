@@ -1,10 +1,10 @@
 package ufu.mestrado;
 
 public class Transicao {
-	private int indice;
-	private int raio;
-	private boolean valor;
-	private int direcao;
+	public int indice;
+	public int raio;
+	public boolean valor;
+	public int direcao;
 	
 	public Transicao(int indice, int raio, int direcao, boolean valor) {
 		this.indice = indice;
@@ -13,6 +13,7 @@ public class Transicao {
 		this.direcao = direcao;
 	}
 
+	/*
 	public boolean getValor() {
 		return valor;
 	}
@@ -40,6 +41,7 @@ public class Transicao {
 	public void setDirecao(int direcao) {
 		this.direcao = direcao;
 	}
+	*/
 
 	/**
 	 * Retorna o primeiro bit do indice da transição.
@@ -269,7 +271,7 @@ public class Transicao {
 			boolean bit = reticulado.get(linha, coluna);
 			
 			indice = indice << 1;
-			indice |= Util.toInt(bit);
+			indice |= (bit ? 1 : 0);
 		}
 
 		// coluna central
@@ -278,7 +280,7 @@ public class Transicao {
 			boolean bit = reticulado.get(linha, coluna);
 			
 			indice = indice << 1;
-			indice |= Util.toInt(bit);
+			indice |= (bit ? 1 : 0);
 		}
 		
 		coluna--; // linha da direita
@@ -288,7 +290,7 @@ public class Transicao {
 			boolean bit = reticulado.get(linha, coluna);
 			
 			indice = indice << 1;
-			indice |= Util.toInt(bit);
+			indice |= (bit ? 1 : 0);
 		}
 		
 		return indice;
