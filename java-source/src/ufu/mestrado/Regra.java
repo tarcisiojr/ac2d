@@ -11,10 +11,10 @@ public class Regra {
 	private Transicao transicoes[];
 	
 	private int raio;
-	private DirecaoCalculo direcaoCalculo;
+	private int direcaoCalculo;
 	private String nucleo;
 
-	public Regra(int raio, DirecaoCalculo direcaoCalculo) {
+	public Regra(int raio, int direcaoCalculo) {
 		this.transicoes = new Transicao[(int) Math.pow(2, raio * 4 + 1)];//new HashMap<Integer, Transicao>();
 		this.raio = raio;
 		this.direcaoCalculo = direcaoCalculo;
@@ -57,11 +57,11 @@ public class Regra {
 	 * @param direcaoCalculo Direção de cálculo da regra.
 	 * @return
 	 */
-	public static Regra criar(String valores, DirecaoCalculo direcaoCalculo) {
+	public static Regra criar(String valores, int direcaoCalculo) {
 		return Regra.criar(Util.getArray(valores), direcaoCalculo);
 	}
 	
-	public static Regra criarAPatirNucleo(String nucleo, DirecaoCalculo direcaoCalculo) {
+	public static Regra criarAPatirNucleo(String nucleo, int direcaoCalculo) {
 		boolean regra[] = new boolean[nucleo.length() * 2];
 		
 		System.arraycopy(Util.getArray(nucleo), 0, regra, 0, nucleo.length());
@@ -83,7 +83,7 @@ public class Regra {
 	 * @param direcaoCalculo Direção de cálculo da regra.
 	 * @return
 	 */
-	public static Regra criar(boolean valores[], DirecaoCalculo direcaoCalculo) {
+	public static Regra criar(boolean valores[], int direcaoCalculo) {
 		double exp = (Math.log(valores.length) / Math.log(2));
 		int raio = (int) ((exp - 1) / 4); 
 		
@@ -153,7 +153,7 @@ public class Regra {
 	 * Retorna a direção do cálculo da regra.
 	 * @return Direção do cálculo.
 	 */
-	public DirecaoCalculo getDirecaoCalculo() {
+	public int getDirecaoCalculo() {
 		return direcaoCalculo;
 	}
 	

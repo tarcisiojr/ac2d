@@ -17,7 +17,7 @@ public class TesteCifragemACImagemPretoBranco {
 	 * @param decifrar Indica se é para realizar o processo de decifragem.
 	 * @throws Exception
 	 */
-	public static AutomatoCelular cifrar(int qtdPI, String chave, DirecaoCalculo direcao, String pastaSaida, String nomeArquivo, boolean decifrar) throws Exception {
+	public static AutomatoCelular cifrar(int qtdPI, String chave, int direcao, String pastaSaida, String nomeArquivo, boolean decifrar) throws Exception {
 		CifradorImagemPretroBranco cifrador = new CifradorImagemPretroBranco(
 				pastaSaida + nomeArquivo, chave, direcao);
 		
@@ -27,14 +27,14 @@ public class TesteCifragemACImagemPretoBranco {
 		ac.calcularPreImage(qtdPI);
 		Cronometro.parar("Cifragem arquivo '" + nomeArquivo +"', PI=" + qtdPI + ", chave=" + chave + ", direcao=" + direcao);
 		
-		cifrador.criarImagem(pastaSaida + "cifrada_pi" + qtdPI + "_" + direcao +"_" + nomeArquivo);
+		cifrador.criarImagem(pastaSaida + "cifrada_pi" + qtdPI + "_" + DirecaoCalculo.toString(direcao) +"_" + nomeArquivo);
 		
 		if (decifrar) {
 			Cronometro.iniciar();
 			ac.evoluir(qtdPI);
 			Cronometro.parar("Decifragem arquivo '" + nomeArquivo +"', PI=" + qtdPI + ", chave=" + chave + ", direcao=" + direcao);
 			
-			cifrador.criarImagem(pastaSaida + "decifrada_pi" + qtdPI + "_" + direcao + "_" + nomeArquivo);
+			cifrador.criarImagem(pastaSaida + "decifrada_pi" + qtdPI + "_" + DirecaoCalculo.toString(direcao) + "_" + nomeArquivo);
 		}
 		
 		return ac;
@@ -42,7 +42,7 @@ public class TesteCifragemACImagemPretoBranco {
 
 	public static void main(String[] args) throws Exception {
 		//cifrar(10, "0111101110110001", DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/", "circulo.bmp", true);
-		cifrar(10, "0111101110110001", DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/", "mulher.bmp", true);
+		cifrar(10, "0111101110110001", DirecaoCalculo.DIREITA, "E:/junior/Desktop/mestrado/testes_ac2d/", "mulher.bmp", true);
 		//cifrar(10, "0111101110110001", DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/", "quadrado.bmp", true);
 		//cifrar(10, "0111101110110001", DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/", "triangulo.bmp", true);
 	}

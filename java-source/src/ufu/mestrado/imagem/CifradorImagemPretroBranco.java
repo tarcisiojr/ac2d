@@ -41,7 +41,7 @@ public class CifradorImagemPretroBranco implements AutomatoCelularHandler {
 	 * @param caminhoImage
 	 * @param nucleoRegra
 	 */
-	public CifradorImagemPretroBranco(String caminhoImage, String nucleoRegra, DirecaoCalculo direcao) {
+	public CifradorImagemPretroBranco(String caminhoImage, String nucleoRegra, int direcao) {
 		try {
 			reticuladoInicial = criarReticuladoInicial(caminhoImage);
 			regra = Regra.criarAPatirNucleo(nucleoRegra, direcao);

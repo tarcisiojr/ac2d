@@ -35,8 +35,8 @@ public class TesteEntropiaImagemPretoBranco {
 		final int linhasJanela = 2;
 		final int colunasJanela = 4;
 		
-		AutomatoCelular ac1 = TesteCifragemACImagemPretoBranco.cifrar(10, "0111101110110001", DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/", "mulher.bmp", false);
-		AutomatoCelular ac2 = TesteCifragemACImagemPretoBranco.cifrar(10, "0111101110110001", DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/", "mulher_alteracao.bmp", false);
+		AutomatoCelular ac1 = TesteCifragemACImagemPretoBranco.cifrar(10, "0111101110110001", DirecaoCalculo.SUL, "E:/junior/Desktop/mestrado/testes_ac2d/", "mulher.bmp", false);
+		AutomatoCelular ac2 = TesteCifragemACImagemPretoBranco.cifrar(10, "0111101110110001", DirecaoCalculo.SUL, "E:/junior/Desktop/mestrado/testes_ac2d/", "mulher_alteracao.bmp", false);
 		
 		// Agora vamos calcular o XOR entre as imagens.
 		Reticulado r1 = ac1.getReticulado();

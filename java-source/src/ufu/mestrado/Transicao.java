@@ -4,9 +4,9 @@ public class Transicao {
 	private int indice;
 	private int raio;
 	private boolean valor;
-	private DirecaoCalculo direcao;
+	private int direcao;
 	
-	public Transicao(int indice, int raio, DirecaoCalculo direcao, boolean valor) {
+	public Transicao(int indice, int raio, int direcao, boolean valor) {
 		this.indice = indice;
 		this.valor = valor;
 		this.raio = raio;
@@ -33,11 +33,11 @@ public class Transicao {
 		this.raio = raio;
 	}
 
-	public DirecaoCalculo getDirecao() {
+	public int getDirecao() {
 		return direcao;
 	}
 
-	public void setDirecao(DirecaoCalculo direcao) {
+	public void setDirecao(int direcao) {
 		this.direcao = direcao;
 	}
 
@@ -61,7 +61,7 @@ public class Transicao {
 	 * @param direcaoCalculo Direção do cálculo.
 	 * @return Um array com os 2 possíveis índices.
 	 */
-	public static int[] getIndices(Reticulado reticulado, int linha, int coluna, int raio, DirecaoCalculo direcaoCalculo) {
+	public static int[] getIndices(Reticulado reticulado, int linha, int coluna, int raio, int direcaoCalculo) {
 		
 		int indice = getIndice(reticulado, linha, coluna, raio, direcaoCalculo);
 		
@@ -72,15 +72,22 @@ public class Transicao {
 		return new int[] {indice - (1 << deslocamento), indice};
 	}
 	
-	public static int getIndice0(Reticulado reticulado, int linha, int coluna, int raio, DirecaoCalculo direcaoCalculo) {
+	public static final int getIndice0(final Reticulado reticulado, final int linha, final int coluna, final int raio, final int direcaoCalculo) {
+		
+		/*final int deslocamento = (raio * 4);
 		
 		int indice = getIndice(reticulado, linha, coluna, raio, direcaoCalculo);
 		
-		int deslocamento = (raio * 4);
-		
 		indice = indice | (1 << deslocamento);
 		
-		return indice - (1 << deslocamento);
+		return indice - (1 << deslocamento);*/
+		
+		final int mascara = (1 << (raio * 4)) -1;
+		
+		int indice = getIndice(reticulado, linha, coluna, raio, direcaoCalculo);
+		
+		return indice & mascara;
+		
 	}
 	
 	/**
@@ -92,21 +99,22 @@ public class Transicao {
 	 * @param raio Raio
 	 * @param direcaoCalculo Direção do cálculo
 	 */
-	public static int getIndice(Reticulado reticulado, int linha, int coluna, int raio, DirecaoCalculo direcaoCalculo) {
-		if (direcaoCalculo == DirecaoCalculo.NORTE) {
+	public static int getIndice(Reticulado reticulado, int linha, int coluna, int raio, int direcaoCalculo) {
+		switch (direcaoCalculo) {
+		case DirecaoCalculo.NORTE:
 			return getIndiceNorte(reticulado, linha, coluna, raio);
 			
-		} else if (direcaoCalculo == DirecaoCalculo.SUL) {
+		case DirecaoCalculo.SUL:
 			return getIndiceSul(reticulado, linha, coluna, raio);
 			
-		} else if (direcaoCalculo == DirecaoCalculo.ESQUERDA) {
+		case DirecaoCalculo.ESQUERDA:
 			return getIndiceEsquerda(reticulado, linha, coluna, raio);
 			
-		} else if (direcaoCalculo == DirecaoCalculo.DIREITA) {
+		case DirecaoCalculo.DIREITA:
 			return getIndiceDireita(reticulado, linha, coluna, raio);
 		}
 		
-		return -1;
+		throw new RuntimeException("Direção não suportada!");
 	}
 	
 	/**
@@ -125,27 +133,22 @@ public class Transicao {
 		// Cima
 		for (int i = 0; i < raio; i++, linha++) {
 			boolean bit = reticulado.get(linha, coluna);
-			
-			indice = indice << 1;
-			indice |= Util.toInt(bit);
+			indice = (indice << 1)| Util.toInt(bit);
 		}
 
 		// Linha central
 		coluna = coluna - raio;
 		for (int i = 0; i < raio * 2 + 1; i++, coluna++) {
 			boolean bit = reticulado.get(linha, coluna);
-			
-			indice = indice << 1;
-			indice |= Util.toInt(bit);
+			indice = (indice << 1) | Util.toInt(bit);
 		}
+		
 		linha++;
 		coluna = coluna - raio - 1;
 		// Baixo
 		for (int i = 0; i < raio; i++, linha++) {
 			boolean bit = reticulado.get(linha, coluna);
-			
-			indice = indice << 1;
-			indice |= Util.toInt(bit);
+			indice = (indice << 1) | Util.toInt(bit);
 		}
 		
 		return indice;

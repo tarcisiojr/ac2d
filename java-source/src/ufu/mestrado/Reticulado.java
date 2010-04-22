@@ -178,11 +178,11 @@ public class Reticulado implements Cloneable {
 //		}
 	}
 	
-	public int getIndiceLinha(int linha) {
+	public final int getIndiceLinha(int linha) {
 		return getIndice(linhas, linha + deslocamentoLinha);
 	}
 	
-	public int getIndiceColuna(int coluna) {
+	public final int getIndiceColuna(int coluna) {
 		return getIndice(colunas, coluna + deslocamentoColuna);
 	}
 	
@@ -192,12 +192,12 @@ public class Reticulado implements Cloneable {
 	 * @param valor
 	 * @return
 	 */
-	public static int getIndice(int max, int valor) {
+	public static final int getIndice(final int max, final int valor) {
 		if (valor >= 0) {
 			return valor % max;
 		}
 
-		int resto = (valor % max);
+		final int resto = (valor % max);
 
 		return resto == 0 ? resto : max + resto;
 	}
