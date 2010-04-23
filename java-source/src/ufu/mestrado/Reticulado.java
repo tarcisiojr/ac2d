@@ -144,8 +144,11 @@ public class Reticulado implements Cloneable {
 	public boolean get(int linha, int coluna) {
 //		linha = getIndiceLinha(linha);
 //		coluna = getIndiceColuna(coluna);
-		linha = getIndice(linhas, linha);
-		coluna = getIndice(colunas, coluna);
+		//linha = getIndice(linhas, linha);
+		//coluna = getIndice(colunas, coluna);
+		
+		linha = (linha >= 0 ? linha % linhas : ((linha % linhas) + linhas) % linhas);
+		coluna = (coluna >= 0 ? coluna % colunas : ((coluna % colunas) + colunas) % colunas);
 		
 		boolean valor = reticulado[linha][coluna]; 
 		
@@ -166,8 +169,10 @@ public class Reticulado implements Cloneable {
 	public void set(int linha, int coluna, boolean valor) {
 		//linha = getIndiceLinha(linha);
 		//coluna = getIndiceColuna(coluna);
-		linha = getIndice(linhas, linha);
-		coluna = getIndice(colunas, coluna);
+		//linha = getIndice(linhas, linha);
+		//coluna = getIndice(colunas, coluna);
+		linha = (linha >= 0 ? linha % linhas : ((linha % linhas) + linhas) % linhas);
+		coluna = (coluna >= 0 ? coluna % colunas : ((coluna % colunas) + colunas) % colunas);
 		
 		/*boolean valorAntigo = get(linha, coluna);
 		
@@ -459,5 +464,23 @@ public class Reticulado implements Cloneable {
 		}
 		
 		return true;
+	}
+	
+	public static void main(String[] args) {
+		int max = 10;
+		
+		Cronometro.iniciar();
+		for (int i = 0; i < 10000; i++) {
+			int v = -i;
+			System.out.print(getIndice(max, v) + " ");
+		}
+		Cronometro.parar("f");
+		
+		Cronometro.iniciar();
+		for (int i = 0; i < 10000; i++) {
+			int v = -i;
+			System.out.print((v < 0 ? ((v % max) + max) % max : v % max) + " ");
+		}
+		Cronometro.parar("i");
 	}
 }

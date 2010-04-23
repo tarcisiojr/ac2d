@@ -42,7 +42,7 @@ public class TesteCifragemACImagemPretoBranco {
 
 	public static void main(String[] args) throws Exception {
 		//cifrar(10, "0111101110110001", DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/", "circulo.bmp", true);
-		cifrar(10, "0111101110110001", DirecaoCalculo.DIREITA, "E:/junior/Desktop/mestrado/testes_ac2d/", "mulher.bmp", true);
+		cifrar(10, "0111101110110001", DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/", "mulher.bmp", true);
 		//cifrar(10, "0111101110110001", DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/", "quadrado.bmp", true);
 		//cifrar(10, "0111101110110001", DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/", "triangulo.bmp", true);
 	}

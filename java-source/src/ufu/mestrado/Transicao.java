@@ -5,12 +5,14 @@ public class Transicao {
 	public int raio;
 	public boolean valor;
 	public int direcao;
+	public int deslocamento;
 	
 	public Transicao(int indice, int raio, int direcao, boolean valor) {
 		this.indice = indice;
 		this.valor = valor;
 		this.raio = raio;
 		this.direcao = direcao;
+		this.deslocamento = 4 * raio;
 	}
 
 	/*
@@ -49,8 +51,6 @@ public class Transicao {
 	 * @return Valor 1 ou 0.
 	 */
 	public boolean getPrimeiroBit(int raio) {
-		int deslocamento = 4 * raio;
-		
 		return (indice & (1 << deslocamento)) != 0;
 	}
 	
@@ -65,7 +65,7 @@ public class Transicao {
 	 */
 	public static int[] getIndices(Reticulado reticulado, int linha, int coluna, int raio, int direcaoCalculo) {
 		
-		int indice = getIndice(reticulado, linha, coluna, raio, direcaoCalculo);
+		int indice = getIndice(reticulado, linha, coluna, raio, direcaoCalculo, -1, -1);
 		
 		int deslocamento = (raio * 4);
 		
@@ -75,6 +75,10 @@ public class Transicao {
 	}
 	
 	public static final int getIndice0(final Reticulado reticulado, final int linha, final int coluna, final int raio, final int direcaoCalculo) {
+		return getIndice0(reticulado, linha, coluna, raio, direcaoCalculo, -1, -1);
+	}
+	
+	public static final int getIndice0(final Reticulado reticulado, final int linha, final int coluna, final int raio, final int direcaoCalculo, int cacheInterno, int cacheExterno) {
 		
 		/*final int deslocamento = (raio * 4);
 		
@@ -86,10 +90,23 @@ public class Transicao {
 		
 		final int mascara = (1 << (raio * 4)) -1;
 		
-		int indice = getIndice(reticulado, linha, coluna, raio, direcaoCalculo);
+		int indice = getIndice(reticulado, linha, coluna, raio, direcaoCalculo, cacheInterno, cacheExterno);
 		
 		return indice & mascara;
 		
+	}
+	
+	/**
+	 * Obtém o índice parcial a partir do reticulado. A linha e coluna fornecidos 
+	 * é referente ao bit que está sendo calculado. Sem cache na linha vertical.
+	 * @param reticulado Reticulado.
+	 * @param linha Linha
+	 * @param coluna Coluna
+	 * @param raio Raio
+	 * @param direcaoCalculo Direção do cálculo
+	 */
+	public static int getIndice(final Reticulado reticulado, final int linha, final int coluna, final int raio, final int direcaoCalculo) {
+		return getIndice(reticulado, linha, coluna, raio, direcaoCalculo, -1, -1);
 	}
 	
 	/**
@@ -100,11 +117,12 @@ public class Transicao {
 	 * @param coluna Coluna
 	 * @param raio Raio
 	 * @param direcaoCalculo Direção do cálculo
+	 * @param cacheInterno Cache dos bits interno.
 	 */
-	public static int getIndice(Reticulado reticulado, int linha, int coluna, int raio, int direcaoCalculo) {
+	public static int getIndice(final Reticulado reticulado, final int linha, final int coluna, final int raio, final int direcaoCalculo, final int cacheInterno, int cacheExterno) {
 		switch (direcaoCalculo) {
 		case DirecaoCalculo.NORTE:
-			return getIndiceNorte(reticulado, linha, coluna, raio);
+			return getIndiceNorte(reticulado, linha, coluna, raio, cacheInterno, cacheExterno);
 			
 		case DirecaoCalculo.SUL:
 			return getIndiceSul(reticulado, linha, coluna, raio);
@@ -127,31 +145,58 @@ public class Transicao {
 	 * @param raio Raio da regra.
 	 * @return o índica a partir do reticulado fornecido.
 	 */
-	public static int getIndiceNorte(Reticulado reticulado, int linha, int coluna, int raio) {
+	public static int getIndiceNorte(final Reticulado reticulado, int linha, int coluna, final int raio, final int cacheInterno, final int cacheExterno) {
 		int indice = 0;
+		int deslocamento = raio * 4 + 1;
 		
 		// Indice é montado a partir do bit mais acima da esquerda para direita
 		
-		// Cima
-		for (int i = 0; i < raio; i++, linha++) {
-			boolean bit = reticulado.get(linha, coluna);
-			indice = (indice << 1)| Util.toInt(bit);
+		if (cacheExterno < 0) {
+			// Cima
+			for (int i = raio; i > 0; i--, linha++) {
+				final boolean bit = reticulado.get(linha, coluna);
+				
+				indice = indice | ((bit ? 1 : 0) << --deslocamento);
+			}
+		} else {
+			final boolean bit = reticulado.get(linha, coluna);
+			
+			indice = ((bit ? 1 : 0) << --deslocamento) | cacheExterno;
+			
+			deslocamento = deslocamento - (raio - 1);
+			
+			linha = linha + raio;
 		}
 
-		// Linha central
-		coluna = coluna - raio;
-		for (int i = 0; i < raio * 2 + 1; i++, coluna++) {
-			boolean bit = reticulado.get(linha, coluna);
-			indice = (indice << 1) | Util.toInt(bit);
+		if (cacheInterno < 0) {
+			// Linha central
+			coluna = coluna - raio;
+			
+			for (int i = raio * 2 + 1; i > 0 ; i--, coluna++) {
+				final boolean bit = reticulado.get(linha, coluna);
+				
+				indice = indice | ((bit ? 1 : 0) << --deslocamento);
+			}
+			
+			coluna = coluna - raio - 1;
+		} else {
+			final boolean bit = reticulado.get(linha, coluna - raio);
+			
+			indice = indice | ((bit ? 1 : 0) << --deslocamento) | cacheInterno;
+			
+			deslocamento = deslocamento - raio * 2;
 		}
 		
-		linha++;
-		coluna = coluna - raio - 1;
-		// Baixo
-		for (int i = 0; i < raio; i++, linha++) {
-			boolean bit = reticulado.get(linha, coluna);
-			indice = (indice << 1) | Util.toInt(bit);
-		}
+		if (cacheExterno < 0) {
+			linha++;
+			
+			// Baixo
+			for (int i = raio; i > 0; i--, linha++) {
+				final boolean bit = reticulado.get(linha, coluna);
+				
+				indice = indice | ((bit ? 1 : 0) << --deslocamento);
+			}
+		} 
 		
 		return indice;
 	}

@@ -72,7 +72,7 @@ public class TesteCifragemAES {
 	public static void main(String[] args) throws Exception {
 		final String pastaSaida = "E:/junior/Desktop/mestrado/testes_aes/";
 		
-		final String imagens[] = {"mulher.bmp", "tux.bmp", "quadrado.bmp", "circulo.bmp", "triangulo.bmp"};
+		final String imagens[] = {"mulher.bmp"/*, "tux.bmp", "quadrado.bmp", "circulo.bmp", "triangulo.bmp"*/};
 		
 		
 		for (String arquivoImagem : imagens) {
@@ -93,27 +93,27 @@ public class TesteCifragemAES {
 			final byte[] imagem = baos.toByteArray();
 		
 			//Default
-			cifrar(height, width, imagem, "AES", pastaSaida, arquivoImagem);
+			//cifrar(height, width, imagem, "AES", pastaSaida, arquivoImagem);
 			
 			//ECB
-			cifrar(height, width, imagem, "AES/ECB/NoPadding", pastaSaida, arquivoImagem);
-			cifrar(height, width, imagem, "AES/ECB/PKCS5Padding", pastaSaida, arquivoImagem);
+			//cifrar(height, width, imagem, "AES/ECB/NoPadding", pastaSaida, arquivoImagem);
+			//cifrar(height, width, imagem, "AES/ECB/PKCS5Padding", pastaSaida, arquivoImagem);
 		
 			//CBC
-			cifrar(height, width, imagem, "AES/CBC/NoPadding", pastaSaida, arquivoImagem);
+			//cifrar(height, width, imagem, "AES/CBC/NoPadding", pastaSaida, arquivoImagem);
 			cifrar(height, width, imagem, "AES/CBC/PKCS5Padding", pastaSaida, arquivoImagem);
 			
 			//CFB
-			cifrar(height, width, imagem, "AES/CFB/NoPadding", pastaSaida, arquivoImagem);
-			cifrar(height, width, imagem, "AES/CFB/PKCS5Padding", pastaSaida, arquivoImagem);
+			//cifrar(height, width, imagem, "AES/CFB/NoPadding", pastaSaida, arquivoImagem);
+			//cifrar(height, width, imagem, "AES/CFB/PKCS5Padding", pastaSaida, arquivoImagem);
 		
 			//OFB
-			cifrar(height, width, imagem, "AES/OFB/NoPadding", pastaSaida, arquivoImagem);
-			cifrar(height, width, imagem, "AES/OFB/PKCS5Padding", pastaSaida, arquivoImagem);
+			//cifrar(height, width, imagem, "AES/OFB/NoPadding", pastaSaida, arquivoImagem);
+			//cifrar(height, width, imagem, "AES/OFB/PKCS5Padding", pastaSaida, arquivoImagem);
 			
 			//PCBC
-			cifrar(height, width, imagem, "AES/PCBC/NoPadding", pastaSaida, arquivoImagem);
-			cifrar(height, width, imagem, "AES/PCBC/PKCS5Padding", pastaSaida, arquivoImagem);
+			//cifrar(height, width, imagem, "AES/PCBC/NoPadding", pastaSaida, arquivoImagem);
+			//cifrar(height, width, imagem, "AES/PCBC/PKCS5Padding", pastaSaida, arquivoImagem);
 		}
 	}
 }
