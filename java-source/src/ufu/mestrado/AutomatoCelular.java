@@ -525,15 +525,6 @@ public class AutomatoCelular implements AutomatoCelularHandler {
 		//return 1;
 	}*/
 	
-	public AutomatoCelularHandler getHandler() {
-//		return handler;
-		return null;
-	}
-
-	public void setHandler(AutomatoCelularHandler listener) {
-//		this.handler = listener;
-	}
-	
 	public Reticulado getReticulado() {
 		return reticulado;
 	}
