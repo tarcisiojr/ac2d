@@ -265,12 +265,11 @@ public class Reticulado implements Cloneable {
 	 * @return Novo reticulado.
 	 */
 	public Reticulado aplicarRuido() {
+		return aplicarRuido(15, 6);
+	}
+	
+	public Reticulado aplicarRuido(int linha, int coluna) {
 		Reticulado clone = clone();
-		
-		//Random random = new Random();
-		
-		int linha = 15;//random.nextInt(linhas);
-		int coluna = 6;//random.nextInt(colunas);
 		
 		clone.set(linha, coluna, !clone.get(linha, coluna));
 		

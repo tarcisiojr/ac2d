@@ -164,6 +164,9 @@ public class Regra {
 	 * @throws Exception
 	 */
 	public static List<Regra> carregarRegras(String nomeArquivo) throws Exception {
+		return carregarRegras(nomeArquivo, DirecaoCalculo.NORTE);
+	}
+	public static List<Regra> carregarRegras(String nomeArquivo, int direcao) throws Exception {
 		BufferedReader reader = new BufferedReader(new FileReader(nomeArquivo));
 
 		List<Regra> regras = new ArrayList<Regra>();
@@ -177,7 +180,7 @@ public class Regra {
 			}
 			
 			if (!linha.startsWith("#")) {
-				Regra regra = Regra.criarAPatirNucleo(linha, DirecaoCalculo.NORTE);
+				Regra regra = Regra.criarAPatirNucleo(linha, direcao);
 				regras.add(regra);
 			}
 		}

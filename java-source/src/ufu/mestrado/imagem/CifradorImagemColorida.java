@@ -1,6 +1,5 @@
 package ufu.mestrado.imagem;
 
-import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Arrays;
@@ -12,14 +11,11 @@ import ufu.mestrado.AutomatoCelularHandler;
 import ufu.mestrado.Regra;
 import ufu.mestrado.Reticulado;
 
-public class CifradorImagemPretroBranco implements AutomatoCelularHandler {
+public class CifradorImagemColorida implements AutomatoCelularHandler {
 	private static final boolean DEBUG = false;
-	
-	/** Valor RGB da cor preta */
-	final int PRETO = Color.BLACK.getRGB();
-	
-	/** Valor RGB da cor branca */
-	final int BRANCO = Color.WHITE.getRGB();
+
+	/** Quantidade de bits contidos em um pixel. */
+	private static final int BITS_PIXEL = 24; // 3 bytes
 	
 	/** Imagem fornecida. */
 	private BufferedImage buffer;
@@ -40,7 +36,7 @@ public class CifradorImagemPretroBranco implements AutomatoCelularHandler {
 	 * @param caminhoImage
 	 * @param nucleoRegra
 	 */
-	public CifradorImagemPretroBranco(String caminhoImage, String nucleoRegra, int direcao) {
+	public CifradorImagemColorida(String caminhoImage, String nucleoRegra, int direcao) {
 		try {
 			reticuladoInicial = criarReticuladoInicial(caminhoImage);
 			regra = Regra.criarAPatirNucleo(nucleoRegra, direcao);
@@ -54,7 +50,7 @@ public class CifradorImagemPretroBranco implements AutomatoCelularHandler {
 	 * @param caminhoImage
 	 * @param nucleoRegra
 	 */
-	public CifradorImagemPretroBranco(String caminhoImage, Regra regra, int direcao) {
+	public CifradorImagemColorida(String caminhoImage, Regra regra, int direcao) {
 		try {
 			this.reticuladoInicial = criarReticuladoInicial(caminhoImage);
 			this.regra = regra;
@@ -71,7 +67,7 @@ public class CifradorImagemPretroBranco implements AutomatoCelularHandler {
 	 */
 	private Reticulado criarReticuladoInicial(String caminhoImagem) throws Exception {
 		buffer =  ImageIO.read(new File(caminhoImagem));
-		reticuladoInicial = new Reticulado(buffer.getHeight(), buffer.getWidth());
+		reticuladoInicial = new Reticulado(buffer.getHeight(), buffer.getWidth() * BITS_PIXEL);
 		
 		carregarImagem(false, reticuladoInicial);
 		
@@ -100,18 +96,25 @@ public class CifradorImagemPretroBranco implements AutomatoCelularHandler {
 	 * Carrega o reticulado na imagem.
 	 */
 	private void carregarImagem(boolean set, Reticulado reticulado) {
-		
-		final int PRETO = Color.BLACK.getRGB();
+		final int laguraMaxina = buffer.getWidth();
 
 		for (int i = 0; i < buffer.getHeight(); i++) {
 			
-			for (int j = 0; j < buffer.getWidth(); j++) {
+			for (int j = 0; j < laguraMaxina; j++) {
+				
+				int rgb = set ? 0 : buffer.getRGB(j, i);
+				
+				for (int b = BITS_PIXEL -1, k = 0; b >= 0; b--, k++) { // 0000 0000
+					if (set) {
+						rgb |= reticulado.get(i, (j * BITS_PIXEL) + k) ? 1 << b: 0;
+						
+					} else {
+						reticulado.set(i, (j * BITS_PIXEL) + k, (rgb & (1 << b)) != 0);
+					}
+				}
 				
 				if (set) {
-					buffer.setRGB(j, i, reticulado.get(i, j) ? PRETO : BRANCO);
-				} else {
-					int rgb = buffer.getRGB(j, i);
-					reticulado.set(i, j, rgb == PRETO);
+					buffer.setRGB(j, i, rgb);
 				}
 			}
 		}

@@ -13,7 +13,7 @@ import javax.imageio.ImageIO;
 
 import ufu.mestrado.Cronometro;
 
-public class TesteCifragemAES {
+public class TesteCifragemAESImagem {
 	/**
 	 * Cifra a imagem fornecida e gera uma imagem cifrada de saída.
 	 * @param imagem Imagem a ser cifrada.

@@ -23,6 +23,6 @@ public class Cronometro {
 		if (mensagem != null) {
 			System.out.print(mensagem);
 		}
-		System.out.println("->" + tempo + " ms");
+		System.out.println(tempo);
 	}
 }
