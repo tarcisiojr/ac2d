@@ -110,8 +110,14 @@ public class TesteEntropiaImagemPretoBranco {
 	
 	public static void main(String[] args) throws Exception {
 		
-		Reticulado[] ret1 = cifrar(10, "0111101110110001", DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia/", "lena.bmp", true);
-		Reticulado[] ret2 = cifrar(10, "0111101110110001", DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia/", "lena_alterada.bmp", true);
+		int pi = 10;
+		String regra = "1011001110111101";
+		
+		//Reticulado[] ret1 = cifrar(pi, regra, DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia/", "lena.bmp", true);
+		//Reticulado[] ret2 = cifrar(pi, regra, DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia/", "lena_alterada.bmp", true);
+
+		Reticulado[] ret1 = cifrar(pi, regra, DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia/", "512x512_0005.bmp", true);
+		Reticulado[] ret2 = cifrar(pi, regra, DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia/", "512x512_0005_alterada.bmp", true);
 		
 		computarXOR("XOR lena reticulado inicial", ret1[0], ret2[0], "xor_lena_inicial.bmp");
 		computarXOR("XOR lena reticulado cifrado", ret1[1], ret2[1], "xor_lena_cifrado.bmp");
