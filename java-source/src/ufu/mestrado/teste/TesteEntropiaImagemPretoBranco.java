@@ -93,8 +93,8 @@ public class TesteEntropiaImagemPretoBranco {
 		System.out.println("Entropia XOR: " + new BigDecimal(entropia).setScale(5, BigDecimal.ROUND_HALF_UP));
 		System.out.println();
 		
-		final int linhas = xor.linhas;
-		final int colunas = xor.colunas;
+		final int linhas = xor.getLinhas();
+		final int colunas = xor.getColunas();
 		
 		BufferedImage buffer = new BufferedImage(colunas, linhas, BufferedImage.TYPE_INT_RGB);
 		
@@ -110,14 +110,14 @@ public class TesteEntropiaImagemPretoBranco {
 	
 	public static void main(String[] args) throws Exception {
 		
-		int pi = 10;
-		String regra = "1011001110111101";
+		int pi = 11;
+		String regra = "0000000101010110";
 		
-		//Reticulado[] ret1 = cifrar(pi, regra, DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia/", "lena.bmp", true);
-		//Reticulado[] ret2 = cifrar(pi, regra, DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia/", "lena_alterada.bmp", true);
+		Reticulado[] ret1 = cifrar(pi, regra, DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia/", "lena.bmp", true);
+		Reticulado[] ret2 = cifrar(pi, regra, DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia/", "lena_alterada.bmp", true);
 
-		Reticulado[] ret1 = cifrar(pi, regra, DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia/", "512x512_0005.bmp", true);
-		Reticulado[] ret2 = cifrar(pi, regra, DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia/", "512x512_0005_alterada.bmp", true);
+//		Reticulado[] ret1 = cifrar(pi, regra, DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia/", "512x512_0005.bmp", true);
+//		Reticulado[] ret2 = cifrar(pi, regra, DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia/", "512x512_0005_alterada.bmp", true);
 		
 		computarXOR("XOR lena reticulado inicial", ret1[0], ret2[0], "xor_lena_inicial.bmp");
 		computarXOR("XOR lena reticulado cifrado", ret1[1], ret2[1], "xor_lena_cifrado.bmp");

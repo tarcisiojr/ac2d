@@ -39,8 +39,8 @@ public class TesteDecifragemRuidoImagemPretoBranco {
 		Reticulado reticulado = ac.getReticulado();
 		
 		//Random r = new Random();
-		int linhaInicial = reticulado.linhas / 2 - 5;
-		int colunaInicial = reticulado.colunas / 2 - 50;
+		int linhaInicial = reticulado.getLinhas() / 2 - 5;
+		int colunaInicial = reticulado.getColunas() / 2 - 50;
 		
 		//int linhaInicial = r.nextInt(reticulado.linhas);
 		//int colunaInicial = r.nextInt(reticulado.colunas);

@@ -95,15 +95,15 @@ public class TesteImagemPretoBranco {
 	 */
 	public static void criarImagem(Reticulado reticulado, String caminho) throws Exception {
 		BufferedImage buffer = new BufferedImage(
-				reticulado.colunas, 
-				reticulado.linhas, 
+				reticulado.getColunas(), 
+				reticulado.getLinhas(), 
 				BufferedImage.TYPE_INT_RGB);
 		
 		final int PRETO = Color.BLACK.getRGB();
 		final int BRANCO = Color.WHITE.getRGB();
 		
-		for (int i = 0; i < reticulado.linhas; i++) {
-			for (int j = 0; j < reticulado.colunas; j++) {
+		for (int i = 0; i < reticulado.getLinhas(); i++) {
+			for (int j = 0; j < reticulado.getColunas(); j++) {
 				buffer.setRGB(j, i, reticulado.get(i, j) ? PRETO : BRANCO);
 			}
 		}

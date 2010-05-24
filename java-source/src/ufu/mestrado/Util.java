@@ -14,11 +14,11 @@ public class Util {
  
         StringBuilder buf = new StringBuilder();
 //        buf.append('[');
-        buf.append(array[0] ? "1" : "0");
+        buf.append(array[0] ? "_" : "0");
         //buf.append("\t");
         for (int i = 1; i < array.length; i++) {
 //            buf.append(", ");
-            buf.append(array[i] ? "1" : "0");
+            buf.append(array[i] ? "_" : "0");
             //buf.append("\t");
         }
  
@@ -156,5 +156,21 @@ public class Util {
 			array[i] = random.nextBoolean();
 		
 		return array;
+	}
+	
+	/**
+	 * Retorna o indice absoluto, a partir do valor relativo.
+	 * @param max Indice máximo.
+	 * @param valor
+	 * @return
+	 */
+	public static final int getIndice(final int max, final int valor) {
+		if (valor >= 0) {
+			return valor % max;
+		}
+
+		final int resto = (valor % max);
+
+		return resto == 0 ? resto : max + resto;
 	}
 }

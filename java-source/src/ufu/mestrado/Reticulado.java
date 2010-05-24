@@ -16,15 +16,17 @@ import java.util.Random;
  *
  */
 public class Reticulado implements Cloneable {
-//	private Reticulavel reticulavel;
 	private boolean[][] reticulado;
-	public int linhas; 
-	public int colunas;
+	private int linhas; 
+	private int colunas;
 	
 	private int deslocamentoLinha = 0;
 	private int deslocamentoColuna = 0;
 	
 	private int numeroZeros = 0;
+	
+	/** Direção padrão do reticulado = NORTE */
+	public int direcao = DirecaoCalculo.NORTE;
 	
 	public Reticulado(List<String> lstLinhas) {
 		linhas = 0;
@@ -86,7 +88,19 @@ public class Reticulado implements Cloneable {
 		this.numeroZeros = linhas * colunas;
 	}
 	
-	public Reticulado(Reticulavel reticulavel) {
+	public Reticulado(int linhas, int colunas, int direcao) {
+		this.reticulado = new boolean[linhas][colunas];
+		this.linhas = linhas;
+		this.colunas = colunas;
+		this.numeroZeros = linhas * colunas;
+		this.direcao = direcao;
+	}
+	
+	public Reticulado(Reticulado reticulado) {
+		this(reticulado.linhas, reticulado.colunas, reticulado.direcao);
+	}
+	
+	/*public Reticulado(Reticulavel reticulavel) {
 //		this.reticulavel = reticulavel;
 		this.linhas = reticulavel.getLinhas();
 		this.colunas = reticulavel.getColunas();
@@ -101,7 +115,7 @@ public class Reticulado implements Cloneable {
 				this.numeroZeros += valor ? 0 : 1;
 			}
 		}
-	}
+	}*/
 
 	/**
 	 * Conta a quantidade de zeros do reticulado.
@@ -111,7 +125,7 @@ public class Reticulado implements Cloneable {
 		
 		for (int i = 0; i < linhas; i++) {
 			for (int j = 0; j < colunas; j++) {
-				if (!get(i, j))
+				if (!_get(i, j))
 					numeroZeros++;
 			}
 		}
@@ -141,23 +155,65 @@ public class Reticulado implements Cloneable {
 	 * @param coluna Coluna
 	 * @return Obtém o valor do reticulado a partir da linha e coluna fornecidos.
 	 */
-	public boolean get(int linha, int coluna) {
-//		linha = getIndiceLinha(linha);
-//		coluna = getIndiceColuna(coluna);
-		//linha = getIndice(linhas, linha);
-		//coluna = getIndice(colunas, coluna);
-		
+	private boolean _get(int linha, int coluna) {
 		linha = (linha >= 0 ? linha % linhas : ((linha % linhas) + linhas) % linhas);
+
 		coluna = (coluna >= 0 ? coluna % colunas : ((coluna % colunas) + colunas) % colunas);
 		
 		boolean valor = reticulado[linha][coluna]; 
 		
-//		if (reticulavel != null && reticulavel.get(linha, coluna) != valor) {
-//			throw new RuntimeException("O valor do reticulado está diferente do valor do reticulavel: reticulado[" 
-//					+ linha + ", " + coluna + "] = " + valor);
-//		}
-		
 		return valor;
+	}
+	
+	
+	public boolean get(int linha, int coluna) {
+		// A direção padrão é o NORTE, para as demais direções
+		// vamos relizar uma rotação do reticulado.
+		
+		switch (direcao) {
+		case DirecaoCalculo.NORTE:
+			return _get(linha, coluna);
+			
+		case DirecaoCalculo.ESQUERDA:
+			//return _get(coluna, (colunas -1) - linha);
+			return _get((linhas - 1) - coluna, linha);
+			
+		case DirecaoCalculo.SUL:
+			//return _get(coluna, (colunas -1) - linha);
+			return _get((linhas - 1) - linha, (colunas - 1) - coluna);
+			
+		case DirecaoCalculo.DIREITA:
+			return _get(coluna, (colunas - 1) - linha);
+		}
+		
+		throw new RuntimeException("A direção fornecida não é suportada!");
+	}
+	
+	
+	public void set(int linha, int coluna, boolean valor) {
+		// A direção padrão é o NORTE, para as demais direções
+		// vamos relizar uma rotação do reticulado.
+		
+		switch (direcao) {
+		case DirecaoCalculo.NORTE:
+			 _set(linha, coluna, valor);
+			 return;
+			
+		case DirecaoCalculo.ESQUERDA:
+			_set((linhas - 1) - coluna, linha, valor);
+			return;
+			
+		case DirecaoCalculo.SUL:
+			//return _get(coluna, (colunas -1) - linha);
+			_set((linhas - 1) - linha, (colunas - 1) - coluna, valor);
+			return;
+			
+		case DirecaoCalculo.DIREITA:
+			_set(coluna, (colunas - 1) - linha, valor);
+			return;
+		}
+		
+		throw new RuntimeException("A direção fornecida não é suportada!");
 	}
 	
 	/**
@@ -166,67 +222,69 @@ public class Reticulado implements Cloneable {
 	 * @param coluna Coluna.
 	 * @param valor Valor a ser configurado no reticulado.
 	 */
-	public void set(int linha, int coluna, boolean valor) {
-		//linha = getIndiceLinha(linha);
-		//coluna = getIndiceColuna(coluna);
-		//linha = getIndice(linhas, linha);
-		//coluna = getIndice(colunas, coluna);
+	private void _set(int linha, int coluna, boolean valor) {
 		linha = (linha >= 0 ? linha % linhas : ((linha % linhas) + linhas) % linhas);
+		
 		coluna = (coluna >= 0 ? coluna % colunas : ((coluna % colunas) + colunas) % colunas);
 		
-		/*boolean valorAntigo = get(linha, coluna);
-		
-		if (valorAntigo != valor) {
-			numeroZeros += valor ? -1 : 1;
-		}*/
-		
 		reticulado[linha][coluna] = valor;
-		
-//		if (reticulavel != null) {
-//			reticulavel.set(linha, coluna, valor);
-//		}
 	}
 	
 	public final int getIndiceLinha(int linha) {
-		return getIndice(linhas, linha + deslocamentoLinha);
+		return Util.getIndice(linhas, linha + deslocamentoLinha);
 	}
 	
 	public final int getIndiceColuna(int coluna) {
-		return getIndice(colunas, coluna + deslocamentoColuna);
-	}
-	
-	/**
-	 * Retorna o indice absoluto, a partir do valor relativo.
-	 * @param max Indice máximo.
-	 * @param valor
-	 * @return
-	 */
-	public static final int getIndice(final int max, final int valor) {
-		if (valor >= 0) {
-			return valor % max;
-		}
-
-		final int resto = (valor % max);
-
-		return resto == 0 ? resto : max + resto;
+		return Util.getIndice(colunas, coluna + deslocamentoColuna);
 	}
 	
 	/**
 	 * Retorna quatidade de linhas do reticulado.
 	 * @return Qtd de linhas.
 	 */
-	/*public int getLinhas() {
-		return linhas;
-	}*/
+	public int getLinhas() {
+		return getLinhas(direcao);
+	}
 	
 	/**
 	 * Retorna a quantidade colunas do reticulado.
 	 * @return Qtd colunas.
 	 */
-	/*public int getColunas() {
-		return colunas;
-	}*/
+	public int getColunas() {
+		return getColunas(direcao);
+	}
 
+	/**
+	 * Retorna o total de linhas do reticulado a partir da direção fornecida.
+	 * @param direcao Direção de calculo do reticulado.
+	 * @return Qtd. de linhas.
+	 */
+	public int getLinhas(int direcao) {
+		switch (direcao) {
+		case DirecaoCalculo.ESQUERDA:
+		case DirecaoCalculo.DIREITA:
+			return colunas;
+		}
+		
+		return linhas;
+	}
+	
+	/**
+	 * Retorna o total de colunas do reticulado a partir da direção fornecida.
+	 * @param direcao Direção de calculo do reticulado.
+	 * @return Qtd. de colunas.
+	 */
+	public int getColunas(int direcao) {
+		switch (direcao) {
+		case DirecaoCalculo.ESQUERDA:
+		case DirecaoCalculo.DIREITA:
+			return linhas;
+		}
+		
+		return colunas;
+	}
+	
+	
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
@@ -271,7 +329,7 @@ public class Reticulado implements Cloneable {
 	public Reticulado aplicarRuido(int linha, int coluna) {
 		Reticulado clone = clone();
 		
-		clone.set(linha, coluna, !clone.get(linha, coluna));
+		clone.set(linha, coluna, !clone._get(linha, coluna));
 		
 		return clone;
 	}
@@ -287,7 +345,7 @@ public class Reticulado implements Cloneable {
 		for (int i = 0; i < linhas; i++) {
 			for (int j = 0; j < colunas; j++) {
 				
-				xor.set(i, j, reticulado.get(i, j) ^ get(i, j));
+				xor.set(i, j, reticulado._get(i, j) ^ _get(i, j));
 			}
 		}
 		
@@ -370,7 +428,7 @@ public class Reticulado implements Cloneable {
 		for (int i = 0; i < qtdLinhas; i++) {
 			for (int j = 0; j < qtdColunas; j++) {
 				indice = indice << 1;
-				indice |= Util.toInt(get(linha + i, coluna + j));
+				indice |= Util.toInt(_get(linha + i, coluna + j));
 			}
 		}
 		
@@ -403,7 +461,7 @@ public class Reticulado implements Cloneable {
 		
 		double entropia = 0;
 		
-		double maximoOcorrencias = (int) Math.pow(2, qtdLinhasJanela * qtdColunasJanela);
+		final double maximoOcorrencias = (int) Math.pow(2, qtdLinhasJanela * qtdColunasJanela);
 		
 		for (Integer ocorrencia : ocorrencias.values()) {
 			double tmp = ((double)ocorrencia / (double) maximoOcorrencias); 
@@ -457,7 +515,7 @@ public class Reticulado implements Cloneable {
 
 		for (int i = 0; i < linhas; i++) {
 			for (int j = 0; j < colunas; j++) {
-				if (get(i, j) != ret.get(i, j))
+				if (_get(i, j) != ret._get(i, j))
 					return false;
 			}
 		}
@@ -466,20 +524,37 @@ public class Reticulado implements Cloneable {
 	}
 	
 	public static void main(String[] args) {
-		int max = 10;
+
+		Reticulado r = new Reticulado(new String[]{
+				"0000000000000000000000000000000000000000",
+				"0000000000000000000000000000000000000000",
+				"                                    0000",
+				"                                    0000",
+				"         000000000000               0000",
+				"         0          0               0000",
+				"         0          0               0000",
+				"         0          0               0000",
+				"         0          0               0000",
+				"         000000000000               0000",
+				"         0          0               0000",
+				"         0          0               0000",
+				"         0          0               0000",
+				"         0          0               0000",
+				"                                    0000",
+				"                                    0000"
+		});
 		
-		Cronometro.iniciar();
-		for (int i = 0; i < 10000; i++) {
-			int v = -i;
-			System.out.print(getIndice(max, v) + " ");
-		}
-		Cronometro.parar("f");
+		System.out.println(r);
+		System.out.println();
 		
-		Cronometro.iniciar();
-		for (int i = 0; i < 10000; i++) {
-			int v = -i;
-			System.out.print((v < 0 ? ((v % max) + max) % max : v % max) + " ");
+		r.direcao = DirecaoCalculo.DIREITA;
+		
+		
+		for (int i = 0; i < r.getLinhas(); i++) {
+			for (int j = 0; j < r.getColunas(); j++) {
+				System.out.print(r.get(i, j) ? "_" : "0");
+			}
+			System.out.println();
 		}
-		Cronometro.parar("i");
 	}
 }

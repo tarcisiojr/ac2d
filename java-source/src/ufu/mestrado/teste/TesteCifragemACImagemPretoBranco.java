@@ -25,14 +25,14 @@ public class TesteCifragemACImagemPretoBranco {
 		
 		Cronometro.iniciar();
 		ac.calcularPreImage(qtdPI);
-		Cronometro.parar("Cifragem arquivo '" + nomeArquivo +"', PI=" + qtdPI + ", chave=" + chave + ", direcao=" + direcao);
+		Cronometro.parar("Cifragem arquivo '" + nomeArquivo +"', PI=" + qtdPI + ", chave=" + chave + ", direcao=" + direcao + " ");
 		
 		cifrador.criarImagem(pastaSaida + "cifrada_pi" + qtdPI + "_" + DirecaoCalculo.toString(direcao) +"_" + nomeArquivo);
 		
 		if (decifrar) {
 			Cronometro.iniciar();
 			ac.evoluir(qtdPI);
-			Cronometro.parar("Decifragem arquivo '" + nomeArquivo +"', PI=" + qtdPI + ", chave=" + chave + ", direcao=" + direcao);
+			Cronometro.parar("Decifragem arquivo '" + nomeArquivo +"', PI=" + qtdPI + ", chave=" + chave + ", direcao=" + direcao + " ");
 			
 			cifrador.criarImagem(pastaSaida + "decifrada_pi" + qtdPI + "_" + DirecaoCalculo.toString(direcao) + "_" + nomeArquivo);
 		}
@@ -42,7 +42,9 @@ public class TesteCifragemACImagemPretoBranco {
 
 	public static void main(String[] args) throws Exception {
 		//cifrar(10, "0111101110110001", DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/", "circulo.bmp", true);
-		cifrar(10, "0111101110110001", DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/", "mulher.bmp", true);
+		//cifrar(10, "0111101110110001", DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/", "mulher.bmp", true);
+		//cifrar(11, "0111101110110001", DirecaoCalculo.SUL, "E:/junior/Desktop/mestrado/testes_ac2d/", "mulher.bmp", true);
+		cifrar(50, "0000000101010110", DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/", "mulher.bmp", true);
 		//cifrar(10, "0111101110110001", DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/", "quadrado.bmp", true);
 		//cifrar(10, "0111101110110001", DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/", "triangulo.bmp", true);
 	}

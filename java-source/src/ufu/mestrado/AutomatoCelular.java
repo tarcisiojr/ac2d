@@ -11,6 +11,9 @@ public class AutomatoCelular implements AutomatoCelularHandler {
 	
 	private boolean debug = false;
 	
+	/** Ordem que o reticulado deve ser rotacionado. */
+	private int rotacaoReticulado[] = {0, 1, 2, 3}; 
+	
 	/**
 	 * Construtor.
 	 * @param reticuladoInicial Reticulado inicial do automato.
@@ -48,34 +51,26 @@ public class AutomatoCelular implements AutomatoCelularHandler {
 		final int raio = regraPrincipal.raio;
 		
 		mascaraBitCentral = 1 << (raio * 2); // 2 x raio
+		
+		// Bits internos. 000..XXX...000
 		mascaraInterna = ((1 << (raio * 2)) -1) << (raio + 1);
+		
+		// Bis externos. XXX....00....XXX
 		mascaraExterna = ((1 << (raio * 4 + 1)) -1) - (((1 << (raio * 2 + 1)) -1) << raio) - (1 << (raio -1));
 		
 		//System.out.println(Integer.toString(mascaraBitCentral, 2));
 		//System.out.println(Integer.toString(mascaraExterna, 2));
 		//System.out.println(Integer.toString(mascaraInterna, 2));
 		
-		switch (regraPrincipal.direcaoCalculo) {
-		case DirecaoCalculo.NORTE:
-			cacheIndices = new int[this.reticulado.colunas];
-			break;
-			
-		case DirecaoCalculo.SUL:
-			cacheIndices = new int[this.reticulado.colunas];
-			break;
-			
-		case DirecaoCalculo.ESQUERDA:
-			cacheIndices = new int[this.reticulado.linhas];
-			break;
-			
-		case DirecaoCalculo.DIREITA:
-			cacheIndices = new int[this.reticulado.linhas];
-			break;
-			
-		}
+		// Criamos o cache com o maximo entre as linhas e colunas, pois devido ao reticulaodo poder 
+		// ser rotacionado, não sabemos qual será o tamanho do cache, e para melhoria de performance
+		// vamos iniciar o cache uma única vez
+		cacheIndices = new int[Math.max(this.reticulado.getColunas(), this.reticulado.getLinhas())];
 		
 		for (int i = 0; i < numeroCalculos; i++) {
-			preImagem = calcularPreImagem(); 
+			regraPrincipal.direcaoCalculo = rotacaoReticulado[i % rotacaoReticulado.length];
+			
+			preImagem = calcularPreImagem();
 		}
 		
 		return preImagem;
@@ -125,26 +120,9 @@ public class AutomatoCelular implements AutomatoCelularHandler {
 	 * @return True se calculo da pré-image ainda não foi finalizado, do contrário retorna-se false.
 	 */
 	private boolean continuarCalculoPI(Reticulado preImagem, Regra regraPrincipal)  {
-		switch (regraPrincipal.direcaoCalculo) {
-		case DirecaoCalculo.NORTE:
-			posicaoCache = coluna;
-			valorReticulado = reticulado.get(linha + regraPrincipal.raio, coluna); 
-			return linha >= regraPrincipal.raio;
-			
-		case DirecaoCalculo.SUL:
-			posicaoCache = coluna;
-			return linha < (preImagem.linhas - regraPrincipal.raio);
-			
-		case DirecaoCalculo.ESQUERDA:
-			posicaoCache = linha;
-			return coluna >= regraPrincipal.raio;
-			
-		case DirecaoCalculo.DIREITA:
-			posicaoCache = linha;
-			return coluna < (preImagem.colunas - regraPrincipal.raio);
-		}
-		
-		throw new RuntimeException("O tipo de direção da regra fornecida não é suportado!");
+		posicaoCache = coluna;
+		valorReticulado = reticulado.get(linha + regraPrincipal.raio, coluna); 
+		return linha >= regraPrincipal.raio;
 	}
 	
 	/**
@@ -156,48 +134,16 @@ public class AutomatoCelular implements AutomatoCelularHandler {
 	private void iterarCalculoPI(Reticulado preImagem, Regra regraPrincipal) {
 		int raio = regraPrincipal.raio;
 		
-		switch (regraPrincipal.direcaoCalculo) {
-		case DirecaoCalculo.NORTE:
-			coluna--;
-			// direita para esquerda, de baixo para cimaa
-			if (coluna < raio) {
-				linha--;
-				coluna = colunaInicial;
-				cacheIndice = -1;
-				usarCache = true;
-			}
-			break;
-			
-		case DirecaoCalculo.SUL:
-			// direita para esquerda, de cima para baixo
-			coluna--;
-			
-			if (coluna < raio) {
-				linha++;
-				coluna = colunaInicial;
-			}
-			break;
-			
-		case DirecaoCalculo.ESQUERDA:
-			// de cima para baixo, direita para esquerda
-			linha++;
-			
-			if (linha >= preImagem.linhas - raio) {
-				coluna--;
-				linha = linhaInicial;
-			}
-			break;
-			
-		case DirecaoCalculo.DIREITA:
-			// de cima para baixo, esquerda para direita
-			linha++;
-			
-			if (linha >= preImagem.linhas - raio) {
-				coluna++;
-				linha = linhaInicial;
-			}
-			break;
+		coluna--;
+		
+		// direita para esquerda, de baixo para cimaa
+		if (coluna < raio) {
+			linha--;
+			coluna = colunaInicial;
+			cacheIndice = -1;
+			usarCache = true;
 		}
+		
 	}
 	
 	/**
@@ -208,29 +154,11 @@ public class AutomatoCelular implements AutomatoCelularHandler {
 	private void iniciarCalculoPI(Reticulado preImagem, Regra regraPrincipal) {
 		int raio = regraPrincipal.raio;
 		
-		switch (regraPrincipal.direcaoCalculo) {
-		case DirecaoCalculo.NORTE:
-			linhaInicial = preImagem.linhas - raio - 1;
-			colunaInicial = preImagem.colunas - raio - 1;
-			cacheIndice = -1;
-			usarCache = false;
-			break;
-			
-		case DirecaoCalculo.SUL:
-			linhaInicial = raio;
-			colunaInicial = preImagem.colunas - raio - 1;
-			break;
-			
-		case DirecaoCalculo.ESQUERDA:
-			linhaInicial = raio;
-			colunaInicial = preImagem.colunas - raio - 1;
-			break;
-			
-		case DirecaoCalculo.DIREITA:
-			linhaInicial = raio;
-			colunaInicial = raio;
-			break;
-		}
+		cacheIndice = -1;
+		usarCache = false;
+		
+		linhaInicial = preImagem.getLinhas() - raio - 1;
+		colunaInicial = preImagem.getColunas() - raio - 1;
 		
 		linha = linhaInicial;
 		coluna = colunaInicial;
@@ -243,21 +171,7 @@ public class AutomatoCelular implements AutomatoCelularHandler {
 	 * @return Valor da celula centra do reticulado.
 	 */
 	private boolean getValorReticulado() {
-		switch (regraPrincipal.direcaoCalculo) {
-		case DirecaoCalculo.NORTE:
-			return reticulado.get(linha + regraPrincipal.raio, coluna);
-			
-		case DirecaoCalculo.SUL:
-			return reticulado.get(linha - regraPrincipal.raio, coluna);
-			
-		case DirecaoCalculo.ESQUERDA:
-			return reticulado.get(linha, coluna + regraPrincipal.raio);
-			
-		case DirecaoCalculo.DIREITA:
-			return reticulado.get(linha, coluna - regraPrincipal.raio);
-		}
-		
-		throw new RuntimeException("Direção inválida!");
+		return reticulado.get(linha + regraPrincipal.raio, coluna);
 	}
 	
 	/**
@@ -265,12 +179,15 @@ public class AutomatoCelular implements AutomatoCelularHandler {
 	 * @return O reticulado da pré-imagem calculada.
 	 */
 	public Reticulado calcularPreImagem() {
+		final int raio = regraPrincipal.raio;
+		final int direcao = regraPrincipal.direcaoCalculo;
+		
+		// Ajustando a rotacao do reticulado de acordo com a direcao de calculo da regra
+		reticulado.direcao = regraPrincipal.direcaoCalculo;
+
 		// Cria o reticulado da préimagem, e já calcula os bits da borda.
 		Reticulado preImagem = criarReticuladoPreImagem(reticulado);
 		
-		final int raio = regraPrincipal.raio;
-		final int direcao = regraPrincipal.direcaoCalculo;
-		 
 		// Calculando os bits do interior do reticulado
 		// calculo = 0
 		iniciarCalculoPI(preImagem, regraPrincipal);
@@ -278,31 +195,23 @@ public class AutomatoCelular implements AutomatoCelularHandler {
 		//int mascaraVertical = Integer.valueOf("01100", 2);
 		//int mascarax = Integer.valueOf("00100", 2);
 		
-		//cacheLinha = new int [reticulado.colunas];
-		
-		final int raioMaisUm = raio + 1;
+		final int RAIO_MAIS_UM = raio + 1;
 		
 		// calculo < maximo
 		while (continuarCalculoPI(preImagem, regraPrincipal)) {
 			int indice =  Transicao.getIndice0(preImagem, linha, coluna, raio, direcao,
 					cacheIndice, usarCache ? cacheIndices[posicaoCache] : -1);
-			
-			//switch (direcao) {
-			//case DirecaoCalculo.NORTE:
-				cacheIndice = (indice & mascaraInterna) >> 1;
-				cacheIndices[posicaoCache] = ((indice >> 1) & mascaraExterna) | ((indice & mascaraBitCentral) >> raioMaisUm);
-				//break;
-				/*
-			case DirecaoCalculo.SUL:
-				break;
-			
-			case DirecaoCalculo.ESQUERDA:
-				break;
 
-			case DirecaoCalculo.DIREITA:
-				break;
-			}
-			*/
+//			int indice =  Transicao.getIndice0(preImagem, linha, coluna, raio, direcao,
+//					-1, -1);
+			
+			//int indice =  Transicao.getIndice0(preImagem, linha, coluna, raio, direcao,
+			//		cacheIndice, -1);
+
+			
+			cacheIndice = (indice & mascaraInterna) >> 1;
+		
+			cacheIndices[posicaoCache] = ((indice >> 1) & mascaraExterna) | ((indice & mascaraBitCentral) >> RAIO_MAIS_UM);
 				
 			Transicao transicao = regraPrincipal.transicoes[indice];
 			
@@ -319,6 +228,8 @@ public class AutomatoCelular implements AutomatoCelularHandler {
 		}
 		
 		reticulado = preImagem;
+		
+		reticulado.direcao = 0;
 		
 		return preImagem;
 	}
@@ -380,7 +291,12 @@ public class AutomatoCelular implements AutomatoCelularHandler {
 	public Reticulado evoluir(int numeroEvolucoes) {
 		Reticulado ret = reticulado;
 		
-		for (int i = 0; i < numeroEvolucoes; i++) {
+		
+		int rotacao = (numeroEvolucoes % rotacaoReticulado.length) - 1;
+		
+		for (int i = 0; i < numeroEvolucoes; i++, rotacao--) {
+			regraPrincipal.direcaoCalculo = rotacaoReticulado[Util.getIndice(rotacaoReticulado.length, rotacao)];
+			
 			ret = evolouir();
 		}
 		
@@ -388,16 +304,18 @@ public class AutomatoCelular implements AutomatoCelularHandler {
 	}
 	
 	public Reticulado evolouir() {
+		
+		reticulado.direcao = regraPrincipal.direcaoCalculo;
+		
 		Reticulado preImagem = reticulado;//aplicarDeslocamento(reticulado); 
 		reticulado = criarReticulado(preImagem);
 		
 		final int raio = regraPrincipal.raio;
-		final int linhas = reticulado.linhas;
-		final int colunas = reticulado.colunas;
-		final int direcao = regraPrincipal.direcaoCalculo;
+		final int linhas = reticulado.getLinhas();
+		final int colunas = reticulado.getColunas();
 		
-		for (int coluna = 0; coluna < reticulado.colunas; coluna++) {
-			for (int linha = 0; linha < reticulado.linhas; linha++) {
+		for (int coluna = 0; coluna < colunas; coluna++) {
+			for (int linha = 0; linha < linhas; linha++) {
 				
 				Regra regra = this.regraPrincipal;
 				
@@ -410,29 +328,14 @@ public class AutomatoCelular implements AutomatoCelularHandler {
 				
 				Transicao transicao = regra.transicoes[indice];
 				
-				switch (direcao) {
-				case DirecaoCalculo.NORTE:
-					reticulado.set(linha + raio, coluna, transicao.valor);
-					break;
-
-				case DirecaoCalculo.SUL:
-					reticulado.set(linha - raio, coluna, transicao.valor);
-					break;
-					
-				case DirecaoCalculo.ESQUERDA:
-					reticulado.set(linha, coluna + raio, transicao.valor);
-					break;
-					
-				case DirecaoCalculo.DIREITA:
-					reticulado.set(linha, coluna - raio, transicao.valor);
-					break;
-
-				}
+				reticulado.set(linha + raio, coluna, transicao.valor);
 //				handler.aposSetBitReticulado(reticulado, linha + raio, coluna, false);
 			}
 		}
 		
-		reticulado.removerDeslocamento();
+		//reticulado.removerDeslocamento();
+		
+		reticulado.direcao = 0;
 		
 		return reticulado;
 	}
@@ -444,15 +347,14 @@ public class AutomatoCelular implements AutomatoCelularHandler {
 	 */
 	private Reticulado criarReticuladoPreImagem(Reticulado reticulado) {
 		final int raio = regraPrincipal.raio;
-		final int linhas = reticulado.linhas;
-		final int colunas = reticulado.colunas;
+		final int linhas = reticulado.getLinhas();
+		final int colunas = reticulado.getColunas();
 		
 		// Criando o reticulado da pré-imagem.
-		Reticulado preImagem = new Reticulado(linhas, colunas);
+		Reticulado preImagem = new Reticulado(reticulado); 
+			//new Reticulado(linhas, colunas, reticulado.direcao);
 			//aplicarDeslocamento(new Reticulado(linhas, colunas)); 
 			//new Reticulado(new boolean[linhas][colunas]);
-		
-//		handler.antesCriarReticuladoPreImagem(preImagem);
 		
 		final int deslocamento = raio * 4; 
 		
@@ -500,10 +402,7 @@ public class AutomatoCelular implements AutomatoCelularHandler {
 	 * @return
 	 */
 	private Reticulado criarReticulado(Reticulado preImage) {
-		int linhas = preImage.linhas;
-		int colunas = preImage.colunas;
-		
-		return new Reticulado(linhas, colunas);
+		return new Reticulado(preImage);
 	}
 
 	/**

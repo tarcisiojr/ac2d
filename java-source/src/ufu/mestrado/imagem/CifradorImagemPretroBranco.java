@@ -154,6 +154,7 @@ public class CifradorImagemPretroBranco implements AutomatoCelularHandler {
 				reticulado.getIndiceColuna(coluna),
 				reticulado.getIndiceLinha(linha),
 				valor ? PRETO : BRANCO);*/
+		
 	}
 
 	@Override
@@ -176,4 +177,7 @@ public class CifradorImagemPretroBranco implements AutomatoCelularHandler {
 		automatoCelular = ac;
 	}
 
+	
+	public static void main(String[] args) {
+	}
 }
