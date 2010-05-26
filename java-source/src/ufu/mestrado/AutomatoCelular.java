@@ -3,16 +3,67 @@ package ufu.mestrado;
 import ufu.mestrado.exception.AutomatoCelularException;
 
 public class AutomatoCelular implements AutomatoCelularHandler {
-	
-	private Reticulado reticuladoInicial;
-	private Reticulado reticulado;
-	private Regra regraPrincipal;
-	private Regra regraContorno;
-	
 	private boolean debug = false;
 	
+	/** Reticulado incial. */
+	private Reticulado reticuladoInicial;
+	
+	/** Reticulado atual do automato ceular. */
+	private Reticulado reticulado;
+	
+	/** Regra utilizada para cifrar os bist internos. */
+	private Regra regraPrincipal;
+	
+	/** Regra utilizada na borda do reticulado. */
+	private Regra regraContorno;
+	
+	/** Indica se o reticulado deve ser rotacionando a cada passo de pré-imagem. */
+	public boolean rotacionarReticulado = false;
+	
 	/** Ordem que o reticulado deve ser rotacionado. */
-	private int rotacaoReticulado[] = {0, 1, 2, 3}; 
+	private int ordemRotacaoReticulado[] = {
+			DirecaoCalculo.NORTE, 
+			DirecaoCalculo.ESQUERDA,
+			DirecaoCalculo.SUL,
+			DirecaoCalculo.DIREITA
+	}; 
+	
+	/** Linha que será iniciado o cálculo da pré-imagem. */
+	private int linhaInicial;
+	
+	/** Coluna incial que será iniciado o cálculo da pré-imagem. */
+	private int colunaInicial;
+	
+	/** Linha atual do calculo da pré-imagem. */
+	private int linha;
+	
+	/** Coluna atual do calculo da pré-imagem. */
+	private int coluna;
+
+	/** Utilizado para realizar cache da parte interna do indice (onde pode ser paralelizado). */
+	private int cacheIndice;
+	
+	/** Utilizado apra realizar o cache de indices de uma linha para outra quando direcao = NORTE por exemplo. */
+	private int cacheIndices[];
+	
+	/** Indica quando devemos utilizaro o array de cache. */
+	private boolean usarCache = false;
+	
+	/** Mascara utilizada na parte interna do indice. */
+	private int mascaraInterna;
+	
+	/** Mascara utilizada na parte externa do indice. */
+	private int mascaraExterna;
+	
+	/** Marcara utilizada para obter o valor do bit central. */
+	private int mascaraBitCentral;
+	
+	/** Indica se o cache sera feito na linha ou na coluna. */
+	private int posicaoCache = -1;
+	
+	/** Valor do bit central do reticulado no momento do calculo de um bit da pre-imagem. */
+	private boolean valorReticulado;
+	
 	
 	/**
 	 * Construtor.
@@ -52,10 +103,10 @@ public class AutomatoCelular implements AutomatoCelularHandler {
 		
 		mascaraBitCentral = 1 << (raio * 2); // 2 x raio
 		
-		// Bits internos. 000..XXX...000
+		// Bits internos. 000..YYY...000
 		mascaraInterna = ((1 << (raio * 2)) -1) << (raio + 1);
 		
-		// Bis externos. XXX....00....XXX
+		// Bis externos. YYY....00....YYY
 		mascaraExterna = ((1 << (raio * 4 + 1)) -1) - (((1 << (raio * 2 + 1)) -1) << raio) - (1 << (raio -1));
 		
 		//System.out.println(Integer.toString(mascaraBitCentral, 2));
@@ -68,50 +119,21 @@ public class AutomatoCelular implements AutomatoCelularHandler {
 		cacheIndices = new int[Math.max(this.reticulado.getColunas(), this.reticulado.getLinhas())];
 		
 		for (int i = 0; i < numeroCalculos; i++) {
-			regraPrincipal.direcaoCalculo = rotacaoReticulado[i % rotacaoReticulado.length];
+			// É para alterar a direcao de calculo a cada pré-imagem?
+			if (rotacionarReticulado) {
+				// Sim, rotacionando a direcao de calculo, assim ao calcular a pré-imagem o reticulado será rotacionado
+				regraPrincipal.direcaoCalculo = ordemRotacaoReticulado[i % ordemRotacaoReticulado.length];
+			}
 			
 			preImagem = calcularPreImagem();
+			
+			// Rotacionando o núcleo a regra para direita.
+			regraPrincipal.rotacaoNucleo++;
+			regraContorno.rotacaoNucleo = regraPrincipal.rotacaoNucleo;
 		}
 		
 		return preImagem;
 	}
-	
-	/** Linha que será iniciado o cálculo da pré-imagem. */
-	private int linhaInicial;
-	
-	/** Coluna incial que será iniciado o cálculo da pré-imagem. */
-	private int colunaInicial;
-	
-	/** Linha atual do calculo da pré-imagem. */
-	private int linha;
-	
-	/** Coluna atual do calculo da pré-imagem. */
-	private int coluna;
-
-	/** Utilizado para realizar cache da parte interna do indice (onde pode ser paralelizado). */
-	private int cacheIndice;
-	
-	/** Utilizado apra realizar o cache de indices de uma linha para outra quando direcao = NORTE por exemplo. */
-	private int cacheIndices[];
-	
-	/** Indica quando devemos utilizaro o array de cache. */
-	private boolean usarCache = false;
-	
-	/** Mascara utilizada na parte interna do indice. */
-	private int mascaraInterna;
-	
-	/** Mascara utilizada na parte externa do indice. */
-	private int mascaraExterna;
-	
-	/** Marcara utilizada para obter o valor do bit central. */
-	private int mascaraBitCentral;
-	
-	/** Indica se o cache sera feito na linha ou na coluna. */
-	private int posicaoCache = -1;
-	
-	/** Valor do bit central do reticulado no momento do calculo de um bit da pre-imagem. */
-	private boolean valorReticulado;
-	
 	
 	/**
 	 * Verifica se o cálculo da pré-imagem foi finalizado.
@@ -202,18 +224,11 @@ public class AutomatoCelular implements AutomatoCelularHandler {
 			int indice =  Transicao.getIndice0(preImagem, linha, coluna, raio, direcao,
 					cacheIndice, usarCache ? cacheIndices[posicaoCache] : -1);
 
-//			int indice =  Transicao.getIndice0(preImagem, linha, coluna, raio, direcao,
-//					-1, -1);
-			
-			//int indice =  Transicao.getIndice0(preImagem, linha, coluna, raio, direcao,
-			//		cacheIndice, -1);
-
-			
 			cacheIndice = (indice & mascaraInterna) >> 1;
 		
 			cacheIndices[posicaoCache] = ((indice >> 1) & mascaraExterna) | ((indice & mascaraBitCentral) >> RAIO_MAIS_UM);
 				
-			Transicao transicao = regraPrincipal.transicoes[indice];
+			Transicao transicao = regraPrincipal.getTransicao(indice);
 			
 			boolean bit = transicao.getPrimeiroBit(raio);
 			
@@ -234,68 +249,25 @@ public class AutomatoCelular implements AutomatoCelularHandler {
 		return preImagem;
 	}
 	
-	/**
-	 * Realiza o cálculo da pré-imagem.
-	 * @return O reticulado da pré-imagem calculada.
-	public Reticulado calcularPreImagem2() {
-		handler.antesCalcularPreImagem();
-		
-		// Cria o reticulado da préimagem, e já calcula os bits da borda.
-		Reticulado preImagem = criarReticuladoPreImagem(reticulado);
-		
-		handler.aposCriarReticuladoPreImagem(preImagem);
-		
-		int raio = regraPrincipal.getRaio();
-		
-		// Calculando os bits do interior do reticulado
-		for (int linha = preImagem.getLinhas() - raio - 1; linha >= raio; linha--) {
-			for (int coluna = preImagem.getColunas() - raio - 1; coluna >= raio; coluna--) {
-				int indices[] = Transicao.getIndices(preImagem, linha, coluna, raio, regraPrincipal.getDirecaoCalculo());
-
-				handler.aposBuscaTransicoes(indices);
-				
-				int indice = 0;
-				
-				Transicao transicao = regraPrincipal.getTransicao(indices[indice]);
-				
-				boolean bit = transicao.getPrimeiroBit(raio);
-				
-				int linhaReticulado = linha + raio;
-				
-				if (transicao.getValor() != reticulado.get(linhaReticulado, coluna)) {
-					bit = !bit;
-					indice = 1;
-				}
-				
-				handler.aposTransicaoEscolhida(indices[indice]);
-				handler.aposGetBitReticulado(reticulado, linhaReticulado, coluna);
-				
-				preImagem.set(linha, coluna, bit);
-				
-				handler.aposSetBitReticulado(preImagem, linha, coluna, true);
-				//handler.aposSetBitPreImagem(preImagem, linha, coluna);
-			}
-		}
-		
-		// Remove o deslocamento da pré-imagem.
-		preImagem.removerDeslocamento();
-		
-		handler.aposCalcularPreImagem(preImagem);
-		
-		reticulado = preImagem;
-		
-		return preImagem;
-	}
-	 */
-	
 	public Reticulado evoluir(int numeroEvolucoes) {
 		Reticulado ret = reticulado;
 		
+		int rotacaoReticulado = (numeroEvolucoes % ordemRotacaoReticulado.length) - 1;
 		
-		int rotacao = (numeroEvolucoes % rotacaoReticulado.length) - 1;
+		// É para rotacionar o reticulado?
+		if (rotacionarReticulado) {
+			regraPrincipal.rotacaoNucleo = (numeroEvolucoes % regraPrincipal.tamanhoNucleo);
+		}
 		
-		for (int i = 0; i < numeroEvolucoes; i++, rotacao--) {
-			regraPrincipal.direcaoCalculo = rotacaoReticulado[Util.getIndice(rotacaoReticulado.length, rotacao)];
+		for (int i = 0; i < numeroEvolucoes; i++, rotacaoReticulado--) {
+			// É para rotacionar o reticulado?
+			if (rotacionarReticulado) {
+				// Obtém a direção correta, inverso do que ocorre no cálculo da pré-imagem
+				regraPrincipal.direcaoCalculo = ordemRotacaoReticulado[Util.getIndice(ordemRotacaoReticulado.length, rotacaoReticulado)];
+			}
+			
+			regraPrincipal.rotacaoNucleo--;
+			regraContorno.rotacaoNucleo = regraPrincipal.rotacaoNucleo;
 			
 			ret = evolouir();
 		}
@@ -326,7 +298,7 @@ public class AutomatoCelular implements AutomatoCelularHandler {
 				
 				int indice = Transicao.getIndice(preImagem, linha, coluna, regra.raio, regra.direcaoCalculo);
 				
-				Transicao transicao = regra.transicoes[indice];
+				Transicao transicao = regra.getTransicao(indice);
 				
 				reticulado.set(linha + raio, coluna, transicao.valor);
 //				handler.aposSetBitReticulado(reticulado, linha + raio, coluna, false);
@@ -370,7 +342,7 @@ public class AutomatoCelular implements AutomatoCelularHandler {
 				
 				int indice = Util.toInt(bit) << deslocamento;
 				
-				Transicao transicao = regraContorno.transicoes[indice];
+				Transicao transicao = regraContorno.getTransicao(indice);
 				
 				preImagem.set(linha, coluna, transicao.valor);
 			}
@@ -386,7 +358,7 @@ public class AutomatoCelular implements AutomatoCelularHandler {
 				
 				int indice = Util.toInt(bit) << deslocamento;
 				
-				Transicao transicao = regraContorno.transicoes[indice];
+				Transicao transicao = regraContorno.getTransicao(indice);
 				
 				preImagem.set(linha, coluna, transicao.valor);
 			}

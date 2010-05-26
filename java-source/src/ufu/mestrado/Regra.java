@@ -6,48 +6,70 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Regra {
-
-	//private Map<Integer, Transicao> transicoes;
-	public Transicao transicoes[];
+	/** Transições. */
+	private Transicao transicoes[];
+	
+	/** Raio. */
 	public int raio;
+	
+	/** Direção de cálculo da regra. */
 	public int direcaoCalculo;
+	
+	/** Núcleo utilizado na construção da regra. */
 	private String nucleo;
+	
+	/** Tamanho do núcleo, auxilia na obtenção da transição quando a regra foi rotacionada. */
+	public int tamanhoNucleo;
+	
+	/** 
+	 * Quantidade de rotações executadas na regra. 
+	 * Se positiva indica que a regra foi rotacionada n vezes para direita, se negativa, indica que a regra foi 
+	 * rotacionada Math.abs(n) vezes para esquerda. 
+	 */
+	public int rotacaoNucleo = 0;
 
 	public Regra(int raio, int direcaoCalculo) {
 		this.transicoes = new Transicao[(int) Math.pow(2, raio * 4 + 1)];//new HashMap<Integer, Transicao>();
 		this.raio = raio;
 		this.direcaoCalculo = direcaoCalculo;
+		this.tamanhoNucleo = transicoes.length / 2;
 	}
 	
-	/**
-	 * Retorna o raio da regra.
-	 * @return O raio da regra.
-	 */
-	/*public int getRaio() {
-		return raio;
-	}*/
-
 	/**
 	 * O total de transições adicionadas à regra.
 	 * @return Número de transições adicionadas.
 	 */
 	public int getTotalTransicoes() {
-//		return transicoes.size();
 		return transicoes.length;
 	}
 	
-	/*public Transicao getTransicao(int indice) {
-//		return transicoes.get(indice);
-		return transicoes[indice];
-	}*/
-	
-	/*public Map<Integer, Transicao> getTransicoes() {
-		return transicoes;
-	}*/
-	
 	public void adicionarTransicao(Transicao transicao) {
-		//transicoes.put(transicao.getIndice(), transicao);
 		transicoes[transicao.indice] = transicao;
+	}
+	
+	public final Transicao getTransicao(int indice) {
+		if (rotacaoNucleo == 0/* || true*/) {
+			// Nenhuma rotacao na regra.
+			return transicoes[indice];
+
+		}
+		
+		int indiceNucleo = indice;
+		
+		// A transição pertence a parte superior da regra?
+		if (indice >= tamanhoNucleo) {
+			indiceNucleo = indice - tamanhoNucleo;
+		} 
+		
+		indiceNucleo = Util.getIndice(tamanhoNucleo, indiceNucleo + rotacaoNucleo);
+		
+		if (indice >= tamanhoNucleo) {
+			// Ajustando o que foi retirado...
+			indiceNucleo += tamanhoNucleo;
+		}
+		
+		// Rotocionou a regra para direita ou esquerda.
+		return transicoes[indiceNucleo];
 	}
 	
 	/**
@@ -121,19 +143,6 @@ public class Regra {
 			regraContorno.adicionarTransicao(transicao);
 		}
 		
-		/*for (Entry<Integer, Transicao> entry : regraPrincipal.getTransicoes().entrySet()) {
-			
-			boolean novoValor = valor;
-			
-			if (!entry.getValue().getPrimeiroBit(raio)) {
-				novoValor = !valor;
-			}
-			
-			Transicao transicao = new Transicao(entry.getKey(), raio, regraPrincipal.getDirecaoCalculo(), novoValor);
-			
-			regraContorno.adicionarTransicao(transicao);
-		}*/
-		
 		return regraContorno;
 	}
 	
@@ -149,15 +158,6 @@ public class Regra {
 	}
 	
 	/**
-	 * Retorna a direção do cálculo da regra.
-	 * @return Direção do cálculo.
-	 */
-	/*public int getDirecaoCalculo() {
-		return direcaoCalculo;
-	}*/
-	
-	
-	/**
 	 * Carrega as regras a partir do arquivo fornecido.
 	 * @param nomeArquivo Nome do arquivo.
 	 * @return Regras
@@ -166,6 +166,7 @@ public class Regra {
 	public static List<Regra> carregarRegras(String nomeArquivo) throws Exception {
 		return carregarRegras(nomeArquivo, DirecaoCalculo.NORTE);
 	}
+	
 	public static List<Regra> carregarRegras(String nomeArquivo, int direcao) throws Exception {
 		BufferedReader reader = new BufferedReader(new FileReader(nomeArquivo));
 

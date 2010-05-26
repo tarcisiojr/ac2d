@@ -110,8 +110,10 @@ public class TesteEntropiaImagemPretoBranco {
 	
 	public static void main(String[] args) throws Exception {
 		
-		int pi = 11;
-		String regra = "0000000101010110";
+		int pi = 25;
+		String regra = "1111101101111101";
+//		String regra = "0000000101010110";
+//		String regra = "0000110001100000";
 		
 		Reticulado[] ret1 = cifrar(pi, regra, DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia/", "lena.bmp", true);
 		Reticulado[] ret2 = cifrar(pi, regra, DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia/", "lena_alterada.bmp", true);
