@@ -20,6 +20,9 @@ public class AutomatoCelular implements AutomatoCelularHandler {
 	/** Indica se o reticulado deve ser rotacionando a cada passo de pré-imagem. */
 	public boolean rotacionarReticulado = false;
 	
+	/** Indica se o reticulado deve ser deslocado a cada passo de pré-imagem. */
+	public boolean deslocarReticulado = true;
+	
 	/** Ordem que o reticulado deve ser rotacionado. */
 	private int ordemRotacaoReticulado[] = {
 			DirecaoCalculo.NORTE, 
@@ -206,6 +209,12 @@ public class AutomatoCelular implements AutomatoCelularHandler {
 		
 		// Ajustando a rotacao do reticulado de acordo com a direcao de calculo da regra
 		reticulado.direcao = regraPrincipal.direcaoCalculo;
+		
+		if (deslocarReticulado) {
+			// Aplicando um deslocamento no reticulado.
+			reticulado.deslocamentoLinha = 2 * regraPrincipal.raio;
+			//reticulado.deslocamentoColuna = 2;
+		}
 
 		// Cria o reticulado da préimagem, e já calcula os bits da borda.
 		Reticulado preImagem = criarReticuladoPreImagem(reticulado);
@@ -282,6 +291,11 @@ public class AutomatoCelular implements AutomatoCelularHandler {
 		Reticulado preImagem = reticulado;//aplicarDeslocamento(reticulado); 
 		reticulado = criarReticulado(preImagem);
 		
+		if (deslocarReticulado) {
+			reticulado.deslocamentoLinha = 2 * regraPrincipal.raio;
+			//reticulado.deslocamentoColuna = 2;
+		}
+		
 		final int raio = regraPrincipal.raio;
 		final int linhas = reticulado.getLinhas();
 		final int colunas = reticulado.getColunas();
@@ -301,11 +315,11 @@ public class AutomatoCelular implements AutomatoCelularHandler {
 				Transicao transicao = regra.getTransicao(indice);
 				
 				reticulado.set(linha + raio, coluna, transicao.valor);
-//				handler.aposSetBitReticulado(reticulado, linha + raio, coluna, false);
 			}
 		}
 		
-		//reticulado.removerDeslocamento();
+		reticulado.deslocamentoLinha = 0;
+		reticulado.deslocamentoColuna = 0;
 		
 		reticulado.direcao = 0;
 		

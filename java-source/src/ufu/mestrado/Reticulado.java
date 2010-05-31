@@ -20,8 +20,11 @@ public class Reticulado implements Cloneable {
 	private int linhas; 
 	private int colunas;
 	
-	private int deslocamentoLinha = 0;
-	private int deslocamentoColuna = 0;
+	/** Deslocamento que será aplicado à linha. */
+	public int deslocamentoLinha = 0;
+	
+	/** Deslocamento que será aplicado à coluna. */
+	public int deslocamentoColuna = 0;
 	
 	private int numeroZeros = 0;
 	
@@ -82,10 +85,7 @@ public class Reticulado implements Cloneable {
 	}
 	
 	public Reticulado(int linhas, int colunas) {
-		this.reticulado = new boolean[linhas][colunas];
-		this.linhas = linhas;
-		this.colunas = colunas;
-		this.numeroZeros = linhas * colunas;
+		this(linhas, colunas, DirecaoCalculo.NORTE);
 	}
 	
 	public Reticulado(int linhas, int colunas, int direcao) {
@@ -100,23 +100,6 @@ public class Reticulado implements Cloneable {
 		this(reticulado.linhas, reticulado.colunas, reticulado.direcao);
 	}
 	
-	/*public Reticulado(Reticulavel reticulavel) {
-//		this.reticulavel = reticulavel;
-		this.linhas = reticulavel.getLinhas();
-		this.colunas = reticulavel.getColunas();
-		
-		this.numeroZeros = 0;
-		this.reticulado = new boolean[linhas][colunas];
-		
-		for (int i = 0; i < linhas; i++) {
-			for (int j = 0; j < colunas; j++) {
-				boolean valor = reticulavel.get(i, j);
-				this.reticulado[i][j] = valor;
-				this.numeroZeros += valor ? 0 : 1;
-			}
-		}
-	}*/
-
 	/**
 	 * Conta a quantidade de zeros do reticulado.
 	 */
@@ -172,7 +155,7 @@ public class Reticulado implements Cloneable {
 		
 		switch (direcao) {
 		case DirecaoCalculo.NORTE:
-			return _get(linha, coluna);
+			return _get(linha + deslocamentoLinha, coluna + deslocamentoColuna);
 			
 		case DirecaoCalculo.ESQUERDA:
 			//return _get(coluna, (colunas -1) - linha);
@@ -196,7 +179,7 @@ public class Reticulado implements Cloneable {
 		
 		switch (direcao) {
 		case DirecaoCalculo.NORTE:
-			 _set(linha, coluna, valor);
+			 _set(linha + deslocamentoLinha, coluna + deslocamentoColuna, valor);
 			 return;
 			
 		case DirecaoCalculo.ESQUERDA:

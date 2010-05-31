@@ -189,7 +189,7 @@ public class TesteEntropiaRegrasRuins {
 
 	
 	public static void main(String[] args) throws Exception {
-		int pi = 10;
+		int pi = 30;
 		
 		List<Regra> regras = Regra.carregarRegras("E:/workspaces/Mestrado/testes/regras_1000_1_ver1.txt");
 		

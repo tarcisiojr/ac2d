@@ -17,7 +17,7 @@ import ufu.mestrado.imagem.CifradorImagemPretroBranco;
 public class TesteSistematicoCifragemACImagemPretoBranco {
 	
 	public static void iniciar(String arqRegras, String strDirImagens, int tamLinhasJanela,
-			int tamColunasJanela, int qtdPreImagem, int direcao, int linhaRuido, int colunaRuido) throws Exception {
+			int tamColunasJanela, int qtdPreImagem, int direcao, int linhaRuido, int colunaRuido, int inicio, int fim) throws Exception {
 		
 		File dirImagens = new File(strDirImagens);
 		//File dirSaida = new File(strDirSaida);
@@ -45,6 +45,7 @@ public class TesteSistematicoCifragemACImagemPretoBranco {
 		System.out.println("Quantidade de pre-imagem:: " + qtdPreImagem);
 		System.out.println("Direcao do calculo: " + DirecaoCalculo.toString(direcao));
 		System.out.println("Posicao ruido [linha x coluna]: [" + linhaRuido + " x " + colunaRuido + "]");
+		System.out.println("Intervalo: " + inicio  + " ate " + fim);
 		
 		System.out.println();
 		System.out.print("Indice\t");
@@ -64,10 +65,19 @@ public class TesteSistematicoCifragemACImagemPretoBranco {
 		nf.setMaximumFractionDigits(3);
 		nf.setMinimumFractionDigits(3);
 		
-		int i = 1;
 		final int totalImagens = arqImagens.length;
 		
-		for (Regra regra : regras) {
+		if (inicio == -1) {
+			inicio = 1;
+		}
+		
+		if (fim == -1) {
+			fim = regras.size();
+		}
+		
+		for (int i = inicio -1; i < regras.size() && i < fim; i++) {
+			Regra regra = regras.get(i);
+			
 			double entropiaMaxima = Double.MIN_VALUE;
 			double entropiaMinima = Double.MAX_VALUE;
 			double entropiaMedia = 0;
@@ -127,7 +137,7 @@ public class TesteSistematicoCifragemACImagemPretoBranco {
 			entropiaMedia = entropiaMedia / totalImagens;
 			percZerosMedia = percZerosMedia / totalImagens;
 			
-			System.out.print(i + "\t");
+			System.out.print((i + 1) + "\t");
 			System.out.print("[" + regra.getNucleo() + "]\t");
 			System.out.print(nf.format(regra.entropia()) + "\t");
 			
@@ -143,8 +153,6 @@ public class TesteSistematicoCifragemACImagemPretoBranco {
 			System.out.print(nf.format(percZerosMinimo) + "\t");
 			
 			Cronometro.parar();
-			
-			i++;
 		}
 	}
 	
@@ -152,7 +160,7 @@ public class TesteSistematicoCifragemACImagemPretoBranco {
 		//public static final int LINHAS_JANELA = 3;
 		//public static final int COLUNAS_JANELA = 6;
 		
-		if (args.length != 8) {
+		if (args.length != 10) {
 			args = new String[] {
 				"./testes/regras_1000_1_ver1.txt",
 				"E:/junior/Desktop/mestrado/base_dados_imagens/512x512",
@@ -161,7 +169,9 @@ public class TesteSistematicoCifragemACImagemPretoBranco {
 				"10",
 				"1", //NORTE
 				"255",
-				"255"
+				"255",
+				"-1",
+				"-1"
 			};
 		} 
 		
@@ -173,6 +183,8 @@ public class TesteSistematicoCifragemACImagemPretoBranco {
 				Integer.parseInt(args[4]),
 				Integer.parseInt(args[5]),
 				Integer.parseInt(args[6]),
-				Integer.parseInt(args[7]));
+				Integer.parseInt(args[7]),
+				Integer.parseInt(args[8]),
+				Integer.parseInt(args[9]));
 	}
 }
