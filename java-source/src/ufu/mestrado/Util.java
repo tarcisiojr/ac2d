@@ -36,11 +36,11 @@ public class Util {
 	}
 	
 	public static int descobrirTamanhoJanela(boolean palavra[]) {
-		int n = palavra.length;
-		
-		int tamanho = (int) (Math.log(n) / Math.log(2));
-		
-		return tamanho;
+		return descobrirTamanhoJanela(palavra.length);
+	}
+	
+	public static int descobrirTamanhoJanela(int tamanhoArray) {
+		return (int) (Math.log(tamanhoArray) / Math.log(2));
 	}
 	
 	/**
@@ -56,6 +56,72 @@ public class Util {
 	
 	public static double entropia(boolean palavra[]) {
 		return entropia(palavra, descobrirTamanhoJanela(palavra));
+	}
+	
+	// Constantes utilizadas para calcular a entropia em matriz.
+	public static final int ENTROPIA_LINHA = 0;
+	public static final int ENTROPIA_COLUNA = 1;
+	
+	/**
+	 * Realiza o cálculo da entropia em uma coluna ou linha da matriz fornecida.
+	 * @param matriz Matriz que fornecerá a linha ou a coluna para ser cálculada a entropia.
+	 * @param tipo Indica o cálculo da entropia será realizado na coluna ou na linha.
+	 * @param linha Linha da matriz que será calculada a entropia.
+	 * @param coluna Coluna da matriz que será calculada a entropia.
+	 * @param tamJanela Tamanho da janela a ser utilizado no cálculo da entropia.
+	 * @return a entropia da linha ou coluna para a matriz fornecida.
+	 */
+	public static final double entropiaMatriz(final boolean matriz[][], final int tipo, final int linha,
+			final int coluna, final int tamJanela) {
+		
+		final Map<Integer, Integer> ocorrencias = new HashMap<Integer, Integer>();
+		
+		final int maximo = ENTROPIA_LINHA == tipo ? matriz[0].length : matriz.length;
+		
+		for (int i = 0; i < maximo; i++) {
+			
+			int indice = 0;
+			
+			for (int j = 0; j < tamJanela; j++) {
+				boolean valor = (ENTROPIA_LINHA == tipo) ?
+					matriz[linha][(i + j) % maximo] :
+					matriz[(i + j) % maximo][coluna];
+				
+				indice = (indice << 1) | (valor ? 1 : 0);
+			}
+			
+			Integer ocorrencia = ocorrencias.get(indice);
+			
+			if (ocorrencia == null)
+				ocorrencia = 0;
+			
+			ocorrencias.put(indice, ++ocorrencia);
+		}
+		
+		double entropia = 0;
+		
+		double maximoOcorrencias = (int) Math.pow(2, tamJanela);
+		
+		for (Integer ocorrencia : ocorrencias.values()) {
+			double tmp = ((double)ocorrencia / (double) maximoOcorrencias); 
+			
+			entropia += tmp * (Math.log(tmp) / Math.log(2));
+		}
+
+		entropia = -entropia;
+		
+		return entropia;
+	}
+	
+	/**
+	 * Idem ao método entropiaMatriz, porém retorna o valor da entropia normalizado.
+	 */
+	public static final double entropiaMatrizNormalizada(final boolean matriz[][], final int tipo, final int linha,
+			final int coluna) {
+		
+		final int tamanhoJanela = descobrirTamanhoJanela(tipo == ENTROPIA_LINHA ? matriz[0].length : matriz.length);
+		
+		return entropiaMatriz(matriz, tipo, linha, coluna, tamanhoJanela) / tamanhoJanela;
 	}
 	
 	public static double entropia(boolean palavra[], int tamJanela) {
@@ -89,8 +155,6 @@ public class Util {
 
 		entropia = -entropia;
 		
-		//System.out.println(ocorrencias);
-		//System.out.println("entropia=" + entropia);
 		return entropia;
 	}
 	

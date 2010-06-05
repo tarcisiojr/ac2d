@@ -3,9 +3,18 @@ package ufu.mestrado;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 public class Regra {
+	/** Cache de regras principais. */
+	//private static final Map<String, Regra> cacheRegras = new HashMap<String, Regra>();
+	
+	/** Cache de regras de contorno. A chave do mapa é o núcleo da regra principal. */
+	private static final Map<String, Regra> cacheRegrasContorno = new HashMap<String, Regra>();
+	
 	/** Transições. */
 	private Transicao transicoes[];
 	
@@ -189,6 +198,10 @@ public class Regra {
 		return regras;
 	}
 
+	/**
+	 * Retorna o núcleo da regra.
+	 * @return Núcleo da regra.
+	 */
 	public String getNucleo() {
 		if (nucleo == null) {
 			throw new RuntimeException("Não implementado!");
@@ -226,7 +239,39 @@ public class Regra {
 		
 		return new String(novoNucleo);
 	}
+
+	/**
+	 * Cria uma nova regra com ruido a partir da regra original.
+	 * @return Regra com ruído.
+	 */
+	public Regra aplicarRuido() {
+		
+		int indiceRuido = new Random().nextInt(nucleo.length());
+		
+		byte buffer[] = nucleo.getBytes();
+		
+		buffer[indiceRuido] = (byte)(buffer[indiceRuido] == '0' ? '1' : '0');
+		
+		String novoNucleo = new String(buffer);
+		
+		return Regra.criarAPatirNucleo(novoNucleo, direcaoCalculo);
+	}
 	
+	/**
+	 * Retorna a regra de contorno a partir da regra principal fornecida.
+	 * @param regraPrincipal Regra principal.
+	 * @return A regra de contorno para regra principal fornecida.
+	 */
+	public static final Regra getRegraContorno(Regra regraPrincipal) {
+		Regra regraContorno = cacheRegrasContorno.get(regraPrincipal.getNucleo());
+		
+		if (regraContorno == null) {
+			regraContorno = criarRegraContorno(regraPrincipal);
+			cacheRegrasContorno.put(regraPrincipal.getNucleo(), regraContorno);
+		}
+		
+		return regraContorno;
+	}
 	
 	@Override
 	public String toString() {

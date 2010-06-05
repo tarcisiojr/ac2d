@@ -1,5 +1,6 @@
 package ufu.mestrado.teste;
 
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -14,6 +15,12 @@ import javax.imageio.ImageIO;
 import ufu.mestrado.Cronometro;
 
 public class TesteCifragemAESImagem {
+	/** Valor RGB da cor preta */
+	public static final int PRETO = Color.BLACK.getRGB();
+	
+	/** Valor RGB da cor branca */
+	public static final int BRANCO = Color.WHITE.getRGB();
+	
 	/**
 	 * Cifra a imagem fornecida e gera uma imagem cifrada de saída.
 	 * @param imagem Imagem a ser cifrada.
@@ -39,7 +46,7 @@ public class TesteCifragemAESImagem {
 
 		byte[] encrypted = cipher.doFinal(imagem);
 		
-		Cronometro.parar("Cifragem '" + nomeArquivo + "' " + operacao);
+		Cronometro.parar("Cifragem '" + nomeArquivo + "' " + operacao + " Tempo gasto: ");
 		
 		gerarImagem(largura, altura, encrypted, pastaSaida + operacao.replaceAll("/", "_") + "_" + nomeArquivo);
 		
@@ -86,7 +93,7 @@ public class TesteCifragemAESImagem {
 			
 			for (int i = 0; i < buffer.getHeight(); i++) {
 				for (int j = 0; j < buffer.getWidth(); j++) {
-					baos.write(buffer.getRGB(j, i));
+					baos.write(buffer.getRGB(j, i) == PRETO ? 1 : 0);
 				}
 			}
 			
@@ -101,7 +108,7 @@ public class TesteCifragemAESImagem {
 		
 			//CBC
 			//cifrar(height, width, imagem, "AES/CBC/NoPadding", pastaSaida, arquivoImagem);
-			cifrar(height, width, imagem, "AES/CBC/PKCS5Padding", pastaSaida, arquivoImagem);
+			//cifrar(height, width, imagem, "AES/CBC/PKCS5Padding", pastaSaida, arquivoImagem);
 			
 			//CFB
 			//cifrar(height, width, imagem, "AES/CFB/NoPadding", pastaSaida, arquivoImagem);
@@ -114,6 +121,15 @@ public class TesteCifragemAESImagem {
 			//PCBC
 			//cifrar(height, width, imagem, "AES/PCBC/NoPadding", pastaSaida, arquivoImagem);
 			//cifrar(height, width, imagem, "AES/PCBC/PKCS5Padding", pastaSaida, arquivoImagem);
+			
+			for (int i = 0; i < 50; i++) {
+				cifrar(height, width, imagem, "AES/CFB/NoPadding", pastaSaida, arquivoImagem);
+				try {
+					Thread.sleep(1000);
+				} catch (Exception e) {
+					
+				}
+			}
 		}
 	}
 }

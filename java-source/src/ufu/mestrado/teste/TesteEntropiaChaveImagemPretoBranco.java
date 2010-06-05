@@ -27,7 +27,7 @@ import ufu.mestrado.imagem.CifradorImagemPretroBranco;
  * @author Tarcísio Abadio de Magalhães Júnior
  *
  */
-public class TesteEntropiaImagemPretoBranco {
+public class TesteEntropiaChaveImagemPretoBranco {
 	/** Valor RGB da cor preta */
 	public static final int PRETO = Color.BLACK.getRGB();
 	
@@ -110,14 +110,16 @@ public class TesteEntropiaImagemPretoBranco {
 	
 	public static void main(String[] args) throws Exception {
 		
-		int pi = 50;
+		int pi = 30;
 		//String regra = "1111101101111101";
-		String regra = "1111111101110101";
+		String regra 	  = "1111111101110101";
+		String regraRuido = "1111111101110100";
+		
 //		String regra = "0000000101010110";
 //		String regra = "0000110001100000";
 		
-		Reticulado[] ret1 = cifrar(pi, regra, DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia/", "lena.bmp", true);
-		Reticulado[] ret2 = cifrar(pi, regra, DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia/", "lena_alterada.bmp", true);
+		Reticulado[] ret1 = cifrar(pi, regra,      DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia/", "lena.bmp", true);
+		Reticulado[] ret2 = cifrar(pi, regraRuido, DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia/", "lena.bmp", true);
 
 //		Reticulado[] ret1 = cifrar(pi, regra, DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia/", "512x512_0005.bmp", true);
 //		Reticulado[] ret2 = cifrar(pi, regra, DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia/", "512x512_0005_alterada.bmp", true);

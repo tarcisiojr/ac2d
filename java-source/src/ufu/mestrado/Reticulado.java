@@ -460,6 +460,43 @@ public class Reticulado implements Cloneable {
 		return entropia;
 	}
 	
+	/**
+	 * Retorna a menor entropia das colunas.
+	 * @return Menor entropia normalizada.
+	 */
+	public double getMenorEntropiaColuna() {
+		double menorEntropia = Double.MAX_VALUE;
+		
+		for (int i = 0; i < colunas; i++) {
+			double entropia = Util.entropiaMatrizNormalizada(reticulado, Util.ENTROPIA_COLUNA, -1, i);
+			
+			if (entropia < menorEntropia) {
+				menorEntropia = entropia;
+			}
+		}
+		
+		return menorEntropia;
+	}
+	
+	/**
+	 * Retorna a menor entropia das linhas.
+	 * @return Menor entropia normalizada.
+	 */
+	public double getMenorEntropiaLinha() {
+		double menorEntropia = Double.MAX_VALUE;
+		
+		for (int i = 0; i < colunas; i++) {
+			double entropia = Util.entropiaMatrizNormalizada(reticulado, Util.ENTROPIA_LINHA, i, -1);
+			
+			if (entropia < menorEntropia) {
+				menorEntropia = entropia;
+			}
+		}
+		
+		return menorEntropia;
+		
+	}
+	
 	/*public void setDeslocamentoLinha(int deslocamentoLinha) {
 		this.deslocamentoLinha = deslocamentoLinha;
 	}

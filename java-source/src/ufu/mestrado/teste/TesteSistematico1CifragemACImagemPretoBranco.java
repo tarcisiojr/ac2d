@@ -14,10 +14,11 @@ import ufu.mestrado.Reticulado;
 import ufu.mestrado.Util;
 import ufu.mestrado.imagem.CifradorImagemPretroBranco;
 
-public class TesteSistematicoCifragemACImagemPretoBranco {
+public class TesteSistematico1CifragemACImagemPretoBranco {
 	
-	public static void iniciar(String arqRegras, String strDirImagens, int tamLinhasJanela,
-			int tamColunasJanela, int qtdPreImagem, int direcao, int linhaRuido, int colunaRuido, int inicio, int fim) throws Exception {
+	public static void iniciar(String arqRegras, String strDirImagens, int tamLinhasJanela, int tamColunasJanela,
+			int qtdPreImagem, int direcao, int linhaRuido, int colunaRuido, int inicio, int fim,
+			boolean rotacionarSensitivdade) throws Exception {
 		
 		File dirImagens = new File(strDirImagens);
 		//File dirSaida = new File(strDirSaida);
@@ -62,8 +63,8 @@ public class TesteSistematicoCifragemACImagemPretoBranco {
 		System.out.print("Tempo_Gasto\n");
 		
 		NumberFormat  nf = DecimalFormat.getInstance();
-		nf.setMaximumFractionDigits(3);
-		nf.setMinimumFractionDigits(3);
+		nf.setMaximumFractionDigits(6);
+		nf.setMinimumFractionDigits(6);
 		
 		final int totalImagens = arqImagens.length;
 		
@@ -99,6 +100,7 @@ public class TesteSistematicoCifragemACImagemPretoBranco {
 				Reticulado retRuido = retInicial.aplicarRuido(linhaRuido, colunaRuido);
 				
 				AutomatoCelular ac = new AutomatoCelular(retInicial, regra);
+				ac.rotacionarReticulado = rotacionarSensitivdade;
 				Reticulado preImagemA = ac.calcularPreImage(qtdPreImagem);
 				
 				ac.setReticulado(retRuido);
@@ -171,7 +173,8 @@ public class TesteSistematicoCifragemACImagemPretoBranco {
 				"255",
 				"255",
 				"-1",
-				"-1"
+				"-1", 
+				"true"
 			};
 		} 
 		
@@ -185,6 +188,7 @@ public class TesteSistematicoCifragemACImagemPretoBranco {
 				Integer.parseInt(args[6]),
 				Integer.parseInt(args[7]),
 				Integer.parseInt(args[8]),
-				Integer.parseInt(args[9]));
+				Integer.parseInt(args[9]),
+				Boolean.parseBoolean(args[10]));
 	}
 }

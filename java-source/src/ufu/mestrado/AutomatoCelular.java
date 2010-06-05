@@ -95,6 +95,18 @@ public class AutomatoCelular implements AutomatoCelularHandler {
 	}
 	
 	/**
+	 * Configura a regra que será utilizada na evolução e no calculo da pré-imagem.
+	 * @param regra Nova regra.
+	 */
+	public void setRegra(Regra regra) {
+		this.regraPrincipal = regra;
+		this.regraContorno = Regra.getRegraContorno(regra);
+		
+		this.regraPrincipal.rotacaoNucleo = 0;
+		this.regraContorno.rotacaoNucleo = 0;
+	}
+	
+	/**
 	 * Realiza o cálcula da pre-imagem de acordo com o número solicitado.
 	 * @param numeroCalculos Números de cálculos de pré-imagem.
 	 * @return O Reticulado atual do automato.
