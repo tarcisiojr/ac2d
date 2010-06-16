@@ -48,12 +48,12 @@ public class TesteEntropiaChaveImagemPretoBranco {
 	 * @param decifrar Indica se é para realizar o processo de decifragem.
 	 * @throws Exception
 	 */
-	public static Reticulado[] cifrar(int qtdPI, String chave, int direcao, String pastaSaida, String nomeArquivo, boolean decifrar) throws Exception {
+	public static Reticulado[] cifrar(int qtdPI, String chave, int direcao, String pastaSaida, String nomeArquivo, boolean decifrar, boolean rotacionarSensitivdade) throws Exception {
 		CifradorImagemPretroBranco cifrador = new CifradorImagemPretroBranco(
 				pastaSaida + nomeArquivo, chave, direcao);
 		
 		AutomatoCelular ac = new AutomatoCelular(cifrador);
-		
+		ac.rotacionarReticulado = rotacionarSensitivdade;
 		Reticulado reticulados[] = new Reticulado[3];
 		
 		reticulados[0] = ac.getReticulado();
@@ -85,12 +85,16 @@ public class TesteEntropiaChaveImagemPretoBranco {
 		Reticulado xor = ret1.xor(ret2);
 		
 		double entropia = xor.entropia(LINHAS_JANELA, COLUNAS_JANELA);
+		double entropiaLinha = xor.getMenorEntropiaLinha();
+		double entropiaColuna = xor.getMenorEntropiaColuna();
 
 		xor.contabiliarZeros();
 		
 		System.out.println("=> " + texto);
-		System.out.println("% ZEROS.....: " + xor.getPercentualZeros());
-		System.out.println("Entropia XOR: " + new BigDecimal(entropia).setScale(5, BigDecimal.ROUND_HALF_UP));
+		System.out.println("% ZEROS............: " + xor.getPercentualZeros());
+		System.out.println("Entropia XOR.......: " + new BigDecimal(entropia).setScale(5, BigDecimal.ROUND_HALF_UP));
+		System.out.println("Entropia linha XOR.: " + new BigDecimal(entropiaLinha).setScale(5, BigDecimal.ROUND_HALF_UP));
+		System.out.println("Entropia coluna XOR: " + new BigDecimal(entropiaColuna).setScale(5, BigDecimal.ROUND_HALF_UP));
 		System.out.println();
 		
 		final int linhas = xor.getLinhas();
@@ -104,28 +108,28 @@ public class TesteEntropiaChaveImagemPretoBranco {
 			}
 		}
 		
-		ImageIO.write(buffer, "BMP", new File("E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia/" + nomeArquivo));
+		ImageIO.write(buffer, "BMP", new File(PASTA_TESTE + nomeArquivo));
 	}
 
+	
+	//public static final String PASTA_TESTE = "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia/";
+	public static final String PASTA_TESTE = "C:/Temp/teste-ac2d_unitario/";
 	
 	public static void main(String[] args) throws Exception {
 		
 		int pi = 30;
-		//String regra = "1111101101111101";
-		String regra 	  = "1111111101110101";
-		String regraRuido = "1111111101110100";
 		
-//		String regra = "0000000101010110";
-//		String regra = "0000110001100000";
+		String regra 	  = "0110110010011100";
+		String regraRuido = "0010110010011101";
+		String nomeArquivo= "lena.bmp";
 		
-		Reticulado[] ret1 = cifrar(pi, regra,      DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia/", "lena.bmp", true);
-		Reticulado[] ret2 = cifrar(pi, regraRuido, DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia/", "lena.bmp", true);
+		boolean rotacionarSensitividade = true;
+		
+		Reticulado[] ret1 = cifrar(pi, regra,      DirecaoCalculo.NORTE, PASTA_TESTE, nomeArquivo, true, rotacionarSensitividade);
+		Reticulado[] ret2 = cifrar(pi, regraRuido, DirecaoCalculo.NORTE, PASTA_TESTE, nomeArquivo, true, rotacionarSensitividade);
 
-//		Reticulado[] ret1 = cifrar(pi, regra, DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia/", "512x512_0005.bmp", true);
-//		Reticulado[] ret2 = cifrar(pi, regra, DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia/", "512x512_0005_alterada.bmp", true);
-		
-		computarXOR("XOR lena reticulado inicial", ret1[0], ret2[0], "xor_lena_inicial.bmp");
-		computarXOR("XOR lena reticulado cifrado", ret1[1], ret2[1], "xor_lena_cifrado.bmp");
-		computarXOR("XOR lena reticulado decifrado", ret1[2], ret2[2], "xor_lena_decifrado.bmp");
+		computarXOR("XOR lena reticulado inicial",   ret1[0], ret2[0], "xor_inicial.bmp");
+		computarXOR("XOR lena reticulado cifrado",   ret1[1], ret2[1], "xor_cifrado.bmp");
+		computarXOR("XOR lena reticulado decifrado", ret1[2], ret2[2], "xor_decifrado.bmp");
 	}
 }

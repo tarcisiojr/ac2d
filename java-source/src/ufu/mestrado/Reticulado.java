@@ -470,6 +470,10 @@ public class Reticulado implements Cloneable {
 		for (int i = 0; i < colunas; i++) {
 			double entropia = Util.entropiaMatrizNormalizada(reticulado, Util.ENTROPIA_COLUNA, -1, i);
 			
+			/*if (entropia == 0.0) {
+				System.out.println("ENTROPIA ZEROOOO=>" + i);
+			}*/
+			
 			if (entropia < menorEntropia) {
 				menorEntropia = entropia;
 			}

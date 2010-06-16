@@ -225,7 +225,7 @@ public class AutomatoCelular implements AutomatoCelularHandler {
 		if (deslocarReticulado) {
 			// Aplicando um deslocamento no reticulado.
 			reticulado.deslocamentoLinha = 2 * regraPrincipal.raio;
-			//reticulado.deslocamentoColuna = 2;
+			reticulado.deslocamentoColuna = 2 * regraPrincipal.raio;
 		}
 
 		// Cria o reticulado da préimagem, e já calcula os bits da borda.
@@ -305,7 +305,7 @@ public class AutomatoCelular implements AutomatoCelularHandler {
 		
 		if (deslocarReticulado) {
 			reticulado.deslocamentoLinha = 2 * regraPrincipal.raio;
-			//reticulado.deslocamentoColuna = 2;
+			reticulado.deslocamentoColuna = 2 * regraPrincipal.raio;
 		}
 		
 		final int raio = regraPrincipal.raio;

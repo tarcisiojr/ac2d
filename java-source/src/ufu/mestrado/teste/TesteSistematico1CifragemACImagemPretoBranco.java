@@ -1,10 +1,16 @@
 package ufu.mestrado.teste;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FilenameFilter;
+import java.io.PrintWriter;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import ufu.mestrado.AutomatoCelular;
 import ufu.mestrado.Cronometro;
@@ -18,7 +24,7 @@ public class TesteSistematico1CifragemACImagemPretoBranco {
 	
 	public static void iniciar(String arqRegras, String strDirImagens, int tamLinhasJanela, int tamColunasJanela,
 			int qtdPreImagem, int direcao, int linhaRuido, int colunaRuido, int inicio, int fim,
-			boolean rotacionarSensitivdade) throws Exception {
+			boolean rotacionarSensitivdade, String nomeLog) throws Exception {
 		
 		File dirImagens = new File(strDirImagens);
 		//File dirSaida = new File(strDirSaida);
@@ -37,13 +43,16 @@ public class TesteSistematico1CifragemACImagemPretoBranco {
 		System.out.println("T E S T E   S I S T E M A T I C O");
 		System.out.println("=================================");
 		
+		List<Regra> regras = null;
 		
-		List<Regra> regras = Regra.carregarRegras(arqRegras);
+		if (!"TODAS_REGRAS".equals(arqRegras)) {
+			regras = Regra.carregarRegras(arqRegras);
+		}
 		
-		System.out.println("Total de regras carregadas: " + regras.size());
+		System.out.println("Total de regras carregadas: " + (regras == null ? "TODAS" : "" +  regras.size()));
 		System.out.println("Total de imagens carregadas: " + arqImagens.length);
 		System.out.println("Janela utilizada no reticulado [linhas x coluna]: [" + tamLinhasJanela + " x " + tamColunasJanela + "]");
-		System.out.println("Quantidade de pre-imagem:: " + qtdPreImagem);
+		System.out.println("Quantidade de pre-imagem: " + qtdPreImagem);
 		System.out.println("Direcao do calculo: " + DirecaoCalculo.toString(direcao));
 		System.out.println("Posicao ruido [linha x coluna]: [" + linhaRuido + " x " + colunaRuido + "]");
 		System.out.println("Intervalo: " + inicio  + " ate " + fim);
@@ -60,9 +69,10 @@ public class TesteSistematico1CifragemACImagemPretoBranco {
 		System.out.print("Entropia_Minima_XOR\t");
 		System.out.print("Percentual_0s_Maximo_XOR\t");
 		System.out.print("Percentual_0s_Minimo_XOR\t");
+		System.out.print("Gerou_Log\t");
 		System.out.print("Tempo_Gasto\n");
 		
-		NumberFormat  nf = DecimalFormat.getInstance();
+		NumberFormat  nf = DecimalFormat.getInstance(new Locale("pt", "BR"));
 		nf.setMaximumFractionDigits(6);
 		nf.setMinimumFractionDigits(6);
 		
@@ -72,12 +82,47 @@ public class TesteSistematico1CifragemACImagemPretoBranco {
 			inicio = 1;
 		}
 		
+		final int REGRA_MAXIMA_RAIO_1 = 65536;
+		
 		if (fim == -1) {
+			fim = regras != null ? regras.size() : REGRA_MAXIMA_RAIO_1;
+			
+		} else if (regras != null && fim > regras.size()) {
 			fim = regras.size();
 		}
 		
-		for (int i = inicio -1; i < regras.size() && i < fim; i++) {
-			Regra regra = regras.get(i);
+		FileOutputStream fos = new FileOutputStream(nomeLog, true);
+		PrintWriter writer = new PrintWriter(fos);
+		
+		DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
+		
+		writer.println("====================================");
+		writer.println("Log iniciado em " + df.format(new Date()));
+		writer.println("====================================");
+		
+		writer.print("Indice\t");
+		writer.print("Regra\t");
+		writer.print("Entropia_Regra\t");
+		writer.print("Imagem\t");
+		writer.print("Entropia\t");
+		writer.print("Entropia_Linha\t");
+		writer.print("Entropia_Coluna\t");
+		writer.print("Percentual_0s");
+		writer.println();
+		writer.flush();
+		
+		for (int i = inicio -1; i < fim; i++) {
+			Regra regra = null;
+			
+			if (regras != null) {
+				regra = regras.get(i);
+				
+			} else {
+				String nucleo = Integer.toBinaryString(i + REGRA_MAXIMA_RAIO_1);
+				regra = Regra.criar(nucleo.substring(1), direcao);
+			}
+			
+			//Regra regraRuido = regra.aplicarRuido();
 			
 			double entropiaMaxima = Double.MIN_VALUE;
 			double entropiaMinima = Double.MAX_VALUE;
@@ -91,6 +136,8 @@ public class TesteSistematico1CifragemACImagemPretoBranco {
 			double percZeros[] = new double[totalImagens];
 			
 			int indice = 0;
+			
+			boolean gerouLog = false;
 			
 			Cronometro.iniciar();
 			for (File arq: arqImagens) {
@@ -133,7 +180,29 @@ public class TesteSistematico1CifragemACImagemPretoBranco {
 				
 				percZeros[indice] = percentualZeros;
 				
+				double entropiaLinha = xor.getMenorEntropiaLinha();
+				double entropiaColuna = xor.getMenorEntropiaColuna();
+				
+				if (percentualZeros < 49 || percentualZeros > 51 || entropia < 0.94 || entropiaLinha < 0.8 
+						|| entropiaColuna < 0.8) {
+					
+					writer.print((i + 1) + "\t");
+					writer.print("[" + regra.getNucleo() + "]\t");
+					writer.print(nf.format(regra.entropia()) + "\t");
+					writer.print(arq.getName() + "\t");
+					writer.print(nf.format(entropia) + "\t");
+					writer.print(nf.format(entropiaLinha) + "\t");
+					writer.print(nf.format(entropiaColuna) + "\t");
+					writer.print(nf.format(percentualZeros) + "\n");
+					writer.flush();
+					
+					gerouLog = true;
+				}
+				
 				indice++;
+				
+				/*if (1==1)
+					break;*/
 			}
 			
 			entropiaMedia = entropiaMedia / totalImagens;
@@ -154,17 +223,25 @@ public class TesteSistematico1CifragemACImagemPretoBranco {
 			System.out.print(nf.format(percZerosMaximo) + "\t");
 			System.out.print(nf.format(percZerosMinimo) + "\t");
 			
+			System.out.print((gerouLog ? "Sim" : "Nao") + "\t");
+			
 			Cronometro.parar();
 		}
+		
+		writer.println("====================================");
+		writer.println("Log finalizado em " + df.format(new Date()));
+		writer.println("===================================");
+		
+		writer.close();
 	}
 	
 	public static void main(String[] args) throws Exception {
 		//public static final int LINHAS_JANELA = 3;
 		//public static final int COLUNAS_JANELA = 6;
 		
-		if (args.length != 10) {
+		if (args.length != 12) {
 			args = new String[] {
-				"./testes/regras_1000_1_ver1.txt",
+				"TODAS_REGRAS",
 				"E:/junior/Desktop/mestrado/base_dados_imagens/512x512",
 				"3",
 				"6",
@@ -174,7 +251,8 @@ public class TesteSistematico1CifragemACImagemPretoBranco {
 				"255",
 				"-1",
 				"-1", 
-				"true"
+				"true",
+				"log.txt"
 			};
 		} 
 		
@@ -189,6 +267,7 @@ public class TesteSistematico1CifragemACImagemPretoBranco {
 				Integer.parseInt(args[7]),
 				Integer.parseInt(args[8]),
 				Integer.parseInt(args[9]),
-				Boolean.parseBoolean(args[10]));
+				Boolean.parseBoolean(args[10]),
+				args[11]);
 	}
 }

@@ -85,12 +85,16 @@ public class TesteEntropiaImagemPretoBranco {
 		Reticulado xor = ret1.xor(ret2);
 		
 		double entropia = xor.entropia(LINHAS_JANELA, COLUNAS_JANELA);
-
+		double entropiaLinha = xor.getMenorEntropiaLinha();
+		double entropiaColuna = xor.getMenorEntropiaColuna();
+		
 		xor.contabiliarZeros();
 		
 		System.out.println("=> " + texto);
-		System.out.println("% ZEROS.....: " + xor.getPercentualZeros());
-		System.out.println("Entropia XOR: " + new BigDecimal(entropia).setScale(5, BigDecimal.ROUND_HALF_UP));
+		System.out.println("% ZEROS............: " + xor.getPercentualZeros());
+		System.out.println("Entropia XOR.......: " + new BigDecimal(entropia).setScale(5, BigDecimal.ROUND_HALF_UP));
+		System.out.println("Entropia linha XOR.: " + new BigDecimal(entropiaLinha).setScale(5, BigDecimal.ROUND_HALF_UP));
+		System.out.println("Entropia coluna XOR: " + new BigDecimal(entropiaColuna).setScale(5, BigDecimal.ROUND_HALF_UP));
 		System.out.println();
 		
 		final int linhas = xor.getLinhas();
@@ -110,9 +114,9 @@ public class TesteEntropiaImagemPretoBranco {
 	
 	public static void main(String[] args) throws Exception {
 		
-		int pi = 50;
+		int pi = 30;
 		//String regra = "1111101101111101";
-		String regra = "1111111101110101";
+		String regra = "1001010001111010";
 //		String regra = "0000000101010110";
 //		String regra = "0000110001100000";
 		
