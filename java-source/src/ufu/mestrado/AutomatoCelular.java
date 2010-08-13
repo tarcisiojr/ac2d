@@ -77,8 +77,7 @@ public class AutomatoCelular implements AutomatoCelularHandler {
 	public AutomatoCelular(Reticulado reticuladoInicial, Regra regra) throws AutomatoCelularException {
 		this.reticuladoInicial = reticuladoInicial;
 		this.reticulado = reticuladoInicial;
-		this.regraPrincipal = regra;
-		this.regraContorno = Regra.criarRegraContorno(regra);
+		setRegra(regra);
 	}
 	
 	/**
@@ -90,8 +89,7 @@ public class AutomatoCelular implements AutomatoCelularHandler {
 		handler.setAutomatoCelular(this);
 		
 		this.reticulado = handler.getReticuladoInicial();
-		this.regraPrincipal = handler.getRegraPrincipal();
-		this.regraContorno = Regra.criarRegraContorno(this.regraPrincipal);
+		setRegra(handler.getRegraPrincipal());
 	}
 	
 	/**

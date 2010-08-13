@@ -14,11 +14,11 @@ public class Util {
  
         StringBuilder buf = new StringBuilder();
 //        buf.append('[');
-        buf.append(array[0] ? "_" : "0");
+        buf.append(array[0] ? "1" : "0");
         //buf.append("\t");
         for (int i = 1; i < array.length; i++) {
 //            buf.append(", ");
-            buf.append(array[i] ? "_" : "0");
+            buf.append(array[i] ? "1" : "0");
             //buf.append("\t");
         }
  

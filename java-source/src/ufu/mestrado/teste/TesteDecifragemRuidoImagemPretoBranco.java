@@ -67,8 +67,8 @@ public class TesteDecifragemRuidoImagemPretoBranco {
 	
 	public static void main(String[] args) throws Exception {
 		cifrar(10, "0111101110110001", DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_ruido_mensagem/", "mulher.bmp", true);
-		cifrar(20, "0111101110110001", DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_ruido_mensagem/", "mulher.bmp", true);
-		cifrar(30, "0111101110110001", DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_ruido_mensagem/", "mulher.bmp", true);
+		//cifrar(20, "0111101110110001", DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_ruido_mensagem/", "mulher.bmp", true);
+		//cifrar(30, "0111101110110001", DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_ruido_mensagem/", "mulher.bmp", true);
 		//cifrar(20, "0111101110110001", DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_ruido_mensagem/", "lena.bmp", true);
 		
 	}

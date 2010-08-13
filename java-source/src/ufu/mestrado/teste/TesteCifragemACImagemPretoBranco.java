@@ -23,6 +23,8 @@ public class TesteCifragemACImagemPretoBranco {
 		
 		AutomatoCelular ac = new AutomatoCelular(cifrador);
 		
+		ac.rotacionarReticulado = true;
+		
 		Cronometro.iniciar();
 		ac.calcularPreImage(qtdPI);
 		Cronometro.parar("Cifragem arquivo '" + nomeArquivo +"', PI=" + qtdPI + ", chave=" + chave + ", direcao=" + direcao + " ");
@@ -48,8 +50,26 @@ public class TesteCifragemACImagemPretoBranco {
 		//cifrar(10, "0111101110110001", DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/", "quadrado.bmp", true);
 		//cifrar(10, "0111101110110001", DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/", "triangulo.bmp", true);
 		
-		for (int i = 0; i < 50; i++) {
-			cifrar(10, "0000000101010110", DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/", "mulher.bmp", false);
-		}
+		//for (int i = 0; i < 50; i++) {
+		String nucleoRaio2 = 
+			"0000000101010110" +
+			"0000000101010110" +
+			"0000000101010110" +
+			"0000000101010110" +
+			"0000000101010110" +
+			"0000000101010110" +
+			"0000000101010110" +
+			"0000000101010110" +
+			"0000000101010110" +
+			"0000000101010110" +
+			"0000000101010110" +
+			"0000000101010110" +
+			"0000000101010110" +
+			"0000000101010110" +
+			"0000000101010110" +
+			"0000000101010110";
+		
+			cifrar(10, nucleoRaio2, DirecaoCalculo.ESQUERDA, "E:/junior/Desktop/mestrado/testes_ac2d/", "mulher.bmp", true);
+		//}
 	}
 }

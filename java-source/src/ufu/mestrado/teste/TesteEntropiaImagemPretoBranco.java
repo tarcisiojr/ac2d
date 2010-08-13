@@ -48,13 +48,16 @@ public class TesteEntropiaImagemPretoBranco {
 	 * @param decifrar Indica se é para realizar o processo de decifragem.
 	 * @throws Exception
 	 */
-	public static Reticulado[] cifrar(int qtdPI, String chave, int direcao, String pastaSaida, String nomeArquivo, boolean decifrar) throws Exception {
+	public static Reticulado[] cifrar(int qtdPI, String chave, int direcao, String pastaSaida, String nomeArquivo, boolean decifrar, boolean aplicarRuido) throws Exception {
 		CifradorImagemPretroBranco cifrador = new CifradorImagemPretroBranco(
 				pastaSaida + nomeArquivo, chave, direcao);
 		
 		AutomatoCelular ac = new AutomatoCelular(cifrador);
 		
 		Reticulado reticulados[] = new Reticulado[3];
+		
+		if (aplicarRuido)
+			ac.setReticulado(ac.getReticulado().aplicarRuido(255, 255));
 		
 		reticulados[0] = ac.getReticulado();
 		
@@ -116,18 +119,18 @@ public class TesteEntropiaImagemPretoBranco {
 		
 		int pi = 30;
 		//String regra = "1111101101111101";
-		String regra = "1001010001111010";
+		String regra = "0010011000000000";
 //		String regra = "0000000101010110";
 //		String regra = "0000110001100000";
 		
-		Reticulado[] ret1 = cifrar(pi, regra, DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia/", "lena.bmp", true);
-		Reticulado[] ret2 = cifrar(pi, regra, DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia/", "lena_alterada.bmp", true);
+//		Reticulado[] ret1 = cifrar(pi, regra, DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia/", "lena.bmp", true);
+//		Reticulado[] ret2 = cifrar(pi, regra, DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia/", "lena_alterada.bmp", true);
 
-//		Reticulado[] ret1 = cifrar(pi, regra, DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia/", "512x512_0005.bmp", true);
-//		Reticulado[] ret2 = cifrar(pi, regra, DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia/", "512x512_0005_alterada.bmp", true);
+		Reticulado[] ret1 = cifrar(pi, regra, DirecaoCalculo.ESQUERDA, "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia/", "512x512_0147.png", true, false);
+		Reticulado[] ret2 = cifrar(pi, regra, DirecaoCalculo.ESQUERDA, "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia/", "512x512_0147.png", true, true);
 		
-		computarXOR("XOR lena reticulado inicial", ret1[0], ret2[0], "xor_lena_inicial.bmp");
-		computarXOR("XOR lena reticulado cifrado", ret1[1], ret2[1], "xor_lena_cifrado.bmp");
-		computarXOR("XOR lena reticulado decifrado", ret1[2], ret2[2], "xor_lena_decifrado.bmp");
+		computarXOR("XOR lena reticulado inicial", ret1[0], ret2[0], "xor_inicial.bmp");
+		computarXOR("XOR lena reticulado cifrado", ret1[1], ret2[1], "xor_cifrado.bmp");
+		computarXOR("XOR lena reticulado decifrado", ret1[2], ret2[2], "xor_decifrado.bmp");
 	}
 }

@@ -1,0 +1,12 @@
+====================================
+Log iniciado em 15/06/10 23:37:18
+====================================
+Indice	Regra	Entropia_Regra	Imagem	Entropia	Entropia_Linha	Entropia_Coluna	Percentual_0s
+====================================
+Log iniciado em 16/06/10 10:20:03
+====================================
+Indice	Regra	Entropia_Regra	Imagem	Entropia	Entropia_Linha	Entropia_Coluna	Percentual_0s
+====================================
+Log iniciado em 16/06/10 10:20:54
+====================================
+Indice	Regra	Entropia_Regra	Imagem	Entropia	Entropia_Linha	Entropia_Coluna	Percentual_0s

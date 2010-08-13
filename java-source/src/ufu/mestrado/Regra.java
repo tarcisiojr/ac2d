@@ -1,12 +1,15 @@
 package ufu.mestrado;
 
 import java.io.BufferedReader;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 public class Regra {
 	/** Cache de regras principais. */
@@ -189,7 +192,7 @@ public class Regra {
 				break;
 			}
 			
-			if (!linha.startsWith("#")) {
+			if (!linha.startsWith("#") && linha.length() > 0) {
 				Regra regra = Regra.criarAPatirNucleo(linha, direcao);
 				regras.add(regra);
 			}
@@ -276,5 +279,39 @@ public class Regra {
 	@Override
 	public String toString() {
 		return getNucleo() + ":" + direcaoCalculo;
+	}
+	
+	/**
+	 * Gerar um arquivo de núcleos aleatorios.
+	 * @param raio Tamanho do raio.
+	 * @param quantidade Quantidade de regras a serem geradas.
+	 * @param nomeArquivo Nome do arquivo que será salvo as regras.
+	 */
+	public static final void gerarNucleosAleatoriamente(int raio, int quantidade, String nomeArquivo) throws Exception {
+		FileOutputStream fos = new FileOutputStream(nomeArquivo);
+
+		final int tamanhoNucleo = (int) Math.pow(2, raio * 4 + 1) / 2;
+		
+		Set<String> invalidarRepetidos = new HashSet<String>();
+		
+		Random r =  new Random();
+		 
+		while (quantidade-- > 0) {
+			String nucleo = Util.toString(Util.gerarArrayAleatorio(r, tamanhoNucleo));
+			
+			if (!invalidarRepetidos.contains(nucleo)) {
+				invalidarRepetidos.add(nucleo);
+				
+				fos.write((nucleo + "\n").getBytes());
+			} else {
+				quantidade++;
+			}
+		}
+		
+		fos.close();
+	}
+	
+	public static void main(String[] args) throws Exception {
+		gerarNucleosAleatoriamente(2, 1000, "c:/temp/regras_raio_2.txt");
 	}
 }

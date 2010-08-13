@@ -59,6 +59,7 @@ public class TesteSistematico1CifragemACImagemPretoBranco {
 		
 		System.out.println();
 		System.out.print("Indice\t");
+		System.out.print("Nro_Regra\t");
 		System.out.print("Regra\t");
 		System.out.print("Entropia_Regra\t");
 		System.out.print("Entropia_Media_XOR\t");
@@ -101,6 +102,7 @@ public class TesteSistematico1CifragemACImagemPretoBranco {
 		writer.println("====================================");
 		
 		writer.print("Indice\t");
+		writer.print("Nro_Regra\t");
 		writer.print("Regra\t");
 		writer.print("Entropia_Regra\t");
 		writer.print("Imagem\t");
@@ -119,7 +121,7 @@ public class TesteSistematico1CifragemACImagemPretoBranco {
 				
 			} else {
 				String nucleo = Integer.toBinaryString(i + REGRA_MAXIMA_RAIO_1);
-				regra = Regra.criar(nucleo.substring(1), direcao);
+				regra = Regra.criarAPatirNucleo(nucleo.substring(1), direcao);
 			}
 			
 			//Regra regraRuido = regra.aplicarRuido();
@@ -151,6 +153,7 @@ public class TesteSistematico1CifragemACImagemPretoBranco {
 				Reticulado preImagemA = ac.calcularPreImage(qtdPreImagem);
 				
 				ac.setReticulado(retRuido);
+				ac.setRegra(regra);
 				Reticulado preImagemB = ac.calcularPreImage(qtdPreImagem);
 				
 				
@@ -187,6 +190,7 @@ public class TesteSistematico1CifragemACImagemPretoBranco {
 						|| entropiaColuna < 0.8) {
 					
 					writer.print((i + 1) + "\t");
+					writer.print(Integer.parseInt(regra.getNucleo(), 2) + "\t");
 					writer.print("[" + regra.getNucleo() + "]\t");
 					writer.print(nf.format(regra.entropia()) + "\t");
 					writer.print(arq.getName() + "\t");
@@ -209,6 +213,7 @@ public class TesteSistematico1CifragemACImagemPretoBranco {
 			percZerosMedia = percZerosMedia / totalImagens;
 			
 			System.out.print((i + 1) + "\t");
+			System.out.print(Integer.parseInt(regra.getNucleo(), 2) + "\t");
 			System.out.print("[" + regra.getNucleo() + "]\t");
 			System.out.print(nf.format(regra.entropia()) + "\t");
 			
@@ -241,18 +246,18 @@ public class TesteSistematico1CifragemACImagemPretoBranco {
 		
 		if (args.length != 12) {
 			args = new String[] {
-				"TODAS_REGRAS",
-				"E:/junior/Desktop/mestrado/base_dados_imagens/512x512",
+				"E:/junior/Desktop/mestrado/testes_ac2d/teste_unitario/regras_teste_unitario.txt",
+				"E:/junior/Desktop/mestrado/testes_ac2d/teste_unitario/imagens",
 				"3",
 				"6",
-				"10",
-				"1", //NORTE
+				"50",
+				"0", //NORTE
 				"255",
 				"255",
-				"-1",
-				"-1", 
+				"1",
+				"1", 
 				"true",
-				"log.txt"
+				"E:/junior/Desktop/mestrado/testes_ac2d/teste_unitario/resultados/log.txt"
 			};
 		} 
 		

@@ -9,7 +9,6 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 import ufu.mestrado.AutomatoCelular;
-import ufu.mestrado.Cronometro;
 import ufu.mestrado.DirecaoCalculo;
 import ufu.mestrado.Regra;
 import ufu.mestrado.Reticulado;
@@ -146,22 +145,10 @@ public class TesteEntropiaRegrasRuins {
 		
 		reticulados[0] = ac.getReticulado();
 		
-		Cronometro.iniciar();
-		ac.calcularPreImage(qtdPI);
-		//Cronometro.parar("Cifragem arquivo '" + nomeArquivo +"', PI=" + qtdPI + ", chave=" + chave + ", direcao=" + direcao);
-		
-		reticulados[1] = ac.getReticulado();
-		
-		//cifrador.criarImagem(pastaSaida + "cifrada_pi" + qtdPI + "_" + DirecaoCalculo.toString(direcao) +"_" + nomeArquivo);
+		reticulados[1] = ac.calcularPreImage(qtdPI);
 		
 		if (decifrar) {
-			Cronometro.iniciar();
-			ac.evoluir(qtdPI);
-			//Cronometro.parar("Decifragem arquivo '" + nomeArquivo +"', PI=" + qtdPI + ", chave=" + chave + ", direcao=" + direcao);
-		
-			reticulados[2] = ac.getReticulado();
-			
-			//cifrador.criarImagem(pastaSaida + "decifrada_pi" + qtdPI + "_" + DirecaoCalculo.toString(direcao) + "_" + nomeArquivo);
+			reticulados[2] = ac.evoluir(qtdPI);
 		}
 		
 		return reticulados;
@@ -201,27 +188,28 @@ public class TesteEntropiaRegrasRuins {
 
 	
 	public static void main(String[] args) throws Exception {
-		int pi = 60;
+		int pi = 30;
 		
 		//List<Regra> regras = Regra.carregarRegras("E:/workspaces/Mestrado/testes/regras_1000_1_ver1.txt");
 		//List<Regra> regras = Regra.carregarRegras("E:/junior/Desktop/mestrado/testes_ac2d/testes_rodando_ufu/regras_ruins.txt");
 		List<Regra> regras = Regra.carregarRegras("E:/junior/Desktop/mestrado/testes_ac2d/testes_rodando_ufu/regras_ruins_unitario.txt");
 		
-		boolean rotacaoSensitividade = false;
+		boolean rotacaoSensitividade = true;
 		
 		System.out.println("Indice\tRegra\tEntropia_Regra\tPercentual_0s\tEntropia_XOR\tEntropia_Coluna\tEntropia_Linha");
 		int i = 0;
 		for (Regra regra : regras) {
+			
 //			Reticulado[] ret1 = cifrar(pi, regra.getNucleo(), DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia_regras_ruins/", "lena.bmp", true, false);
 //			Reticulado[] ret2 = cifrar(pi, regra.getNucleo(), DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia_regras_ruins/", "lena_alterada.bmp", true, false);
 
 //			Reticulado[] ret1 = cifrar(pi, regra.getNucleo(), DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia_regras_ruins/", "512x512_0202.png", true, false, rotacaoSensitividade);
 //			Reticulado[] ret2 = cifrar(pi, regra.getNucleo(), DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia_regras_ruins/", "512x512_0202.png", true, true, rotacaoSensitividade);
 			
-			Reticulado[] ret1 = cifrar(pi, regra.getNucleo(), DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia_regras_ruins/", "512x512_0622.png", true, false, rotacaoSensitividade);
-			Reticulado[] ret2 = cifrar(pi, regra.getNucleo(), DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia_regras_ruins/", "512x512_0622.png", true, true, rotacaoSensitividade);
+			Reticulado[] ret1 = cifrar(pi, regra.getNucleo(), DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia_regras_ruins/", "512x512_0147.png", true, false, rotacaoSensitividade);
+			Reticulado[] ret2 = cifrar(pi, regra.getNucleo(), DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia_regras_ruins/", "512x512_0147.png", true, true, rotacaoSensitividade);
 
-			computarXOR(++i + "\t[" + regra + "]\t" + Util.entropiaNormalizada(Util.getArray(regra.getNucleo())), 
+			computarXOR(++i + "\t[" + regra.getNucleo() + "]\t" + Util.entropiaNormalizada(Util.getArray(regra.getNucleo())), 
 					ret1[1], ret2[1], "xor_cifrado_" + regra.toString().substring(0, 16) + ".png", true);
 		}
 	}
