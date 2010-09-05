@@ -274,9 +274,11 @@ public class AutomatoCelular implements AutomatoCelularHandler {
 		int rotacaoReticulado = (numeroEvolucoes % ordemRotacaoReticulado.length) - 1;
 		
 		// É para rotacionar o reticulado?
-		if (rotacionarReticulado) {
-			regraPrincipal.rotacaoNucleo = (numeroEvolucoes % regraPrincipal.tamanhoNucleo);
-		}
+		//if (rotacionarReticulado) {
+			
+		//}
+		
+		regraPrincipal.rotacaoNucleo = (numeroEvolucoes % regraPrincipal.tamanhoNucleo);
 		
 		for (int i = 0; i < numeroEvolucoes; i++, rotacaoReticulado--) {
 			// É para rotacionar o reticulado?

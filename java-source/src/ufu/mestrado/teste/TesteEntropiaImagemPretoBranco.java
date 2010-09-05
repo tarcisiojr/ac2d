@@ -119,15 +119,17 @@ public class TesteEntropiaImagemPretoBranco {
 		
 		int pi = 30;
 		//String regra = "1111101101111101";
-		String regra = "0010011000000000";
+		String regra = "1001110001000000";
 //		String regra = "0000000101010110";
 //		String regra = "0000110001100000";
+		
+		//[1001110001000000]	0,800705	512x512_0147.png	0,953704	-0,000000	0,885023	50,250244
 		
 //		Reticulado[] ret1 = cifrar(pi, regra, DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia/", "lena.bmp", true);
 //		Reticulado[] ret2 = cifrar(pi, regra, DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia/", "lena_alterada.bmp", true);
 
-		Reticulado[] ret1 = cifrar(pi, regra, DirecaoCalculo.ESQUERDA, "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia/", "512x512_0147.png", true, false);
-		Reticulado[] ret2 = cifrar(pi, regra, DirecaoCalculo.ESQUERDA, "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia/", "512x512_0147.png", true, true);
+		Reticulado[] ret1 = cifrar(pi, regra, DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia/", "512x512_0147.png", true, false);
+		Reticulado[] ret2 = cifrar(pi, regra, DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia/", "512x512_0147.png", true, true);
 		
 		computarXOR("XOR lena reticulado inicial", ret1[0], ret2[0], "xor_inicial.bmp");
 		computarXOR("XOR lena reticulado cifrado", ret1[1], ret2[1], "xor_cifrado.bmp");
