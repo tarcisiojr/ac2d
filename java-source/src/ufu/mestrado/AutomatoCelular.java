@@ -21,7 +21,7 @@ public class AutomatoCelular implements AutomatoCelularHandler {
 	public boolean rotacionarReticulado = false;
 	
 	/** Indica se o reticulado deve ser deslocado a cada passo de pré-imagem. */
-	public boolean deslocarReticulado = true;
+	public boolean deslocarReticulado = false;
 	
 	/** Ordem que o reticulado deve ser rotacionado. */
 	private int ordemRotacaoReticulado[] = {

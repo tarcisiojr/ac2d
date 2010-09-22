@@ -153,9 +153,12 @@ public class Reticulado implements Cloneable {
 		// A direção padrão é o NORTE, para as demais direções
 		// vamos relizar uma rotação do reticulado.
 		
+		linha += deslocamentoLinha;
+		coluna += deslocamentoColuna;
+		
 		switch (direcao) {
 		case DirecaoCalculo.NORTE:
-			return _get(linha + deslocamentoLinha, coluna + deslocamentoColuna);
+			return _get(linha, coluna);
 			
 		case DirecaoCalculo.ESQUERDA:
 			//return _get(coluna, (colunas -1) - linha);
@@ -177,9 +180,12 @@ public class Reticulado implements Cloneable {
 		// A direção padrão é o NORTE, para as demais direções
 		// vamos relizar uma rotação do reticulado.
 		
+		linha += deslocamentoLinha;
+		coluna += deslocamentoColuna;
+		
 		switch (direcao) {
 		case DirecaoCalculo.NORTE:
-			 _set(linha + deslocamentoLinha, coluna + deslocamentoColuna, valor);
+			 _set(linha, coluna, valor);
 			 return;
 			
 		case DirecaoCalculo.ESQUERDA:
@@ -187,7 +193,6 @@ public class Reticulado implements Cloneable {
 			return;
 			
 		case DirecaoCalculo.SUL:
-			//return _get(coluna, (colunas -1) - linha);
 			_set((linhas - 1) - linha, (colunas - 1) - coluna, valor);
 			return;
 			

@@ -3,9 +3,9 @@ package ufu.mestrado.teste;
 import ufu.mestrado.AutomatoCelular;
 import ufu.mestrado.Cronometro;
 import ufu.mestrado.DirecaoCalculo;
-import ufu.mestrado.imagem.CifradorImagemColorida;
+import ufu.mestrado.imagem.CifradorImagemColorida256Cores;
 
-public class TesteCifragemACImagemColorida {
+public class TesteCifragemACImagemColorida256Cores {
 	
 	/**
 	 * Realiza cifragem da imagem fornecida e cria um novo arquivo a partir da imagem cifrada.
@@ -18,7 +18,7 @@ public class TesteCifragemACImagemColorida {
 	 * @throws Exception
 	 */
 	public static AutomatoCelular cifrar(int qtdPI, String chave, int direcao, String pastaSaida, String nomeArquivo, boolean decifrar) throws Exception {
-		CifradorImagemColorida cifrador = new CifradorImagemColorida(
+		CifradorImagemColorida256Cores cifrador = new CifradorImagemColorida256Cores(
 				pastaSaida + nomeArquivo, chave, direcao);
 		
 		AutomatoCelular ac = new AutomatoCelular(cifrador);
@@ -46,7 +46,7 @@ public class TesteCifragemACImagemColorida {
 	public static void main(String[] args) throws Exception {
 		//cifrar(10, "0111101110110001", DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/", "circulo.bmp", true);
 		//cifrar(10, "0111101110110001", DirecaoCalculo.NORTE, "d:/Desktop/mestrado/testes_ac2d/teste_imagem_colorida/", "ferrari.bmp", true);
-		cifrar(10, "0111101110110001", DirecaoCalculo.NORTE, "d:/Desktop/mestrado/testes_ac2d/teste_imagem_colorida/", "lena_gray_24bits.bmp", true);
+		cifrar(30, "0111101110110001", DirecaoCalculo.NORTE, "d:/Desktop/mestrado/testes_ac2d/teste_imagem_colorida/", "lena_gray.jpg", true);
 		//cifrar(10, "0111101110110001", DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/", "quadrado.bmp", true);
 		//cifrar(10, "0111101110110001", DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/", "triangulo.bmp", true);
 	}
