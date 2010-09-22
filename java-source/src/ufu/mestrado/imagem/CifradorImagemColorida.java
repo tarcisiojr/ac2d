@@ -85,7 +85,7 @@ public class CifradorImagemColorida implements AutomatoCelularHandler {
 		
 		String tipo = "BMP";
 		int i = caminho.lastIndexOf('.');
-		if (i != -1 && (i + 1) == caminho.length()) {
+		if (i != -1 && (i + 1) != caminho.length()) {
 			tipo = caminho.substring(i + 1);
 		}
 		
