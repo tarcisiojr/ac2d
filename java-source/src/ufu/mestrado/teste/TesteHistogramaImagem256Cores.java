@@ -13,7 +13,7 @@ import ufu.mestrado.Regra;
 import ufu.mestrado.Util;
 import ufu.mestrado.imagem.CifradorImagemColorida256Cores;
 
-public class TesteHistogramaImagemEscalaCinza {
+public class TesteHistogramaImagem256Cores {
 	// Filtro de imagens
 	private static final FilenameFilter FILTRO_IMAGENS = new FilenameFilter() {
 			@Override
@@ -31,8 +31,15 @@ public class TesteHistogramaImagemEscalaCinza {
 		String DIR_SAIDA_IMAGENS 		  	= "D:/desktop/mestrado/testes_ac2d/teste_histograma_preto_branco/imagens_decifradas/";
 		String DIR_SAIDA_IMAGENS_CIFRADAS 	= "D:/desktop/mestrado/testes_ac2d/teste_histograma_preto_branco/imagens_cifradas/";
 		
+		if (args.length == 4) {
+			NOME_ARQ_REGRAS = args[0];
+			DIR_IMAGENS = args[1];
+			DIR_SAIDA_IMAGENS = args[2];
+			DIR_SAIDA_IMAGENS_CIFRADAS = args[3];
+		}
+		
 		// Config AC.
-		boolean DESLOCAR_RETICULADO = false;
+		boolean DESLOCAR_RETICULADO = true;
 		boolean ROTACIONAR_RETICULADO = false;
 		int QTD_PRE_IMAGENS = 30;
 		
