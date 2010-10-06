@@ -18,7 +18,7 @@ public class CifradorImagemColorida256Cores implements AutomatoCelularHandler {
 	private static final int BITS_PIXEL = 8;
 	
 	/** Imagem fornecida. */
-	private BufferedImage buffer;
+	public BufferedImage buffer;
 	
 	/** Reticulado inicial gerado a partir da imagem. */
 	private Reticulado reticuladoInicial;
@@ -30,6 +30,9 @@ public class CifradorImagemColorida256Cores implements AutomatoCelularHandler {
 	 * AC a qual o cifrador pertence.
 	 */
 	private AutomatoCelular automatoCelular;
+	
+	/** Histograma da imagem carregada/criada. */
+	public double[] histograma;
 	
 	/**
 	 * Cria uma nova instância de um cifrador de imagens em preto em branco.
@@ -98,14 +101,16 @@ public class CifradorImagemColorida256Cores implements AutomatoCelularHandler {
 	private void carregarImagem(boolean set, Reticulado reticulado) {
 		final int laguraMaxina = buffer.getWidth();
 
-		byte pixel[] = new byte[1];
+		int pixel[] = new int[1];
+		
+		histograma = new double[(int) Math.pow(2, BITS_PIXEL)];
 		
 		for (int i = 0; i < buffer.getHeight(); i++) {
 			
 			for (int j = 0; j < laguraMaxina; j++) {
 				
 				
-				buffer.getRaster().getDataElements(i, j, pixel);
+				buffer.getRaster().getPixel(j, i, pixel);
 				
 				int rgb = set ? 0 : pixel[0];
 				
@@ -118,13 +123,21 @@ public class CifradorImagemColorida256Cores implements AutomatoCelularHandler {
 					}
 				}
 				
+				//System.out.println(rgb);
+				histograma[rgb]++;
+				
 				if (set) {
-					//buffer.setRGB(j, i, rgb);
-					pixel[0] = (byte) rgb;
-					buffer.getRaster().setDataElements(i, j, pixel);
+					pixel[0] = rgb;
+					buffer.getRaster().setPixel(j, i, pixel);
 				}
 			}
 		}
+		
+		/*System.out.println("Histograma Imagem: ");
+		for (int i = 0; i < histograma.length; i++) {
+			System.out.print(histograma[i] + ", ");
+		}
+		System.out.println();*/
 	}
 	
 	

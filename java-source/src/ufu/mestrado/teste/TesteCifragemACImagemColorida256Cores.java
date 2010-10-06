@@ -24,8 +24,8 @@ public class TesteCifragemACImagemColorida256Cores {
 		AutomatoCelular ac = new AutomatoCelular(cifrador);
 		
 		Cronometro.iniciar();
-		ac.deslocarReticulado = true;
-		ac.rotacionarReticulado = true;
+		ac.deslocarReticulado = false;
+		ac.rotacionarReticulado = false;
 		
 		ac.calcularPreImage(qtdPI);
 		Cronometro.parar("Cifragem arquivo '" + nomeArquivo +"', PI=" + qtdPI + ", chave=" + chave + ", direcao=" + direcao);
@@ -47,6 +47,8 @@ public class TesteCifragemACImagemColorida256Cores {
 		//cifrar(10, "0111101110110001", DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/", "circulo.bmp", true);
 		//cifrar(10, "0111101110110001", DirecaoCalculo.NORTE, "d:/Desktop/mestrado/testes_ac2d/teste_imagem_colorida/", "ferrari.bmp", true);
 		cifrar(30, "0111101110110001", DirecaoCalculo.NORTE, "d:/Desktop/mestrado/testes_ac2d/teste_imagem_colorida/", "lena_gray.jpg", true);
+		//cifrar(6, "0111101110110001", DirecaoCalculo.NORTE, "d:/Desktop/mestrado/testes_ac2d/teste_imagem_colorida/", "tudo_preto.bmp", true);
+		
 		//cifrar(10, "0111101110110001", DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/", "quadrado.bmp", true);
 		//cifrar(10, "0111101110110001", DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/", "triangulo.bmp", true);
 	}

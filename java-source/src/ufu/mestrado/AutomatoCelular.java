@@ -18,10 +18,10 @@ public class AutomatoCelular implements AutomatoCelularHandler {
 	private Regra regraContorno;
 	
 	/** Indica se o reticulado deve ser rotacionando a cada passo de pré-imagem. */
-	public boolean rotacionarReticulado = false;
+	public boolean rotacionarReticulado = true;
 	
 	/** Indica se o reticulado deve ser deslocado a cada passo de pré-imagem. */
-	public boolean deslocarReticulado = false;
+	public boolean deslocarReticulado = true;
 	
 	/** Ordem que o reticulado deve ser rotacionado. */
 	private int ordemRotacaoReticulado[] = {

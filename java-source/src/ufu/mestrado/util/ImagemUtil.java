@@ -1,12 +1,15 @@
 package ufu.mestrado.util;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.HeadlessException;
 import java.awt.Image;
+import java.awt.RenderingHints;
 import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
@@ -24,11 +27,40 @@ public class ImagemUtil {
 				"gif", 512, 512, "E:/junior/Desktop/mestrado/base_dados_imagens/512x512");
 		*/
 		
-		ImagemUtil.redimensionarImgsDiretorio("E:/junior/Desktop/mestrado/base_dados_imagens/512x512", 
+/*		ImagemUtil.redimensionarImgsDiretorio("E:/junior/Desktop/mestrado/base_dados_imagens/512x512", 
 				"png", 1024, 1024, "E:/junior/Desktop/mestrado/base_dados_imagens/1024x1024");
+ */		
+		/*
 		
+		ImagemUtil.converterEm256Cores("D:/desktop/mestrado/testes_ac2d/teste_histograma_colorida/imagens", 
+				"jpg", "png", "D:/desktop/mestrado/testes_ac2d/teste_histograma_colorida/imagens_cifradas");
+		
+		ImagemUtil.redimensionarImgsDiretorio("D:/desktop/mestrado/testes_ac2d/teste_histograma_colorida/imagens", 
+				"jpg", 128, 128, "D:/desktop/mestrado/testes_ac2d/teste_histograma_colorida/imagens_cifradas");
+		*/
+		/*ImagemUtil.renomearArquivos("D:/desktop/mestrado/testes_ac2d/teste_histograma_colorida/imagens_cifradas", 
+				"D:/desktop/mestrado/testes_ac2d/teste_histograma_colorida/imagens_cifradas", "jpg", "png");
+				*/
+		
+		ImagemUtil.converterEmEscalaCinza("D:/desktop/mestrado/testes_ac2d/teste_histograma_colorida/imagens_cifradas", 
+				"png", "D:/desktop/mestrado/testes_ac2d/teste_histograma_colorida/imagens_decifradas");
 		//ImagemUtil.apenasPretoBranco("E:/junior/Desktop/mestrado/base_dados_imagens/512x512", "gif", "png");
 	}
+	
+	/**
+	 * Converte a imagem para utilizar apenas a cor preta e branco.
+	 * @throws Exception
+	 */
+	public static void renomearArquivos(String dirStr, String dirSaida, String substr, String replacement) throws Exception {
+		File dir = new File(dirStr);
+		
+		File arquivos[] = dir.listFiles();
+		
+		for (File arq : arquivos) {
+			arq.renameTo(new File(arq.getAbsolutePath().substring(0, arq.getAbsolutePath().lastIndexOf('\\')) + "/" + arq.getName().replaceAll(substr, replacement)));
+		}
+	}
+		
 	
 	/**
 	 * Converte a imagem para utilizar apenas a cor preta e branco.
@@ -81,6 +113,87 @@ public class ImagemUtil {
 			}
 		}
 	}
+	
+	/**
+	 * Converte a imagem para utilizar apenas a cor preta e branco.
+	 * @throws Exception
+	 */
+	public static void converterEm256Cores(String dirImagens, final String extensaoFiltro, String extensao, String dirSaida) throws Exception {
+		
+		final String novaExtensao = extensao.toLowerCase();
+		
+		File dir = new File(dirImagens);
+		
+		File arquivos[] = dir.listFiles(
+				new FilenameFilter() {
+					@Override
+					public boolean accept(File dir, String name) {
+						return name.toLowerCase().endsWith(extensaoFiltro);
+					}
+				});
+		
+		System.out.println("Total de arquivos: " + arquivos.length);
+		
+		int k = 1;
+		for (File arquivo : arquivos) {
+			if (arquivo.isFile()) {
+				BufferedImage buffer = ImageIO.read(arquivo);
+				
+				BufferedImage image = new BufferedImage(buffer.getWidth(), buffer.getHeight(),  BufferedImage.TYPE_BYTE_INDEXED);
+				
+				for (int i = 0; i < buffer.getWidth(); i++) {
+					for (int j = 0; j < buffer.getHeight(); j++) {
+						image.setRGB(i, j, buffer.getRGB(i, j));
+					}
+				}
+				
+				ImageIO.write(image, novaExtensao, new File(dirSaida + "/" + arquivo.getName()));
+				
+				System.out.println("Imagem Colorida (256 cores): " + k++);
+			}
+		}
+	}
+	
+	/**
+	 * Converte a imagem para utilizar apenas em escala de cinza
+	 * @throws Exception
+	 */
+	public static void converterEmEscalaCinza(String dirImagens, String extensao, String dirSaida) throws Exception {
+		
+		final String novaExtensao = extensao.toLowerCase();
+		
+		File dir = new File(dirImagens);
+		
+		File arquivos[] = dir.listFiles(
+				new FilenameFilter() {
+					@Override
+					public boolean accept(File dir, String name) {
+						return name.toLowerCase().endsWith(novaExtensao);
+					}
+				});
+		
+		System.out.println("Total de arquivos: " + arquivos.length);
+		
+		int k = 1;
+		for (File arquivo : arquivos) {
+			if (arquivo.isFile()) {
+				BufferedImage buffer = ImageIO.read(arquivo);
+				
+				BufferedImage image = new BufferedImage(buffer.getWidth(), buffer.getHeight(),  BufferedImage.TYPE_BYTE_GRAY);
+				
+				for (int i = 0; i < buffer.getWidth(); i++) {
+					for (int j = 0; j < buffer.getHeight(); j++) {
+						image.setRGB(i, j, buffer.getRGB(i, j));
+					}
+				}
+				
+				ImageIO.write(image, novaExtensao, new File(dirSaida + "/" + arquivo.getName()));
+				
+				System.out.println("Imagem Cinza: " + k++);
+			}
+		}
+	}
+	
 	
 	/**
 	 * Redimensiona as imagens do diretório fornecido.
@@ -137,9 +250,9 @@ public class ImagemUtil {
 		
 		BufferedImage buffer = ImageIO.read(new File(nomeArquivoImg));
 
-		Image image = buffer.getScaledInstance(largura, altura, Image.SCALE_SMOOTH);
+		//Image image = buffer.getScaledInstance(largura, altura, Image.SCALE_REPLICATE);
 		
-		buffer = toBufferedImage(image);
+		buffer = scaleImage(buffer, largura, altura); //toBufferedImage(image);
 		
 		String diretorio = new File(dirSaida).getAbsolutePath();
 		
@@ -221,5 +334,32 @@ public class ImagemUtil {
 		// Get the image's color model
 		ColorModel cm = pg.getColorModel();
 		return cm.hasAlpha();
+	}
+	
+	public static BufferedImage scaleImage(BufferedImage buffer, int largura, int altura) throws Exception {
+
+		/*BufferedImage resizedImage = new BufferedImage(largura, altura,
+				BufferedImage.TYPE_INT_ARGB);
+				Graphics2D g = resizedImage.createGraphics();
+				g.drawImage(buffer, 0, 0, largura, altura, null);
+				g.dispose();*/
+		
+		int type = buffer.getType() == 0? BufferedImage.TYPE_INT_ARGB : buffer.getType();
+		BufferedImage resizedImage = new BufferedImage(largura, altura, type);
+		Graphics2D g = resizedImage.createGraphics();
+		g.setComposite(AlphaComposite.Src);
+
+		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+		RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+
+		g.setRenderingHint(RenderingHints.KEY_RENDERING,
+		RenderingHints.VALUE_RENDER_QUALITY);
+
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+		RenderingHints.VALUE_ANTIALIAS_ON);
+
+		g.drawImage(buffer, 0, 0, largura, altura, null);
+		g.dispose();
+		return resizedImage;
 	}
 }

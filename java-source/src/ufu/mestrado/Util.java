@@ -18,8 +18,8 @@ public class Util {
         //buf.append("\t");
         for (int i = 1; i < array.length; i++) {
 //            buf.append(", ");
+        	buf.append("\t");
             buf.append(array[i] ? "1" : "0");
-            //buf.append("\t");
         }
  
 //        buf.append("]");
