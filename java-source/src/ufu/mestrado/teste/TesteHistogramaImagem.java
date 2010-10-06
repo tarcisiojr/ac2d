@@ -21,21 +21,21 @@ public class TesteHistogramaImagem {
 		
 		for (int i = 0; i < buffer.getHeight(); i++) {
 			for (int j = 0; j < buffer.getWidth(); j++) {
-				byte b[] = new byte[1];
-				buffer.getRaster().getDataElements(i, j, b);
+				int pixel[] = new int[1];
+				buffer.getRaster().getPixel(i, j, pixel);
 				
 				//System.out.println(b[0] + (Byte.MIN_VALUE * -1));
 				
 				//int rgb = buffer.getRGB(j, i) & COR_MAXIMA;
 				
-				int cor = b[0];
+				/*int cor = b[0];
 				
 				if (cor < 0) {
 					cor = Byte.MIN_VALUE * -2 + cor;
-				}
+				}*/
 				//System.out.println(cor);
 				
-				histograma[cor]++;
+				histograma[pixel[0]]++;
 			}
 		}
 		
@@ -53,7 +53,12 @@ public class TesteHistogramaImagem {
 		//calcularHistograma("D:/desktop/mestrado/testes_ac2d/teste_imagem_colorida/cifrada_pi10_NORTE_lena_gray.jpg", 8);
 		//calcularHistograma("D:/desktop/mestrado/testes_ac2d/teste_imagem_colorida/cifrada_pi40_NORTE_lena_gray.jpg", 8);
 		//calcularHistograma("D:/desktop/mestrado/testes_ac2d/teste_imagem_colorida/lena_gray.jpg", 8);
+		//calcularHistograma("D:/desktop/mestrado/testes_ac2d/teste_imagem_colorida/cifrada_pi30_NORTE_lena_gray.jpg", 8);
+		//calcularHistograma("D:/desktop/mestrado/testes_ac2d/teste_imagem_colorida/cifrada_pi30_NORTE_tudo_preto.bmp", 8);
+		//calcularHistograma("D:/desktop/mestrado/testes_ac2d/teste_imagem_colorida/cifrada_pi30_NORTE_lena_gray.bmp", 8);
+		//calcularHistograma("D:/desktop/mestrado/testes_ac2d/teste_imagem_colorida/decifrada_pi30_NORTE_lena_gray.jpg", 8);
 		calcularHistograma("D:/desktop/mestrado/testes_ac2d/teste_imagem_colorida/cifrada_pi30_NORTE_lena_gray.jpg", 8);
+		
 		//calcularHistograma("D:/desktop/mestrado/testes_ac2d/teste_imagem_colorida/cifrada_pi10_NORTE_lena_gray_24bits.bmp", 24);
 		
 		//calcularHistograma("D:/desktop/mestrado/testes_ac2d/teste_imagem_colorida/ferrari_cinza.bmp", 8);

@@ -314,4 +314,19 @@ public class Regra {
 	public static void main(String[] args) throws Exception {
 		gerarNucleosAleatoriamente(2, 1000, "c:/temp/regras_raio_2.txt");
 	}
+	
+	public void imprimir() {
+		StringBuilder builder = new StringBuilder();
+		
+		String zeros = Integer.toBinaryString(transicoes.length).substring(1);
+		
+		for (int i = 0; i < transicoes.length; i++) {
+			String vizinhanca = Integer.toBinaryString(i);
+			vizinhanca = zeros.substring(0, zeros.length() - vizinhanca.length()) + vizinhanca;
+			
+			System.out.println(vizinhanca.replaceAll("([0-9])", "$1\t") + "->\t" + Util.toInt(transicoes[i].valor));
+		}
+		
+		System.out.println(builder.toString());
+	}
 }
