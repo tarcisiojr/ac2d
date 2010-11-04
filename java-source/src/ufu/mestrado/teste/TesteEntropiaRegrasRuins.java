@@ -206,8 +206,8 @@ public class TesteEntropiaRegrasRuins {
 //			Reticulado[] ret1 = cifrar(pi, regra.getNucleo(), DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia_regras_ruins/", "512x512_0202.png", true, false, rotacaoSensitividade);
 //			Reticulado[] ret2 = cifrar(pi, regra.getNucleo(), DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia_regras_ruins/", "512x512_0202.png", true, true, rotacaoSensitividade);
 			
-			Reticulado[] ret1 = cifrar(pi, regra.getNucleo(), DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia_regras_ruins/", "512x512_0147.png", true, false, rotacaoSensitividade);
-			Reticulado[] ret2 = cifrar(pi, regra.getNucleo(), DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia_regras_ruins/", "512x512_0147.png", true, true, rotacaoSensitividade);
+			Reticulado[] ret1 = cifrar(pi, regra.getNucleo(), DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia_regras_ruins/", "512x512_0118.png", true, false, rotacaoSensitividade);
+			Reticulado[] ret2 = cifrar(pi, regra.getNucleo(), DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia_regras_ruins/", "512x512_0118.png", true, true, rotacaoSensitividade);
 
 			computarXOR(++i + "\t[" + regra.getNucleo() + "]\t" + Util.entropiaNormalizada(Util.getArray(regra.getNucleo())), 
 					ret1[1], ret2[1], "xor_cifrado_" + regra.toString().substring(0, 16) + ".png", true);

@@ -24,12 +24,17 @@ public class TesteHistogramaImagem256Cores {
 
 	public static void main(String[] args) throws Exception {
 		// Regras
-		String NOME_ARQ_REGRAS 				= "D:/desktop/mestrado/testes_ac2d/teste_histograma_preto_branco/regras.txt";
+		//String NOME_ARQ_REGRAS 				= "D:/desktop/mestrado/testes_ac2d/teste_histograma_preto_branco/regras.txt";
 		
 		// Imagens
-		String DIR_IMAGENS 				  	= "D:/desktop/mestrado/testes_ac2d/teste_histograma_preto_branco/imagens/";
-		String DIR_SAIDA_IMAGENS 		  	= "D:/desktop/mestrado/testes_ac2d/teste_histograma_preto_branco/imagens_decifradas/";
-		String DIR_SAIDA_IMAGENS_CIFRADAS 	= "D:/desktop/mestrado/testes_ac2d/teste_histograma_preto_branco/imagens_cifradas/";
+		String DIR_IMAGENS 				  	= "D:/desktop/mestrado/testes_ac2d/teste_histogramas/teste_gina/imagens/";
+		String DIR_SAIDA_IMAGENS 		  	= "D:/desktop/mestrado/testes_ac2d/teste_histogramas/teste_gina/imagens_decifradas/";
+		String DIR_SAIDA_IMAGENS_CIFRADAS 	= "D:/desktop/mestrado/testes_ac2d/teste_histogramas/teste_gina/imagens_cifradas/";
+		String NOME_ARQ_REGRAS 				= "D:/desktop/mestrado/testes_ac2d/teste_histogramas/teste_gina/regras.txt";
+		
+		//String DIR_IMAGENS 				  	= "D:/desktop/mestrado/testes_ac2d/teste_histograma_preto_branco/imagens/";
+		//String DIR_SAIDA_IMAGENS 		  	= "D:/desktop/mestrado/testes_ac2d/teste_histograma_preto_branco/imagens_decifradas/";
+		//String DIR_SAIDA_IMAGENS_CIFRADAS 	= "D:/desktop/mestrado/testes_ac2d/teste_histograma_preto_branco/imagens_cifradas/";
 		
 		if (args.length == 4) {
 			NOME_ARQ_REGRAS = args[0];
@@ -37,10 +42,12 @@ public class TesteHistogramaImagem256Cores {
 			DIR_SAIDA_IMAGENS = args[2];
 			DIR_SAIDA_IMAGENS_CIFRADAS = args[3];
 		}
+		// Indica se é para imprimir os histogramas
+		boolean PRINT_HISTOGRAMAS = true;
 		
 		// Config AC.
 		boolean DESLOCAR_RETICULADO = true;
-		boolean ROTACIONAR_RETICULADO = false;
+		boolean ROTACIONAR_RETICULADO = true;
 		int QTD_PRE_IMAGENS = 30;
 		
 		final NumberFormat  nf = DecimalFormat.getInstance(new Locale("pt", "BR"));
@@ -73,17 +80,23 @@ public class TesteHistogramaImagem256Cores {
 				
 				double desvioPadraoEntrada = Util.desvioPadrao(cifrador.histograma, media);
 				
+				if (PRINT_HISTOGRAMAS) { imprimir("Original", cifrador.histograma); }
+				
 				ac.calcularPreImage(QTD_PRE_IMAGENS);
 				
 				cifrador.criarImagem(DIR_SAIDA_IMAGENS_CIFRADAS + arquivo.getName() + "_" + regra.getNucleo() + ".png");
 				
 				double desvioPadraoCifrada = Util.desvioPadrao(cifrador.histograma, media);
 				
+				if (PRINT_HISTOGRAMAS) { imprimir("Cifrada", cifrador.histograma); }
+				
 				ac.evoluir(QTD_PRE_IMAGENS);
 				
 				cifrador.criarImagem(DIR_SAIDA_IMAGENS + arquivo.getName() + "_" + regra.getNucleo() + ".png");
 				
 				double desvioPadraoSaida = Util.desvioPadrao(cifrador.histograma, media);
+				
+				if (PRINT_HISTOGRAMAS) { imprimir("Decifrada", cifrador.histograma); }
 				
 				double entropiaRegra = Util.entropiaNormalizada(Util.getArray(regra.getNucleo()));
 				
@@ -96,5 +109,14 @@ public class TesteHistogramaImagem256Cores {
 				System.out.println();
 			}
 		}
+	}
+	
+	public static final void imprimir(String cabecalho, double histograma[]) {
+		System.out.println("=====> " + cabecalho);
+		for (int i = 0; i < histograma.length; i++) {
+			System.out.println((int) histograma[i]);
+		}
+		System.out.println("=====");
+		System.out.println();
 	}
 }
