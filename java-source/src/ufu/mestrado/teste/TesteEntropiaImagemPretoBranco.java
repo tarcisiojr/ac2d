@@ -56,11 +56,15 @@ public class TesteEntropiaImagemPretoBranco {
 		
 		ac.deslocarReticulado = true;
 		ac.rotacionarReticulado = true;
+		ac.rotacionarNucleo = true;
 		
 		Reticulado reticulados[] = new Reticulado[3];
 		
-		if (aplicarRuido)
-			ac.setReticulado(ac.getReticulado().aplicarRuido(255, 255));
+		if (aplicarRuido) {
+			ac.setReticulado(ac.getReticulado().aplicarRuido(
+					ac.getReticulado().getLinhas() / 2 - 1, 
+					ac.getReticulado().getColunas() / 2 - 1));
+		}
 		
 		reticulados[0] = ac.getReticulado();
 		
@@ -98,9 +102,9 @@ public class TesteEntropiaImagemPretoBranco {
 		
 		System.out.println("=> " + texto);
 		System.out.println("% ZEROS............: " + xor.getPercentualZeros());
-		System.out.println("Entropia XOR.......: " + new BigDecimal(entropia).setScale(5, BigDecimal.ROUND_HALF_UP));
-		System.out.println("Entropia linha XOR.: " + new BigDecimal(entropiaLinha).setScale(5, BigDecimal.ROUND_HALF_UP));
-		System.out.println("Entropia coluna XOR: " + new BigDecimal(entropiaColuna).setScale(5, BigDecimal.ROUND_HALF_UP));
+		System.out.println("Entropia XOR.......: " + new BigDecimal(entropia).setScale(6, BigDecimal.ROUND_HALF_UP));
+		System.out.println("Entropia linha XOR.: " + new BigDecimal(entropiaLinha).setScale(6, BigDecimal.ROUND_HALF_UP));
+		System.out.println("Entropia coluna XOR: " + new BigDecimal(entropiaColuna).setScale(6, BigDecimal.ROUND_HALF_UP));
 		System.out.println();
 		
 		final int linhas = xor.getLinhas();
@@ -123,7 +127,8 @@ public class TesteEntropiaImagemPretoBranco {
 		int pi = 30;
 		//String regra = "1111101101111101";
 		//String regra = "1001110001000000";
-		String regra = "0000110001100000";
+		String regra = "1001110001000000";
+		regra = "0111011111010101";
 		//String regra = "0000000000000000";
 //		String regra = "0000000101010110";
 //		String regra = "0000110001100000";
@@ -134,9 +139,12 @@ public class TesteEntropiaImagemPretoBranco {
 //		Reticulado[] ret1 = cifrar(pi, regra, DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia/", "lena.bmp", true);
 //		Reticulado[] ret2 = cifrar(pi, regra, DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/teste_entropia/", "lena_alterada.bmp", true);
 
-		Reticulado[] ret1 = cifrar(pi, regra, DirecaoCalculo.ESQUERDA, "d:/Desktop/mestrado/testes_ac2d/teste_entropia/", "512x512_0147.png", true, false);
-		Reticulado[] ret2 = cifrar(pi, regra, DirecaoCalculo.ESQUERDA, "d:/Desktop/mestrado/testes_ac2d/teste_entropia/", "512x512_0147.png", true, true);
+		Reticulado[] ret1 = cifrar(pi, regra, DirecaoCalculo.NORTE, "d:/Desktop/mestrado/testes_ac2d/teste_entropia/", "gatinho.png", true, false);
+		Reticulado[] ret2 = cifrar(pi, regra, DirecaoCalculo.NORTE, "d:/Desktop/mestrado/testes_ac2d/teste_entropia/", "gatinho.png", true, true);
 		
+		System.out.println(ret1[0]);
+		System.out.println("========");
+		System.out.println(ret1[1]);
 		computarXOR("XOR lena reticulado inicial", ret1[0], ret2[0], "xor_inicial.bmp");
 		computarXOR("XOR lena reticulado cifrado", ret1[1], ret2[1], "xor_cifrado.bmp");
 		computarXOR("XOR lena reticulado decifrado", ret1[2], ret2[2], "xor_decifrado.bmp");

@@ -30,10 +30,32 @@ public class VersaoInicial {
 		
 		AutomatoCelular ac = new AutomatoCelular(retInicial, regra);
 		
-		ac.rotacionarReticulado = false;
-		ac.deslocarReticulado = false;
+		ac.rotacionarReticulado = true;
+		ac.deslocarReticulado = true;
 		
-		System.out.println(ac.calcularPreImage(1));
+		System.out.println(ac.calcularPreImage(0, 0));
+		System.out.println("==================");
+		System.out.println(ac.calcularPreImage(1, 1));
+		System.out.println("==================");
+		System.out.println(ac.calcularPreImage(2, 2));
+		System.out.println("==================");
+		System.out.println(ac.calcularPreImage(3, 3));
+		System.out.println("==================");
+		System.out.println(ac.calcularPreImage(4, 4));
 		
+		System.out.println("==================");
+		System.out.println("==================");
+		System.out.println("==================");
+
+		//ac.evoluir(5);
+		System.out.println("==================");
+		System.out.println(ac.evoluir(5));
+		/*
+		System.out.println("==================");
+		System.out.println(ac.evoluir(1));
+		System.out.println("==================");
+		System.out.println(ac.evoluir(1));
+		System.out.println("==================");
+		System.out.println(ac.evoluir(1));*/
 	}
 }

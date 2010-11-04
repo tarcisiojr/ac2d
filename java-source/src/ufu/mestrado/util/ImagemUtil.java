@@ -29,21 +29,28 @@ public class ImagemUtil {
 		
 /*		ImagemUtil.redimensionarImgsDiretorio("E:/junior/Desktop/mestrado/base_dados_imagens/512x512", 
 				"png", 1024, 1024, "E:/junior/Desktop/mestrado/base_dados_imagens/1024x1024");
- */		
-		/*
 		
-		ImagemUtil.converterEm256Cores("D:/desktop/mestrado/testes_ac2d/teste_histograma_colorida/imagens", 
-				"jpg", "png", "D:/desktop/mestrado/testes_ac2d/teste_histograma_colorida/imagens_cifradas");
+		ImagemUtil.converterEm256Cores("D:\\desktop\\mestrado\\testes_ac2d\\teste_histogramas\\teste_gina\\imagens", 
+				"png", "png", "D:\\desktop\\mestrado\\testes_ac2d\\teste_histogramas\\teste_gina\\imagens_cifradas");
+		
+		ImagemUtil.redimensionarImgsDiretorio("D:\\desktop\\mestrado\\testes_ac2d\\teste_histogramas\\teste_gina\\imagens_cifradas", 
+				"png", 128, 128, "D:\\desktop\\mestrado\\testes_ac2d\\teste_histogramas\\teste_gina\\imagens_cifradas");
+ */		
+		
+		ImagemUtil.converterEmEscalaCinza("D:\\desktop\\mestrado\\testes_ac2d\\teste_histogramas\\teste_gina\\imagens", 
+				"png", "D:\\desktop\\mestrado\\testes_ac2d\\teste_histogramas\\teste_gina\\imagens_cifradas");
+		
+		/*
 		
 		ImagemUtil.redimensionarImgsDiretorio("D:/desktop/mestrado/testes_ac2d/teste_histograma_colorida/imagens", 
 				"jpg", 128, 128, "D:/desktop/mestrado/testes_ac2d/teste_histograma_colorida/imagens_cifradas");
 		*/
 		/*ImagemUtil.renomearArquivos("D:/desktop/mestrado/testes_ac2d/teste_histograma_colorida/imagens_cifradas", 
 				"D:/desktop/mestrado/testes_ac2d/teste_histograma_colorida/imagens_cifradas", "jpg", "png");
-				*/
 		
 		ImagemUtil.converterEmEscalaCinza("D:/desktop/mestrado/testes_ac2d/teste_histograma_colorida/imagens_cifradas", 
 				"png", "D:/desktop/mestrado/testes_ac2d/teste_histograma_colorida/imagens_decifradas");
+		 */
 		//ImagemUtil.apenasPretoBranco("E:/junior/Desktop/mestrado/base_dados_imagens/512x512", "gif", "png");
 	}
 	
