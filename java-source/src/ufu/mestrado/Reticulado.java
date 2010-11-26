@@ -47,7 +47,7 @@ public class Reticulado implements Cloneable {
 			reticulado[i++] = Util.getArray(l);
 		}
 		
-		contabiliarZeros();
+		//contabiliarZeros();
 	}
 	
 	public Reticulado(String strLinhas[]) {
@@ -67,7 +67,7 @@ public class Reticulado implements Cloneable {
 			i++;
 		}
 		
-		contabiliarZeros();
+		//contabiliarZeros();
 	}
 	
 	public Reticulado(boolean[][] reticulado) {
@@ -81,7 +81,7 @@ public class Reticulado implements Cloneable {
 		if (linhas > 0)
 			colunas = reticulado[0].length;
 		
-		contabiliarZeros();
+		//contabiliarZeros();
 	}
 	
 	public Reticulado(int linhas, int colunas) {
@@ -458,6 +458,8 @@ public class Reticulado implements Cloneable {
 		}
 
 		entropia = -entropia;
+		
+		//System.out.println(entropia);
 		
 		entropia = entropia / (double) (qtdLinhasJanela * qtdColunasJanela);
 		

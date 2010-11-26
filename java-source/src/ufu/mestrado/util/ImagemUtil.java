@@ -22,9 +22,18 @@ import javax.swing.ImageIcon;
 
 public class ImagemUtil {
 	public static void main(String[] args) throws Exception {
+		
+		int tam = 128;
+		
+		ImagemUtil.redimensionarImgsDiretorio("D:\\desktop\\mestrado\\testes_ac2d\\testes_rodando_ufu\\testes_imagens_menores\\512x512_piores", 
+				"png", 1024, 1024, "D:\\desktop\\mestrado\\testes_ac2d\\testes_rodando_ufu\\imagem_grande\\imagem_1024x1024\\imagens");
+		
 		/*
-		ImagemUtil.redimensionarImgsDiretorio("E:/junior/Desktop/mestrado/base_dados_imagens/mpeg7shapeB/original", 
-				"gif", 512, 512, "E:/junior/Desktop/mestrado/base_dados_imagens/512x512");
+		ImagemUtil.redimensionarImgsDiretorio("D:\\desktop\\mestrado\\testes_ac2d\\testes_rodando_ufu\\testes_imagens_menores\\512x512", 
+				"png", 256, 256, "D:\\desktop\\mestrado\\testes_ac2d\\testes_rodando_ufu\\testes_imagens_menores\\imagem_256x256\\256x256");
+		
+		
+		/*
 		*/
 		
 /*		ImagemUtil.redimensionarImgsDiretorio("E:/junior/Desktop/mestrado/base_dados_imagens/512x512", 
@@ -36,11 +45,11 @@ public class ImagemUtil {
 		ImagemUtil.redimensionarImgsDiretorio("D:\\desktop\\mestrado\\testes_ac2d\\teste_histogramas\\teste_gina\\imagens_cifradas", 
 				"png", 128, 128, "D:\\desktop\\mestrado\\testes_ac2d\\teste_histogramas\\teste_gina\\imagens_cifradas");
  */		
+		/*
 		
 		ImagemUtil.converterEmEscalaCinza("D:\\desktop\\mestrado\\testes_ac2d\\teste_histogramas\\teste_gina\\imagens", 
 				"png", "D:\\desktop\\mestrado\\testes_ac2d\\teste_histogramas\\teste_gina\\imagens_cifradas");
 		
-		/*
 		
 		ImagemUtil.redimensionarImgsDiretorio("D:/desktop/mestrado/testes_ac2d/teste_histograma_colorida/imagens", 
 				"jpg", 128, 128, "D:/desktop/mestrado/testes_ac2d/teste_histograma_colorida/imagens_cifradas");

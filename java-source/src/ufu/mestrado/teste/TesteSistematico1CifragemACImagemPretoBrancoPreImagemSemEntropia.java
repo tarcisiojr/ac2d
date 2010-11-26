@@ -20,7 +20,7 @@ import ufu.mestrado.Reticulado;
 import ufu.mestrado.Util;
 import ufu.mestrado.imagem.CifradorImagemPretroBranco;
 
-public class TesteSistematico1CifragemACImagemPretoBrancoPreImagem {
+public class TesteSistematico1CifragemACImagemPretoBrancoPreImagemSemEntropia {
 	
 	public static void iniciar(String arqRegras, String strDirImagens, int tamLinhasJanela, int tamColunasJanela,
 			int qtdPreImagem, int direcao, int linhaRuido, int colunaRuido, int inicio, int fim,
@@ -62,24 +62,15 @@ public class TesteSistematico1CifragemACImagemPretoBrancoPreImagem {
 		System.out.print("Indice\t");
 		//System.out.print("Nro_Regra\t");
 		System.out.print("Regra\t");
-		System.out.print("Entropia_Regra\t");
 		
-		System.out.print("Metade_Entropia_Media_XOR\t");
-		System.out.print("Metade_Entropia_Desvio_Padrao_XOR\t");
 		System.out.print("Metade_Percentual_0s_Media_XOR\t");
 		System.out.print("Metade_Desvio_Padrao_Percentual_0s_XOR\t");
-		System.out.print("Metade_Entropia_Maxima_XOR\t");
-		System.out.print("Metade_Entropia_Minima_XOR\t");
 		System.out.print("Metade_Percentual_0s_Maximo_XOR\t");
 		System.out.print("Metade_Percentual_0s_Minimo_XOR\t");
 		System.out.print("Metade_Gerou_Log\t");
 		
-		System.out.print("Entropia_Media_XOR\t");
-		System.out.print("Entropia_Desvio_Padrao_XOR\t");
 		System.out.print("Percentual_0s_Media_XOR\t");
 		System.out.print("Desvio_Padrao_Percentual_0s_XOR\t");
-		System.out.print("Entropia_Maxima_XOR\t");
-		System.out.print("Entropia_Minima_XOR\t");
 		System.out.print("Percentual_0s_Maximo_XOR\t");
 		System.out.print("Percentual_0s_Minimo_XOR\t");
 		System.out.print("Gerou_Log\t");
@@ -117,11 +108,7 @@ public class TesteSistematico1CifragemACImagemPretoBrancoPreImagem {
 		writer.print("Indice\t");
 		//writer.print("Nro_Regra\t");
 		writer.print("Regra\t");
-		writer.print("Entropia_Regra\t");
 		writer.print("Imagem\t");
-		writer.print("Entropia\t");
-		writer.print("Entropia_Linha\t");
-		writer.print("Entropia_Coluna\t");
 		writer.print("Percentual_0s\t");
 		writer.print("METADE_COMPLETO");
 		writer.println();
@@ -142,13 +129,7 @@ public class TesteSistematico1CifragemACImagemPretoBrancoPreImagem {
 			
 			//Regra regraRuido = regra.aplicarRuido();
 			
-			double entropiaMaxima = Double.MIN_VALUE;
-			double entropiaMinima = Double.MAX_VALUE;
-			double entropiaMedia = 0;
 
-			double metadeEntropiaMaxima = Double.MIN_VALUE;
-			double metadeEntropiaMinima = Double.MAX_VALUE;
-			double metadeEntropiaMedia = 0;
 			
 			double percZerosMaximo = Double.MIN_VALUE;
 			double percZerosMinimo = Double.MAX_VALUE;
@@ -158,10 +139,8 @@ public class TesteSistematico1CifragemACImagemPretoBrancoPreImagem {
 			double metadePercZerosMinimo = Double.MAX_VALUE;
 			double metadePercZerosMedia = 0;
 			
-			double entropias[] = new double[totalImagens];
 			double percZeros[] = new double[totalImagens];
 			
-			double metadeEntropias[] = new double[totalImagens];
 			double metadePercZeros[] = new double[totalImagens];
 			
 			int indice = 0;
@@ -191,27 +170,13 @@ public class TesteSistematico1CifragemACImagemPretoBrancoPreImagem {
 				Reticulado metadeXor = metadePreImagemA.xor(metadePreImagemB);
 				Reticulado xor = preImagemA.xor(preImagemB);
 				
-				double entropia = xor.entropia(tamLinhasJanela, tamColunasJanela);
-				double metadeEntropia = metadeXor.entropia(tamLinhasJanela, tamColunasJanela);
 				
-				if (entropia > entropiaMaxima)
-					entropiaMaxima = entropia;
 
-				if (metadeEntropia > metadeEntropiaMaxima)
-					metadeEntropiaMaxima = metadeEntropia;
 				
 				
-				if (metadeEntropia < metadeEntropiaMinima)
-					metadeEntropiaMinima = metadeEntropia;
 				
-				if (entropia < entropiaMinima)
-					entropiaMinima = entropia;
 				
-				entropiaMedia += entropia;
-				metadeEntropiaMedia += metadeEntropia;
 				
-				entropias[indice] = entropia;
-				metadeEntropias[indice] = metadeEntropia;
 				
 				xor.contabiliarZeros();
 				metadeXor.contabiliarZeros();
@@ -237,23 +202,14 @@ public class TesteSistematico1CifragemACImagemPretoBrancoPreImagem {
 				percZeros[indice] = percentualZeros;
 				metadePercZeros[indice] = metadePercentualZeros;
 				
-				double entropiaLinha = xor.getMenorEntropiaLinha();
-				double metadeEntropiaLinha = metadeXor.getMenorEntropiaLinha();
 				
-				double entropiaColuna = xor.getMenorEntropiaColuna();
-				double metadeEntropiaColuna = metadeXor.getMenorEntropiaColuna();
 				
-				if (percentualZeros < 49 || percentualZeros > 51 || entropia < 0.94 || entropiaLinha < 0.8 
-						|| entropiaColuna < 0.8) {
+				if (percentualZeros < 49 || percentualZeros > 51) {
 					
 					writer.print((i + 1) + "\t");
 					//writer.print(Integer.parseInt(regra.getNucleo(), 2) + "\t");
 					writer.print("[" + regra.getNucleo() + "]\t");
-					writer.print(nf.format(regra.entropia()) + "\t");
 					writer.print(arq.getName() + "\t");
-					writer.print(nf.format(entropia) + "\t");
-					writer.print(nf.format(entropiaLinha) + "\t");
-					writer.print(nf.format(entropiaColuna) + "\t");
 					writer.print(nf.format(percentualZeros) + "\t");
 					writer.print("COMPLETO\n");
 					writer.flush();
@@ -261,17 +217,12 @@ public class TesteSistematico1CifragemACImagemPretoBrancoPreImagem {
 					gerouLog = true;
 				}
 				
-				if (metadePercentualZeros < 49 || metadePercentualZeros > 51 || metadeEntropia < 0.94 || metadeEntropiaLinha < 0.8 
-						|| metadeEntropiaColuna < 0.8) {
+				if (metadePercentualZeros < 49 || metadePercentualZeros > 51 ) {
 					
 					writer.print((i + 1) + "\t");
 					//writer.print(Integer.parseInt(regra.getNucleo(), 2) + "\t");
 					writer.print("[" + regra.getNucleo() + "]\t");
-					writer.print(nf.format(regra.entropia()) + "\t");
 					writer.print(arq.getName() + "\t");
-					writer.print(nf.format(metadeEntropia) + "\t");
-					writer.print(nf.format(metadeEntropiaLinha) + "\t");
-					writer.print(nf.format(metadeEntropiaColuna) + "\t");
 					writer.print(nf.format(metadePercentualZeros) + "\t");
 					writer.print("METADE\n");
 					writer.flush();
@@ -285,8 +236,6 @@ public class TesteSistematico1CifragemACImagemPretoBrancoPreImagem {
 					break;*/
 			}
 			
-			entropiaMedia = entropiaMedia / totalImagens;
-			metadeEntropiaMedia = metadeEntropiaMedia / totalImagens;
 
 			percZerosMedia = percZerosMedia / totalImagens;
 			metadePercZerosMedia = metadePercZerosMedia / totalImagens;
@@ -294,16 +243,11 @@ public class TesteSistematico1CifragemACImagemPretoBrancoPreImagem {
 			System.out.print((i + 1) + "\t");
 			//System.out.print(Integer.parseInt(regra.getNucleo(), 2) + "\t");
 			System.out.print("[" + regra.getNucleo() + "]\t");
-			System.out.print(nf.format(regra.entropia()) + "\t");
 			
 			// ----  METADE ----
-			System.out.print(nf.format(metadeEntropiaMedia) + "\t");
-			System.out.print(nf.format(Util.desvioPadrao(metadeEntropias, metadeEntropiaMedia)) + "\t");
 			System.out.print(nf.format(metadePercZerosMedia) + "\t");
 			System.out.print(nf.format(Util.desvioPadrao(metadePercZeros, metadePercZerosMedia)) + "\t");
 
-			System.out.print(nf.format(metadeEntropiaMaxima) + "\t");
-			System.out.print(nf.format(metadeEntropiaMinima) + "\t");
 			
 			System.out.print(nf.format(metadePercZerosMaximo) + "\t");
 			System.out.print(nf.format(metadePercZerosMinimo) + "\t");
@@ -312,13 +256,9 @@ public class TesteSistematico1CifragemACImagemPretoBrancoPreImagem {
 			
 			
 			// ----  COMPLETO ----
-			System.out.print(nf.format(entropiaMedia) + "\t");
-			System.out.print(nf.format(Util.desvioPadrao(entropias, entropiaMedia)) + "\t");
 			System.out.print(nf.format(percZerosMedia) + "\t");
 			System.out.print(nf.format(Util.desvioPadrao(percZeros, percZerosMedia)) + "\t");
 
-			System.out.print(nf.format(entropiaMaxima) + "\t");
-			System.out.print(nf.format(entropiaMinima) + "\t");
 			
 			System.out.print(nf.format(percZerosMaximo) + "\t");
 			System.out.print(nf.format(percZerosMinimo) + "\t");

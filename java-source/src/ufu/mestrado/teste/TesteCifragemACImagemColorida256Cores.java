@@ -24,7 +24,7 @@ public class TesteCifragemACImagemColorida256Cores {
 		AutomatoCelular ac = new AutomatoCelular(cifrador);
 		
 		Cronometro.iniciar();
-		ac.deslocarReticulado = false;
+		ac.deslocarReticulado = true;
 		ac.rotacionarReticulado = false;
 		
 		ac.calcularPreImage(qtdPI);
@@ -46,7 +46,7 @@ public class TesteCifragemACImagemColorida256Cores {
 	public static void main(String[] args) throws Exception {
 		//cifrar(10, "0111101110110001", DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/", "circulo.bmp", true);
 		//cifrar(10, "0111101110110001", DirecaoCalculo.NORTE, "d:/Desktop/mestrado/testes_ac2d/teste_imagem_colorida/", "ferrari.bmp", true);
-		cifrar(30, "0111101110110001", DirecaoCalculo.NORTE, "d:/Desktop/mestrado/testes_ac2d/teste_imagem_colorida/", "lena_gray.jpg", true);
+		cifrar(30, "0111101110110001", DirecaoCalculo.NORTE, "C:\\Temp\\lena\\", "lena_gray_32x32.bmp", true);
 		//cifrar(6, "0111101110110001", DirecaoCalculo.NORTE, "d:/Desktop/mestrado/testes_ac2d/teste_imagem_colorida/", "tudo_preto.bmp", true);
 		
 		//cifrar(10, "0111101110110001", DirecaoCalculo.NORTE, "E:/junior/Desktop/mestrado/testes_ac2d/", "quadrado.bmp", true);

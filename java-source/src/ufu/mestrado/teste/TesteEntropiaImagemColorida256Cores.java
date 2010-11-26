@@ -3,16 +3,14 @@ package ufu.mestrado.teste;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.math.BigDecimal;
 
 import javax.imageio.ImageIO;
 
 import ufu.mestrado.AutomatoCelular;
 import ufu.mestrado.Cronometro;
 import ufu.mestrado.DirecaoCalculo;
-import ufu.mestrado.Regra;
 import ufu.mestrado.Reticulado;
-import ufu.mestrado.imagem.CifradorImagemPretroBranco;
+import ufu.mestrado.imagem.CifradorImagemColorida256Cores;
 
 
 /**
@@ -28,7 +26,7 @@ import ufu.mestrado.imagem.CifradorImagemPretroBranco;
  * @author Tarcísio Abadio de Magalhães Júnior
  *
  */
-public class TesteEntropiaImagemPretoBranco {
+public class TesteEntropiaImagemColorida256Cores {
 	/** Valor RGB da cor preta */
 	public static final int PRETO = Color.BLACK.getRGB();
 	
@@ -50,21 +48,22 @@ public class TesteEntropiaImagemPretoBranco {
 	 * @throws Exception
 	 */
 	public static Reticulado[] cifrar(int qtdPI, String chave, int direcao, String pastaSaida, String nomeArquivo, boolean decifrar, boolean aplicarRuido) throws Exception {
-		CifradorImagemPretroBranco cifrador = new CifradorImagemPretroBranco(
+		CifradorImagemColorida256Cores cifrador = new CifradorImagemColorida256Cores(
 				pastaSaida + nomeArquivo, chave, direcao);
 		
 		AutomatoCelular ac = new AutomatoCelular(cifrador);
 		
 		ac.deslocarReticulado = true;
-		ac.rotacionarReticulado = true;
+		ac.rotacionarReticulado = false;
 		ac.rotacionarNucleo = true;
 		
 		Reticulado reticulados[] = new Reticulado[3];
 		
 		if (aplicarRuido) {
-			ac.setReticulado(ac.getReticulado().aplicarRuido(
-					ac.getReticulado().getLinhas() / 2 - 1, 
-					ac.getReticulado().getColunas() / 2 - 1));
+			ac.setReticulado(ac.getReticulado().aplicarRuido(127, 127));
+//			ac.setReticulado(ac.getReticulado().aplicarRuido(
+//					ac.getReticulado().getLinhas() / 2 - 1, 
+//					ac.getReticulado().getColunas() / 2 - 1));
 		}
 		
 		reticulados[0] = ac.getReticulado();
@@ -95,17 +94,17 @@ public class TesteEntropiaImagemPretoBranco {
 		// Agora vamos calcular o XOR entre as imagens.
 		Reticulado xor = ret1.xor(ret2);
 		
-		double entropia = xor.entropia(LINHAS_JANELA, COLUNAS_JANELA);
-		double entropiaLinha = xor.getMenorEntropiaLinha();
-		double entropiaColuna = xor.getMenorEntropiaColuna();
+		//double entropia = xor.entropia(LINHAS_JANELA, COLUNAS_JANELA);
+		//double entropiaLinha = xor.getMenorEntropiaLinha();
+		//double entropiaColuna = xor.getMenorEntropiaColuna();
 		
 		xor.contabiliarZeros();
 		
 		System.out.println("=> " + texto);
 		System.out.println("% ZEROS............: " + xor.getPercentualZeros());
-		System.out.println("Entropia XOR.......: " + new BigDecimal(entropia).setScale(6, BigDecimal.ROUND_HALF_UP));
-		System.out.println("Entropia linha XOR.: " + new BigDecimal(entropiaLinha).setScale(6, BigDecimal.ROUND_HALF_UP));
-		System.out.println("Entropia coluna XOR: " + new BigDecimal(entropiaColuna).setScale(6, BigDecimal.ROUND_HALF_UP));
+		//System.out.println("Entropia XOR.......: " + new BigDecimal(entropia).setScale(6, BigDecimal.ROUND_HALF_UP));
+		//System.out.println("Entropia linha XOR.: " + new BigDecimal(entropiaLinha).setScale(6, BigDecimal.ROUND_HALF_UP));
+		//System.out.println("Entropia coluna XOR: " + new BigDecimal(entropiaColuna).setScale(6, BigDecimal.ROUND_HALF_UP));
 		System.out.println();
 		
 		final int linhas = xor.getLinhas();
@@ -119,35 +118,28 @@ public class TesteEntropiaImagemPretoBranco {
 			}
 		}
 		
-		ImageIO.write(buffer, "BMP", new File("d:/Desktop/mestrado/testes_ac2d/teste_entropia/" + nomeArquivo));
+		ImageIO.write(buffer, "BMP", new File(PASTA_SAIDA + nomeArquivo));
 	}
 
 	
+	public static final String PASTA_SAIDA = "C:\\TEMP\\LENA\\";
+	
 	public static void main(String[] args) throws Exception {
+		String pasta = "c:\\temp\\lena\\";
+		String imagem = "128x128_001.png";
 		
-		int pi = 20;
-		String regra = "0000000101100001";
-		//regra = "0101110111010010010001101010011000101001001101101111101000111111011100100111111110111100110000100111001111101000011101001001101110101001110000000110011100100010000101110010001100000000000110100111101100110010011000010111000001111010111011111111101111101001";
-		//String regra = "0000001000001000100100011100110010010100000000000100000100000000010000100101100000000001000000000000110010010001100001000001001010100100000010000100010101010001001100000000001100100111010010101010000001000100101000010100101100000000100000000001000001000000";
+		int pi = 10;
 		
-		String imagem = "512x512_0251.png";
+		String regra = "0110100101001010";
+		regra = "0000010010110001010000101000000000001010010000101001001100000010100011000000000000000100000001010000001000011000000000010000000000100000000000010100001000001011010100101110000010001100000010001000100100010000000011101010001100001100010010100101000001001000";
 		
-		//for (int i = 1; i <= 5; i++) {
-
-			//pi = i * 5;
-
-//		Reticulado[] ret1 = cifrar(pi, regra, DirecaoCalculo.NORTE, "d:/Desktop/mestrado/testes_ac2d/teste_entropia/", "512x512_0251.png", false, false);
 		
-			Reticulado[] ret1 = cifrar(pi, regra, DirecaoCalculo.NORTE, "d:/Desktop/mestrado/testes_ac2d/teste_entropia/", imagem, true, false);
-			Reticulado[] ret2 = cifrar(pi, regra, DirecaoCalculo.NORTE, "d:/Desktop/mestrado/testes_ac2d/teste_entropia/", imagem, true, true);
+		Reticulado[] ret1 = cifrar(pi, regra, DirecaoCalculo.NORTE, pasta, imagem, true, false);
+		Reticulado[] ret2 = cifrar(pi, regra, DirecaoCalculo.NORTE, pasta, imagem, true, true);
 			
-			//System.out.println(ret1[0]);
-			///System.out.println("========");
-			//sSystem.out.println(ret1[1]);
-			//computarXOR("XOR lena reticulado inicial", ret1[0], ret2[0], "xor_inicial.bmp");
-			computarXOR("XOR lena reticulado cifrado", ret1[1], ret2[1], "xor_cifrado_" + pi +".bmp");
-			//computarXOR("XOR lena reticulado decifrado", ret1[2], ret2[2], "xor_decifrado.bmp");
-		//}
+		computarXOR("XOR lena reticulado inicial", ret1[0], ret2[0], "xor_inicial.bmp");
+		computarXOR("XOR lena reticulado cifrado", ret1[1], ret2[1], "xor_cifrado_" + pi +".bmp");
+		computarXOR("XOR lena reticulado decifrado", ret1[2], ret2[2], "xor_decifrado.bmp");
 		
 		System.out.println("FIM");
 	}
