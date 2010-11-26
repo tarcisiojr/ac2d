@@ -12,10 +12,10 @@ public class AutomatoCelular implements AutomatoCelularHandler {
 	private Reticulado reticulado;
 	
 	/** Regra utilizada para cifrar os bist internos. */
-	private Regra regraPrincipal;
+	public Regra regraPrincipal;
 	
 	/** Regra utilizada na borda do reticulado. */
-	private Regra regraContorno;
+	public Regra regraContorno;
 	
 	/** Indica se o reticulado deve ser rotacionando a cada passo de pré-imagem. */
 	public boolean rotacionarReticulado = true;
@@ -134,6 +134,9 @@ public class AutomatoCelular implements AutomatoCelularHandler {
 		//System.out.println(Integer.toString(mascaraBitCentral, 2));
 		//System.out.println(Integer.toString(mascaraExterna, 2));
 		//System.out.println(Integer.toString(mascaraInterna, 2));
+		//System.out.println(Integer.toString(((1 << (raio * 4 + 1)) -1), 2));
+		//System.out.println(Integer.toString((((1 << (raio * 2 + 1)) -1) << raio), 2));
+		//System.out.println(Integer.toString((1 << (raio -1)), 2));
 		
 		// Criamos o cache com o maximo entre as linhas e colunas, pois devido ao reticulaodo poder 
 		// ser rotacionado, não sabemos qual será o tamanho do cache, e para melhoria de performance
@@ -233,8 +236,8 @@ public class AutomatoCelular implements AutomatoCelularHandler {
 		
 		if (deslocarReticulado) {
 			// Aplicando um deslocamento no reticulado.
-			reticulado.deslocamentoLinha = 1 + regraPrincipal.raio;
-			reticulado.deslocamentoColuna = 1 +  regraPrincipal.raio;
+			reticulado.deslocamentoLinha = 2 * regraPrincipal.raio;
+			reticulado.deslocamentoColuna = 2 *  regraPrincipal.raio;
 		}
 
 		// Cria o reticulado da préimagem, e já calcula os bits da borda.
@@ -252,11 +255,12 @@ public class AutomatoCelular implements AutomatoCelularHandler {
 		// calculo < maximo
 		while (continuarCalculoPI(preImagem, regraPrincipal)) {
 			int indice =  Transicao.getIndice0(preImagem, linha, coluna, raio, direcao,
-					cacheIndice, usarCache ? cacheIndices[posicaoCache] : -1);
+					cacheIndice, -1); //FIXME BUG NO CACHE DE UMA LINHA PRA OUTRA
+					//cacheIndice, usarCache  ? cacheIndices[posicaoCache] : -1);
 
 			cacheIndice = (indice & mascaraInterna) >> 1;
 		
-			cacheIndices[posicaoCache] = ((indice >> 1) & mascaraExterna) | ((indice & mascaraBitCentral) >> RAIO_MAIS_UM);
+			//cacheIndices[posicaoCache] = ((indice >> 1) & mascaraExterna) | ((indice & mascaraBitCentral) >> RAIO_MAIS_UM);
 				
 			Transicao transicao = regraPrincipal.getTransicao(indice);
 			
@@ -322,8 +326,8 @@ public class AutomatoCelular implements AutomatoCelularHandler {
 		reticulado = criarReticulado(preImagem);
 		
 		if (deslocarReticulado) {
-			reticulado.deslocamentoLinha = 1 + regraPrincipal.raio;
-			reticulado.deslocamentoColuna = 1 + regraPrincipal.raio;
+			reticulado.deslocamentoLinha = 2 * regraPrincipal.raio;
+			reticulado.deslocamentoColuna = 2 * regraPrincipal.raio;
 		}
 		
 		final int raio = regraPrincipal.raio;

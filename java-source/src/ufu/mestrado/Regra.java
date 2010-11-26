@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -298,6 +300,63 @@ public class Regra {
 		 
 		while (quantidade-- > 0) {
 			String nucleo = Util.toString(Util.gerarArrayAleatorio(r, tamanhoNucleo));
+			
+			if (!invalidarRepetidos.contains(nucleo)) {
+				invalidarRepetidos.add(nucleo);
+				
+				fos.write((nucleo + "\n").getBytes());
+			} else {
+				quantidade++;
+			}
+		}
+		
+		fos.close();
+	}
+	/**
+	 * Gerar um arquivo de núcleos aleatorios.
+	 * @param raio Tamanho do raio.
+	 * @param quantidade Quantidade de regras a serem geradas.
+	 * @param nomeArquivo Nome do arquivo que será salvo as regras.
+	 */
+	public static final void gerarNucleosAleatoriamente(int raio, int quantidade, String nomeArquivo, 
+			Double entropiaMin, Double entropiaMax, double percentualZeros) throws Exception {
+		FileOutputStream fos = new FileOutputStream(nomeArquivo);
+
+		final int tamanhoNucleo = (int) Math.pow(2, raio * 4 + 1) / 2;
+		
+		Set<String> invalidarRepetidos = new HashSet<String>();
+		
+		//Random r =  new Random();
+		 
+		while (quantidade-- > 0) {
+			Boolean bufferA[] = new Boolean[(int)(tamanhoNucleo * percentualZeros)];
+			Boolean bufferB[] = new Boolean[tamanhoNucleo - bufferA.length];
+			
+			Arrays.fill(bufferA, true);
+			
+			Boolean buffer[] = new Boolean[tamanhoNucleo];
+			System.arraycopy(bufferA, 0, buffer, 0, bufferA.length);
+			System.arraycopy(bufferB, 0, buffer, bufferA.length, bufferB.length);
+			
+			List<?> lst = Arrays.asList(buffer); 
+			Collections.shuffle(lst);
+			
+			boolean n[] = new boolean[buffer.length];
+			
+			for (int i = 0; i < buffer.length; i++) {
+				n[i] = buffer[i] == null ? false : buffer[i];
+			}
+			
+			double entropia = Util.entropiaNormalizada(n);
+			
+			System.out.println(entropia);
+			
+			if (entropiaMax != null && (entropia >= entropiaMax || entropia < entropiaMin)) {
+				quantidade++;
+				continue;
+			}
+			
+			String nucleo = Util.toString(n);
 			
 			if (!invalidarRepetidos.contains(nucleo)) {
 				invalidarRepetidos.add(nucleo);

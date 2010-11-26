@@ -3,7 +3,6 @@ package ufu.mestrado.teste;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 
 import javax.crypto.Cipher;
@@ -28,6 +27,8 @@ public class TesteCifragemAESImagem {
 	 * @param pastaSaida Pasta onde será salvo o arquivo cifrado.
 	 */
 	private static void cifrar(int altura, int largura, byte imagem[], String operacao, String pastaSaida, String nomeArquivo) throws Exception {
+		System.gc();
+		
 		Cronometro.iniciar();
 		
 		KeyGenerator kgen = KeyGenerator.getInstance("AES");
@@ -46,7 +47,7 @@ public class TesteCifragemAESImagem {
 
 		byte[] encrypted = cipher.doFinal(imagem);
 		
-		Cronometro.parar("Cifragem '" + nomeArquivo + "' " + operacao + " Tempo gasto: ");
+		Cronometro.parar("TAMANHO: " + imagem.length +" Cifragem '" + nomeArquivo + "' " + operacao + " Tempo gasto: ");
 		
 		gerarImagem(largura, altura, encrypted, pastaSaida + operacao.replaceAll("/", "_") + "_" + nomeArquivo);
 		
@@ -77,27 +78,27 @@ public class TesteCifragemAESImagem {
 
 
 	public static void main(String[] args) throws Exception {
-		final String pastaSaida = "E:/junior/Desktop/mestrado/testes_aes/";
+		final String pastaSaida = "C:/Temp/aes/";
 		
-		final String imagens[] = {"mulher.bmp"/*, "tux.bmp", "quadrado.bmp", "circulo.bmp", "triangulo.bmp"*/};
+		final String imagens[] = {"512x512_0113.png"/*, "tux.bmp", "quadrado.bmp", "circulo.bmp", "triangulo.bmp"*/};
 		
 		
 		for (String arquivoImagem : imagens) {
 			
 			BufferedImage buffer =  ImageIO.read(new File(pastaSaida + arquivoImagem));
 			
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			//ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			
 			final int height = buffer.getHeight();
 			final int width = buffer.getWidth();
-			
+			/*
 			for (int i = 0; i < buffer.getHeight(); i++) {
 				for (int j = 0; j < buffer.getWidth(); j++) {
 					baos.write(buffer.getRGB(j, i) == PRETO ? 1 : 0);
 				}
-			}
+			}*/
 			
-			final byte[] imagem = baos.toByteArray();
+			final byte[] imagem = new byte[height * width / 8];//baos.toByteArray();
 		
 			//Default
 			//cifrar(height, width, imagem, "AES", pastaSaida, arquivoImagem);
@@ -122,14 +123,18 @@ public class TesteCifragemAESImagem {
 			//cifrar(height, width, imagem, "AES/PCBC/NoPadding", pastaSaida, arquivoImagem);
 			//cifrar(height, width, imagem, "AES/PCBC/PKCS5Padding", pastaSaida, arquivoImagem);
 			
-			for (int i = 0; i < 50; i++) {
+			cifrar(height, width, imagem, "AES/CFB/NoPadding", pastaSaida, arquivoImagem);
+			
+			System.out.println("FIM");
+			
+			/*for (int i = 0; i < 50; i++) {
 				cifrar(height, width, imagem, "AES/CFB/NoPadding", pastaSaida, arquivoImagem);
 				try {
 					Thread.sleep(1000);
 				} catch (Exception e) {
 					
 				}
-			}
+			}*/
 		}
 	}
 }
