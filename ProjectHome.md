@@ -1,0 +1,1 @@
+Automato de Celular de 2 dimensões.
